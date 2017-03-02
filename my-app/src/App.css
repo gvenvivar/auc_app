@@ -1,24 +1,189 @@
 .App {
-  text-align: center;
+  min-height: 100vh;
+  background: url(img/frostmourne_by_chillalord-d5ka9vy.jpg) no-repeat center center;
+  background-size: cover;
+  justify-content: center;
+  -ms-align-items: center;
+  align-items: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.App-wrap {
+  font-family: "Roboto", sans-serif;
+  margin: 0 auto;
+  min-width: 1024px;
+  height: 768px;
+  //background: lightblue;
+  //opacity: 0.85
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.flex{
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
 }
 
-.App-intro {
-  font-size: large;
+.cont {
+  padding: 60px 70px;
+}
+.servers{
+  margin-bottom: 20px;
+}
+input {
+    font-size: 18px;
+    font-family: "Roboto", sans-serif;
+    color: #fff;
+    opacity: 0.85;
+}
+.servers input{
+  border: none;
+  display: inline-block;
+  width: 80px;
+  background: none;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.servers input:active,
+.servers input:focus {
+  border-bottom: 1px solid #fff;
+}
+
+.search input{
+  width: 310px;
+  height: 38px;
+  text-indent: 20px;
+  border-radius: 5px;
+  border-style: none;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.header {
+  text-align: left;
+  font-size: 18px;
+  clear: both;
+}
+.header-right {
+  float: right;
+}
+.header-left {
+  float: left;
+}
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+  }
+
+a {
+  color: #fff;
+  opacity: 0.85;
+}
+
+.main {
+  margin: 60px auto;
+}
+
+.col-left {
+  max-width: 312px;
+  display: inline-block;
+  float: left;
+}
+
+.items-table {
+  width: 312px;
+  min-height: 300px;
+  border-radius: 5px;
+  background: #fff;
+  opacity: 0.85;
+  border: 1px solid #000;
+  position: relative;
+}
+button {
+  margin-top: 20px;
+  border: none;
+  width: 100%;
+  height: 40px;
+  background: #CA0055;
+  opacity: 1;
+  color: #fff;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+}
+
+.col-right {
+  width: 520px;
+  height: 300px;
+  border-radius: 5px;
+  background: #fff;
+  opacity: 0.85;
+  border: 1px solid #000;
+  display: inline-block;
+  float: right;
+  position: relative;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  font-size: 16px;
+  padding: 0px 25px 10px;
+}
+
+thead{
+  font-size: 12px;
+  //background: #000;
+  opacity: .8;
+  color: #fff;
+}
+
+thead tr{
+  height: 30px;
+}
+
+
+.icon {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #95989a;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.close {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+tbody tr {
+  box-shadow: 0 1px 0 #95989a
+}
+
+th {
+  text-align: left;
+}
+
+th:last-child {
+  text-align: right;
+}
+.green {
+  color: #2ee321;
+}
+.red {
+  color: #ec0606;
+}
+
+.black_stripe {
+  position: absolute;
+  height: 32px;
+  width: 100%;
+  background: #000;
+  opacity: 0.9;
+  top: 0;
+  z-index: -1;
 }
