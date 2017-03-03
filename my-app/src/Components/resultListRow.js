@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import icon from '../img/sungrass.jpg';
 
 class resultListRow extends Component {
 
@@ -14,7 +13,7 @@ class resultListRow extends Component {
 	      <th>{this.props.item.quantity}</th>
 	    </tr>
 
-              
+
     );
   }
 }

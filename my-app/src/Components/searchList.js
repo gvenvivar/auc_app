@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SearchListRow from './searchListRow'
 
 class searchList extends Component {
-	
+
 
 	 render() {
 	 	/*var rows = [];
@@ -16,16 +16,16 @@ class searchList extends Component {
 		console.log(this.props);
 		let addItem = this.props.additem;
 		console.log(this.props.additem);
-    this.props.items.map((item, index)=> {
-    	
+    this.props.items.map((item, index, x)=> {
+			x = this.props.delButton;
     	addItem.map(function(i){
     		if(i === item.item){
     			console.log('same');
-	        list.push(<SearchListRow item={item}  key={index} />)
+	        list.push(<SearchListRow item={item}  key={index} delButton={x} />)
 	        console.log(list);
     		}
     	})
-      
+
     });
 
     return (
@@ -45,7 +45,7 @@ class searchList extends Component {
           </table>
           <div className="black_stripe"></div>
         </div>
-        <button onClick={this.props.startSearch.bind(this)}>Start Search</button>  
+        <button onClick={this.props.startSearch.bind(this)}>Start Search</button>
       </div>
     );
   }
