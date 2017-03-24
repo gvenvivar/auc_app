@@ -29,6 +29,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+
+    //fwtch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
 
     fetch(url)
@@ -39,6 +41,18 @@ class App extends Component {
           data: json.items,
         })
       })
+
+
+    // load wowhed tooltip scripts
+
+    function loadScript() {
+       var script= document.createElement('script');
+       script.type= 'text/javascript';
+       script.src= '//wow.zamimg.com/widgets/power.js';
+       script.async = true;
+       document.body.appendChild(script);
+    }
+    loadScript();
   }
 
 
@@ -59,7 +73,19 @@ class App extends Component {
   clickSearch(){
     console.log('click');
     this.setState({ startSearch: true });
-    console.log(this.state.startSearch);
+    //console.log(this.state.startSearch);
+    let data = {'key': 'hello'};
+    console.log(data);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    xhr.onload = function(){
+      console.log(this.responseText);
+
+    }
+
+    xhr.send(data);
   }
 
 
