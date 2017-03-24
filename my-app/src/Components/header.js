@@ -16,9 +16,9 @@ class header extends Component {
 	      <div className="header-left">
           <div className="servers">
           	<form >
-	            <input type='text' value='US' id="region" />
-	            <input type='text' value='FrostWolf' id="server" />
-	          </form> 
+	            <input type='text' placeholder='US' id="region" />
+	            <input type='text' placeholder='FrostWolf' id="server" />
+	          </form>
           </div>
           <div className="search">
           	<form onSubmit={this.handleSearch.bind(this)}>
@@ -29,7 +29,7 @@ class header extends Component {
 	      <div className="header-right">
 	        <a href="#">Log in</a>
 	      </div>
-	    </div> 
+	    </div>
     );
   }
 }

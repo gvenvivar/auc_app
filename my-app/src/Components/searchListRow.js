@@ -6,8 +6,9 @@ class searchListRow extends Component {
 
    closeBtn(e){
      e.preventDefault();
-     this.props.delButton(this.props.item.item);
-     
+     let item = this.props.item.name;
+     this.props.delButton(item.toLowerCase());
+
    }
 
 	 render() {
@@ -22,9 +23,9 @@ class searchListRow extends Component {
     </tr>*/
 
     <tr>
-      <th><img className="icon" src={this.props.item.icon} alt={this.props.item.item} /></th>
-      <th>{this.props.item.item}</th>
-      <th><a href="#"><img className="close" src={close} onClick={this.closeBtn.bind(this)} /></a></th>
+      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+      <th>{this.props.item.name}</th>
+      <th><a href="#"><img className="close" alt='deleteBtn' src={close} onClick={this.closeBtn.bind(this)} /></a></th>
     </tr>
 
     );

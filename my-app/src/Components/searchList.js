@@ -19,13 +19,14 @@ class searchList extends Component {
     this.props.items.map((item, index, x)=> {
 			x = this.props.delButton;
     	addItem.map(function(i){
-    		if(i === item.item){
+    		if(i.toLowerCase() === item.name.toLowerCase()){
     			console.log('same');
-	        list.push(<SearchListRow item={item}  key={index} delButton={x} />)
+	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} />)
 	        console.log(list);
     		}
+				return false;
     	})
-
+			return false;
     });
 
     return (
@@ -45,7 +46,7 @@ class searchList extends Component {
           </table>
           <div className="black_stripe"></div>
         </div>
-        <button onClick={this.props.startSearch.bind(this)}>Start Search</button>
+        <button onClick={this.props.clickSearch.bind(this)}>Start Search</button>
       </div>
     );
   }

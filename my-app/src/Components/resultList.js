@@ -14,15 +14,16 @@ class resultList extends Component {
 	        list.push(<ResultListRow item={item}  key={index} />)
 	        console.log(list);
     		}
+				return false;
     	})
-      
+			return false;
     });
     return list;
 	}
 
 	 render() {
 
-	 	
+
 
     return (
     	<div className="col-right">
@@ -42,7 +43,7 @@ class resultList extends Component {
 	      </table>
 	      <div className="black_stripe"></div>
 	    </div>
-              
+
     );
   }
 }
