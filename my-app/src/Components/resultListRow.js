@@ -6,8 +6,8 @@ class resultListRow extends Component {
 
     return (
 	    <tr>
-	      <th><img className="icon" src={this.props.item.icon} alt={this.props.item.item} /></th>
-	      <th>{this.props.item.item}</th>
+	      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+	      <th>{this.props.item.name}</th>
 	      <th><span className=''>{this.props.item.price}</span></th>
 	      <th>{this.props.item.avg}</th>
 	      <th>{this.props.item.quantity}</th>

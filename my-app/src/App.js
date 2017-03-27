@@ -23,8 +23,8 @@ class App extends Component {
 
     this.state = {
         itemList: ['elixir of demonslaying', 'nobles brand'],
-        startSearch : false,
-        data : []
+        data : [],
+        list: []
     };
   }
 
@@ -62,30 +62,34 @@ class App extends Component {
     //this.setState({ startSearch: false });
   }
 
-  startSearch(arr){
-      if(this.state.startSearch){
-        return arr;
-      }
-
-
-  }
-
   clickSearch(){
     console.log('click');
-    this.setState({ startSearch: true });
+
+    //create string for send request
+    let sendList = '';
+    this.state.itemList.map((i) => {
+      sendList += '&items[]=' + i ;
+    });
+
     //console.log(this.state.startSearch);
-    let data = {'key': 'hello'};
-    console.log(data);
+    //let data = '&items[]=elixir of demonslaying&items[]=nobles brand';
+    console.log('send ' +sendList);
 
     let xhr = new XMLHttpRequest();
     xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xhr.onload = function(){
-      console.log(this.responseText);
+    xhr.onload = () =>{
+      //console.log(this.responseText);
+
+      let jsonResponse = JSON.parse(xhr.responseText);
+      this.setState({
+        list: jsonResponse.items,
+      })
+      console.log(this.state.list);
 
     }
-
-    xhr.send(data);
+    //console.log(this.state.list);
+    xhr.send(sendList);
   }
 
 
@@ -109,11 +113,10 @@ class App extends Component {
               <SearchList
                 items={this.state.data}
                 additem={this.state.itemList}
-                startSearch={this.startSearch.bind(this)}
                 clickSearch={this.clickSearch.bind(this)}
                 delButton={this.deleteItem.bind(this)}
               />
-              <ResultList items={this.state.data} additem={this.state.itemList} startSearch={this.startSearch.bind(this)} />
+              <ResultList items={this.state.list}  />
             </div>
           </div>
         </div>

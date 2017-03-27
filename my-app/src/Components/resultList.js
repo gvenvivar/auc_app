@@ -3,7 +3,7 @@ import ResultListRow from './resultListRow'
 
 class resultList extends Component {
 
-	createResultList(){
+	/*createResultList(){
 		let list = [];
 		let addItem = this.props.additem;
 
@@ -19,10 +19,18 @@ class resultList extends Component {
 			return false;
     });
     return list;
-	}
+	}*/
+
 
 	 render() {
 
+		let list = [];
+ 		let items = this.props.items;
+
+ 		items.map((item, index) => {
+ 			list.push(<ResultListRow item={item}  key={item.id} />);
+			return false;
+ 		})
 
 
     return (
@@ -38,7 +46,7 @@ class resultList extends Component {
 	          </tr>
 	        </thead>
 	        <tbody>
-	          {this.props.startSearch(this.createResultList())}
+	          {list}
 	        </tbody>
 	      </table>
 	      <div className="black_stripe"></div>
