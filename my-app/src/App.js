@@ -15,18 +15,26 @@ import 'whatwg-fetch';
 ];*/
 
 
-
+document.addEventListener('DOMContentLoaded', function(){
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+  xhr.send('&items[]=ready');
+  console.log("loaded");
+});
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-        itemList: ['elixir of demonslaying', 'nobles brand'],
+        itemList: ['elixir of demonslaying', 'nobles brand', 'target dummy', 'flying tiger goggles', 'large copper bomb', 'heavy blasting powder', 'silver-plated shotgun', 'sungrass', 'moonsight rifle'],
         data : [],
         list: []
     };
   }
+
+
 
   componentDidMount() {
 
@@ -46,34 +54,49 @@ class App extends Component {
     // load wowhed tooltip scripts
 
     function loadScript() {
-       var script= document.createElement('script');
+       let script= document.createElement('script');
        script.type= 'text/javascript';
        script.src= '//wow.zamimg.com/widgets/power.js';
        script.async = true;
        document.body.appendChild(script);
     }
+
+    function loadTooltipScript() {
+      let script= document.createElement('script');
+      script.type= 'text/javascript';
+      script.text  = 'var wowhead_tooltips = { "colorlinks": false, "iconizelinks": false, "renamelinks": true }';
+      script.async = true;
+      document.body.appendChild(script);
+    }
     loadScript();
+    loadTooltipScript();
   }
 
 
   createList(item){
     this.state.itemList.push(item.toLowerCase());
     this.setState({ itemList: this.state.itemList });
+    //this.state.itemList.sort();
     //this.setState({ startSearch: false });
   }
 
   clickSearch(){
     console.log('click');
 
-    //create string for send request
-    let sendList = '';
-    this.state.itemList.map((i) => {
-      sendList += '&items[]=' + i ;
+    //creat ID list
+    let idList = '';
+    this.state.data.map((item) => {
+      this.state.itemList.map((myItem) => {
+        if(myItem.toLowerCase() === item.name.toLowerCase()){
+          idList += '&items[]=' + item.id;
+        }
+        return false;
+      })
+      return false;
     });
+    console.log(idList);
 
-    //console.log(this.state.startSearch);
-    //let data = '&items[]=elixir of demonslaying&items[]=nobles brand';
-    console.log('send ' +sendList);
+
 
     let xhr = new XMLHttpRequest();
     xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
@@ -89,7 +112,7 @@ class App extends Component {
 
     }
     //console.log(this.state.list);
-    xhr.send(sendList);
+    xhr.send(idList);
   }
 
 

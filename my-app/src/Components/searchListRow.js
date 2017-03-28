@@ -23,8 +23,8 @@ class searchListRow extends Component {
     </tr>*/
 
     <tr>
-      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} rel={'item=' + this.props.item.id}/></th>
-      <th>{this.props.item.name}</th>
+      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+      <th><a href='#' rel={'item=' + this.props.item.id}>{this.props.item.name}</a></th>
       <th><a href="#"><img className="close" alt='deleteBtn' src={close} onClick={this.closeBtn.bind(this)} /></a></th>
     </tr>
 
