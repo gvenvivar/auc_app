@@ -5,6 +5,8 @@ import Header from './Components/header';
 import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
+import Autocomplete from 'react-autocomplete';
+
 
 /*const items = [
   {item: 'awesome robe', price: '999g', avg: '100g', quantity: 1, icon: 'img/inv_chest_cloth_19.jpg'},
@@ -28,9 +30,12 @@ class App extends Component {
     super(props);
 
     this.state = {
-        itemList: ['elixir of demonslaying', 'nobles brand', 'target dummy', 'flying tiger goggles', 'large copper bomb', 'heavy blasting powder', 'silver-plated shotgun', 'sungrass', 'moonsight rifle'],
+        itemList: ['dreamleaf', 'starlight rose', 'fjarnskaggl', 'aethril', 'foxflower', 'felwort', 'flask of the whispered pact', 'flask of the seventh demon', 'flask of the countless armies', 'flask of ten thousand scars', 'potion of deadly grace', 'potion of the old war', 'potion of prolonged power'],
         data : [],
-        list: []
+        list: [],
+        server: '',
+        updatedTime: '',
+        autoList: []
     };
   }
 
@@ -40,6 +45,7 @@ class App extends Component {
 
     //fwtch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
+    const test_url ='https://sweetpeach.pp.ua/item_db_img_test_sorted.json';
 
     fetch(url)
       .then(response => response.json())
@@ -61,6 +67,7 @@ class App extends Component {
        document.body.appendChild(script);
     }
 
+
     function loadTooltipScript() {
       let script= document.createElement('script');
       script.type= 'text/javascript';
@@ -80,11 +87,49 @@ class App extends Component {
     //this.setState({ startSearch: false });
   }
 
+  addToAuto(item){
+    this.state.autoList.push(item.toLowerCase());
+    console.log("%%%"+ this.state.autoList);
+  }
+
+  updateInputServer(event){
+    this.setState({
+      server: event.target.value
+    })
+  }
+
+  transformTime(time){
+    let currentTime = new Date();
+    let timeSeconds =currentTime.getTime()/1000;;
+    return parseInt((timeSeconds - time)/60);
+  }
+
+
+
   clickSearch(){
     console.log('click');
 
+    //take value from select region
+    let e = document.getElementById("server");
+    let strRegion = e.options[e.selectedIndex].value;
+
+    // take region value
+    let strServer = '';
+    if(this.state.server === '') {
+      strServer = '&items[]=sargeras';
+    } else {
+      strServer += '&items[]=' + this.state.server.toLowerCase();
+    }
+
+
+
+
+
+
     //creat ID list
     let idList = '';
+    idList += '&items[]=' + strRegion + strServer;
+
     this.state.data.map((item) => {
       this.state.itemList.map((myItem) => {
         if(myItem.toLowerCase() === item.name.toLowerCase()){
@@ -106,8 +151,10 @@ class App extends Component {
 
       let jsonResponse = JSON.parse(xhr.responseText);
       this.setState({
-        list: jsonResponse.items,
+        list: jsonResponse[1].items,
+        updatedTime: jsonResponse[0].time
       })
+
       console.log(this.state.list);
 
     }
@@ -127,11 +174,19 @@ class App extends Component {
 
   render() {
 
+
+
     return (
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
-            <Header createList={this.createList.bind(this)}/>
+            <Header createList={this.createList.bind(this)}
+            addToAuto={this.addToAuto.bind(this)}
+            data={this.state.data}
+            updateInputServer={this.updateInputServer.bind(this)}
+            updatedTime={this.state.updatedTime}
+            transformTime={this.transformTime.bind(this)}
+            />
             <div className="main">
               <SearchList
                 items={this.state.data}

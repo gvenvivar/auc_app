@@ -20,9 +20,9 @@ class searchList extends Component {
 			x = this.props.delButton;
     	addItem.map(function(i){
     		if(i.toLowerCase() === item.name.toLowerCase()){
-    			console.log('same');
+    			//console.log('same');
 	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} />)
-	        console.log(list);
+	        //console.log(list);
     		}
 				return false;
     	})

@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "js-autocomplete": "^1.0.3",
+    "react-autocomplete": "^1.4.1",
     "react-scripts": "0.9.0"
   },
   "dependencies": {
     "lodash": "^4.17.4",
     "react": "^15.4.2",
+    "react-autocomplete": "^1.4.1",
     "react-dom": "^15.4.2",
     "whatwg-fetch": "^2.0.3"
   },
