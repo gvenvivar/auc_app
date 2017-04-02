@@ -8,7 +8,7 @@ export let styles = {
 
   highlightedItem: {
     color: 'white',
-    background: 'hsl(200, 50%, 50%)',
+    background: '#c6c6c6',
     padding: '2px 6px',
     cursor: 'default'
   },
@@ -37,23 +37,17 @@ class header extends Component {
 		this.props.addToAuto(this.state.autoComplite);
 	}
 
-  addTimeBlock() {
-    if(this.props.updatedTime){
-      console.log('asf');
-      return "<div className='time'>Updated {this.props.transformTime(this.props.updatedTime)} minutes ago</div>"
-    }
-    console.log('ewr')
-
-  }
-
-
-
 
 	 render() {
 
+     let addTimeBlock;
+     if(this.props.updatedTime>0){
+       addTimeBlock = (<div className='time'>Updated
+        {' ' +this.props.transformTime(this.props.updatedTime)} minutes ago</div>)
+     }
 
     return (
-      <div className="header clearfix">
+      <div className="header">
 	      <div className="header-left">
           <div className="servers">
           	<form >
@@ -74,17 +68,11 @@ class header extends Component {
 					<Autocomplete
 						value={this.state.autoComplite}
 						inputProps={{name: "test", id:'autocomplite' }}
-						items={[
-							{item: 'awesome robe', price: '999g', avg: '100g', quantity: 1, icon: 'img/inv_chest_cloth_19.jpg'},
-							{item: 'bf mace', price: '1p', avg: '2g', quantity: 4, icon: 'img/inv_hammer_16.jpg'},
-							{item: 'crab meat', price: '22s', avg: '22s', quantity: 222, icon: 'img/inv_misc_food_16.jpg'},
-							{item: 'scroll of wisdom', price: '99c', avg: '88c', quantity: 998, icon: 'img/inv_scroll_02.jpg'},
-							{item: 'sungrass', price: '99c', avg: '100c', quantity: 9999, icon: 'http://wow.zamimg.com/images/wow/icons/large/inv_misc_herb_18.jpg'}
-						]}
-						getItemValue={(item) => item.item}
+						items={this.props.data}
+						getItemValue={(item) => item.name}
 						sortItems={function sort (a, b, value) {
-							const aLower = a.item.toLowerCase();
-							const bLower = b.item.toLowerCase();
+							const aLower = a.name.toLowerCase();
+							const bLower = b.name.toLowerCase();
 							const valueLower = value.toLowerCase();
 							const queryPosA = aLower.indexOf(valueLower);
 							const queryPosB = bLower.indexOf(valueLower);
@@ -94,14 +82,24 @@ class header extends Component {
 							return aLower < bLower ? -1 : 1;
 						}}
 						shouldItemRender={function matchStateToTerm (item, value) {
-							return (
-								item.item.toLowerCase().indexOf(value.toLowerCase()) !== -1
-							)
+              if(value.length >3){
+                return (
+  								item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+  							)
+              }
 						}}
 						onChange={(event, autoComplite) => this.setState({ autoComplite })}
-						onSelect={autoComplite => this.setState({ autoComplite })}
+						onSelect={autoComplite =>{
+              console.log('bah');
+              return this.setState({ autoComplite })
+            }
+
+            }
 						renderItem={(item, isHighlighted) => (
-							<div className='autoComplite' style={isHighlighted ? styles.highlightedItem : styles.item}>{item.item}</div>
+              <div style={isHighlighted ? styles.highlightedItem : styles.item}>
+                <img className="icon" src={item.img_url} alt={item.name} />
+							  <a href='#' rel={'item=' + item.id} className='autoComplite'>{item.name}</a>
+              </div>
 						)}
 						menuStyle={{
 							borderRadius: '3px',
@@ -114,6 +112,8 @@ class header extends Component {
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,
+              maxHeight: "300px",
+
 						}}
 					/>
 					</form>
@@ -121,9 +121,7 @@ class header extends Component {
 	      </div>
 	      <div className="header-right">
 	        <a href="#">Log in</a>
-          {
-            <div className='time'>Updated {this.props.transformTime(this.props.updatedTime)} minutes ago</div>
-          }
+          {addTimeBlock}
 	      </div>
 	    </div>
     );

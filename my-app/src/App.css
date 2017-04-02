@@ -4,6 +4,10 @@ html{
   background-color: #000813;
 }
 
+.wowhead-tooltip-powered{
+  display: none!important;
+}
+
 .App {
   justify-content: center;
   -ms-align-items: center;
@@ -26,6 +30,9 @@ html{
   display: -ms-flex;
   display: -o-flex;
   display: flex;
+}
+.center {
+  text-align: center;
 }
 
 .cont {
@@ -71,6 +78,13 @@ select option {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
+
+
+.autoComplite{
+  color: #000;
+  text-decoration: none;
+}
+
 .search input{
   width: 310px;
   height: 38px;
@@ -91,19 +105,21 @@ select option {
 .header {
   text-align: left;
   font-size: 18px;
-  clear: both;
-}
-.header-right {
-  float: right;
   display: -webkit-flex;
   display: -ms-flex;
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
+  justify-content: space-between;
+
+}
+.header-right {
+  text-align: right;
+
 }
 .time{
   color: #fff;
+  opacity: 0.6;
+  font-size: 12px;
+  margin-top: 10px;
 }
 .header-left {
   float: left;

@@ -40,8 +40,8 @@ class resultList extends Component {
 	          <tr>
 	            <th>Icon</th>
 	            <th>Name</th>
-	            <th>Price</th>
-	            <th>Avg</th>
+	            <th className='center'>Price</th>
+	            <th className='center'>Regional avg</th>
 	            <th>Qty</th>
 	          </tr>
 	        </thead>

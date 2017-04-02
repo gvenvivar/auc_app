@@ -17,13 +17,13 @@ import Autocomplete from 'react-autocomplete';
 ];*/
 
 
-document.addEventListener('DOMContentLoaded', function(){
+/*document.addEventListener('DOMContentLoaded', function(){
   let xhr = new XMLHttpRequest();
   xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
   xhr.send('&items[]=ready');
   console.log("loaded");
-});
+});*/
 
 class App extends Component {
   constructor(props) {
@@ -108,7 +108,6 @@ class App extends Component {
 
   clickSearch(){
     console.log('click');
-
     //take value from select region
     let e = document.getElementById("server");
     let strRegion = e.options[e.selectedIndex].value;
@@ -173,7 +172,6 @@ class App extends Component {
 
 
   render() {
-
 
 
     return (
