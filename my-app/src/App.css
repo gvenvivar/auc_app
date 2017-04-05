@@ -38,6 +38,11 @@ html{
 .cont {
   padding: 60px 70px;
 }
+.server{
+  position: relative;
+  display: inline-block;
+}
+
 .servers{
   margin-bottom: 20px;
 }
@@ -85,22 +90,21 @@ select option {
   text-decoration: none;
 }
 
+.search {
+  position: relative;
+}
+
 .search input{
-  width: 310px;
+  width: 313px;
   height: 38px;
   text-indent: 20px;
   border-radius: 5px;
   border-style: none;
   border: 1px solid #000;
   color: #000;
+  outline: none;
 }
 
-.test input{
-  color: #000;
-}
-.test{
-  position: relative;
-}
 
 .header {
   text-align: left;
@@ -118,8 +122,8 @@ select option {
 .time{
   color: #fff;
   opacity: 0.6;
-  font-size: 12px;
-  margin-top: 10px;
+  font-size: 13px;
+  margin-top: 20px;
 }
 .header-left {
   float: left;
@@ -139,7 +143,7 @@ a {
 }
 
 .main {
-  margin: 60px auto;
+  margin: 40px auto;
 }
 
 .col-left {

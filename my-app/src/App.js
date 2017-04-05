@@ -32,18 +32,19 @@ class App extends Component {
     this.state = {
         itemList: ['dreamleaf', 'starlight rose', 'fjarnskaggl', 'aethril', 'foxflower', 'felwort', 'flask of the whispered pact', 'flask of the seventh demon', 'flask of the countless armies', 'flask of ten thousand scars', 'potion of deadly grace', 'potion of the old war', 'potion of prolonged power'],
         data : [],
+        usServers: [],
+        euServers: [],
+        servers:[],
         list: [],
-        server: '',
+        region: 'en_US',
+        server: 'sargeras',
         updatedTime: '',
-        autoList: []
     };
   }
 
-
-
   componentDidMount() {
 
-    //fwtch database json
+    //fetch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
     const test_url ='https://sweetpeach.pp.ua/item_db_img_test_sorted.json';
 
@@ -53,8 +54,13 @@ class App extends Component {
         //console.log(json.items);
         this.setState({
           data: json.items,
+          usServers :json.realms.en_US,
+          euServers :json.realms.en_GB,
         })
       })
+
+
+
 
 
     // load wowhed tooltip scripts
@@ -79,23 +85,29 @@ class App extends Component {
     loadTooltipScript();
   }
 
-
-  createList(item){
+  addToAuto(item){
     this.state.itemList.push(item.toLowerCase());
+    console.log(this.state.itemList);
     this.setState({ itemList: this.state.itemList });
-    //this.state.itemList.sort();
-    //this.setState({ startSearch: false });
   }
 
-  addToAuto(item){
-    this.state.autoList.push(item.toLowerCase());
-    console.log("%%%"+ this.state.autoList);
+  addSlug(item){
+    this.setState({
+      server: item
+    })
+  }
+
+  updateRegion(event){
+    this.setState({
+      region: event.target.value,
+    })
   }
 
   updateInputServer(event){
     this.setState({
       server: event.target.value
     })
+
   }
 
   transformTime(time){
@@ -108,22 +120,18 @@ class App extends Component {
 
   clickSearch(){
     console.log('click');
+    console.log(this.state.servers);
     //take value from select region
-    let e = document.getElementById("server");
-    let strRegion = e.options[e.selectedIndex].value;
+    let strRegion = this.state.region;
 
     // take region value
-    let strServer = '';
-    if(this.state.server === '') {
+    let strServer = '&items[]=' + this.state.server;
+    console.log(strServer);
+    /*if(this.state.server === '') {
       strServer = '&items[]=sargeras';
     } else {
       strServer += '&items[]=' + this.state.server.toLowerCase();
-    }
-
-
-
-
-
+    }*/
 
     //creat ID list
     let idList = '';
@@ -154,7 +162,7 @@ class App extends Component {
         updatedTime: jsonResponse[0].time
       })
 
-      console.log(this.state.list);
+      //console.log(this.state.list);
 
     }
     //console.log(this.state.list);
@@ -178,12 +186,17 @@ class App extends Component {
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
-            <Header createList={this.createList.bind(this)}
-            addToAuto={this.addToAuto.bind(this)}
-            data={this.state.data}
-            updateInputServer={this.updateInputServer.bind(this)}
-            updatedTime={this.state.updatedTime}
-            transformTime={this.transformTime.bind(this)}
+            <Header
+              usServers={this.state.usServers}
+              euServers={this.state.euServers}
+              addToAuto={this.addToAuto.bind(this)}
+              addSlug={this.addSlug.bind(this)}
+              data={this.state.data}
+              region={this.state.region}
+              updateRegion={this.updateRegion.bind(this)}
+              updateInputServer={this.updateInputServer.bind(this)}
+              updatedTime={this.state.updatedTime}
+              transformTime={this.transformTime.bind(this)}
             />
             <div className="main">
               <SearchList
