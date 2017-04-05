@@ -254,3 +254,54 @@ th:last-child {
 .gold {
   padding-left: 2px;
 }
+.no-items-wrap {
+  text-align: center;
+  padding: 100px 0;
+}
+
+.no-results, .no-items {
+  font-size: 20px;
+  font-family: "RobotoRegular", sans-serif;
+  color: #3C4248;
+  position: relative;
+}
+
+.no-items::before {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 120px;
+  height: 1px;
+  top: -25px;
+  left: calc(50% - (120px/2));
+}
+
+.no-items::after {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 120px;
+  height: 1px;
+  top: 50px;
+  left: calc(50% - (120px/2));
+}
+
+.no-results::before {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 250px;
+  height: 1px;
+  top: -25px;
+  left: calc(50% - (250px/2));
+}
+
+.no-results::after {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 250px;
+  height: 1px;
+  top: 50px;
+  left: calc(50% - (250px/2));
+}

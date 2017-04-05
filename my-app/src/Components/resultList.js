@@ -33,6 +33,7 @@ class resultList extends Component {
  		})
 
 
+
     return (
     	<div className="col-right">
 	      <table>
@@ -50,6 +51,9 @@ class resultList extends Component {
 	        </tbody>
 	      </table>
 	      <div className="black_stripe"></div>
+				<div className='no-items-wrap'>
+					<div className='no-results'>Add items add press search button</div>
+				</div>
 	    </div>
 
     );

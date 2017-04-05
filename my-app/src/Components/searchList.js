@@ -45,6 +45,9 @@ class searchList extends Component {
             </tbody>
           </table>
           <div className="black_stripe"></div>
+					<div className='no-items-wrap'>
+						<div className='no-items'>Your list is empty</div>
+					</div>
         </div>
         <button onClick={this.props.clickSearch.bind(this)}>Start Search</button>
       </div>

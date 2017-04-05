@@ -83,12 +83,17 @@ class App extends Component {
     }
     loadScript();
     loadTooltipScript();
+
+    if(this.state.itemList.length>0){
+      document.getElementsByClassName('no-items-wrap')[0].style.display ='none';
+    }
   }
 
   addToAuto(item){
     this.state.itemList.push(item.toLowerCase());
     console.log(this.state.itemList);
     this.setState({ itemList: this.state.itemList });
+    document.getElementsByClassName('no-items-wrap')[0].style.display = 'none';
   }
 
   addSlug(item){
@@ -121,6 +126,9 @@ class App extends Component {
   clickSearch(){
     console.log('click');
     console.log(this.state.servers);
+    //hide no-items
+    document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
+
     //take value from select region
     let strRegion = this.state.region;
 
@@ -176,6 +184,10 @@ class App extends Component {
     if(delItem>-1)
       this.state.itemList.splice(delItem, 1);
       this.setState({ itemList: this.state.itemList });
+    console.log(this.state.itemList.length)
+    if(this.state.itemList.length === 0)
+      document.getElementsByClassName('no-items-wrap')[0].style.display ='block';
+
   }
 
 

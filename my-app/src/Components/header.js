@@ -149,6 +149,10 @@ class header extends Component {
 						onSelect={(autoComplite, item) =>{
               this.props.addToAuto(item.name);
               this.setState({autoComplite: '' });
+              //fix wowhead tooltip
+              let tooltip = document.getElementsByClassName('wowhead-tooltip');
+              tooltip[0].style.visibility = 'hidden';
+              tooltip[0].firstChild.style.visibility = 'hidden';
             }
 
             }
