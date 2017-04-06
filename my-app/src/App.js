@@ -84,7 +84,7 @@ class App extends Component {
     loadScript();
     loadTooltipScript();
 
-    if(this.state.itemList.length>0){
+    if(this.state.itemList.length > 0){
       document.getElementsByClassName('no-items-wrap')[0].style.display ='none';
     }
   }
@@ -127,7 +127,10 @@ class App extends Component {
     console.log('click');
     console.log(this.state.servers);
     //hide no-items
-    document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
+    if(this.state.itemList.length > 0){
+      document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
+    }
+
 
     //take value from select region
     let strRegion = this.state.region;

@@ -13,7 +13,7 @@ class searchList extends Component {
 	  });*/
 
 		let list = [];
-		console.log(this.props);
+		//console.log(this.props);
 		let addItem = this.props.additem;
 		console.log(this.props.additem);
     this.props.items.map((item, index, x)=> {

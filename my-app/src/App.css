@@ -305,3 +305,12 @@ th:last-child {
   top: 50px;
   left: calc(50% - (250px/2));
 }
+
+@media (max-width: 1023px) {
+  .flex{
+    display: block;
+  }
+  .cont {
+    padding: 30px 10px;
+  }
+}

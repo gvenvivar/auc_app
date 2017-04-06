@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
-export let styles = {
+let styles = {
   item: {
     padding: '2px 6px',
     cursor: 'default'
@@ -40,6 +40,12 @@ class header extends Component {
     this.setState({autoComplite: ''})
   }
 
+  submitServer(e){
+    e.preventDefault();
+    document.getElementById('server').blur();
+    console.log('submit')
+  }
+
 	 render() {
 
      //generate server time
@@ -61,7 +67,7 @@ class header extends Component {
       <div className="header">
 	      <div className="header-left">
           <div className="servers">
-          	<form >
+          	<form onSubmit={this.submitServer.bind(this)}>
 	            <select id='realm' value={this.props.region} onChange={this.props.updateRegion}>
 								<option value="en_US">US</option>
 								<option value="en_GB">EU</option>
@@ -75,7 +81,9 @@ class header extends Component {
                 onChange={(event, serverAutocomplite) => this.setState({ serverAutocomplite })}
                 onSelect={(serverAutocomplite, item) => {
                   this.props.addSlug(item.slug);
-                  this.setState({ serverAutocomplite })
+                  this.setState({ serverAutocomplite });
+                  document.getElementById('server').blur();
+                  document.getElementById('search').focus();
                 }}
                 sortItems={function sort (a, b, value) {
     							const aLower = a.name.toLowerCase();
