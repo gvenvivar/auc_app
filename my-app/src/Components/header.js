@@ -120,6 +120,7 @@ class header extends Component {
     							overflow: 'auto',
     							zIndex: 20,
                   maxHeight: "300px",
+                  textAlign: 'left'
     						}}
               />
               </div>
@@ -181,7 +182,8 @@ class header extends Component {
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,
-              maxHeight: "300px"
+              maxHeight: "300px",
+              textAlign: 'left'
 						}}
 					/>
 					</form>
