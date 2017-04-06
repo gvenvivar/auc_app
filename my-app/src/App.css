@@ -1,7 +1,14 @@
-.App {
-  min-height: 100vh;
-  background: url(img/frostmourne_by_chillalord-d5ka9vy.jpg) no-repeat center center;
+html{
+  background: url(img/frostmourne_by_chillalord-d5ka9vy.jpg)  no-repeat center center fixed; ;
   background-size: cover;
+  background-color: #000813;
+}
+
+.wowhead-tooltip-powered{
+  display: none!important;
+}
+
+.App {
   justify-content: center;
   -ms-align-items: center;
   align-items: center;
@@ -11,9 +18,10 @@
   font-family: "Roboto", sans-serif;
   margin: 0 auto;
   min-width: 1024px;
-  height: 768px;
+  min-height: 768px;
   //background: lightblue;
   //opacity: 0.85
+
 }
 
 .flex{
@@ -23,10 +31,18 @@
   display: -o-flex;
   display: flex;
 }
+.center {
+  text-align: center;
+}
 
 .cont {
   padding: 60px 70px;
 }
+.server{
+  position: relative;
+  display: inline-block;
+}
+
 .servers{
   margin-bottom: 20px;
 }
@@ -39,32 +55,75 @@ input {
 .servers input{
   border: none;
   display: inline-block;
-  width: 80px;
+  width: auto;
   background: none;
+}
+.servers input::placeholder{
+  color: #fff;
 }
 
 .servers input:active,
 .servers input:focus {
-  border-bottom: 1px solid #fff;
+  outline: none;
+}
+select {
+  border-radius: 2px;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  margin-right: 20px;
+
+}
+
+select option {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+
+
+.autoComplite{
+  color: #000;
+  text-decoration: none;
+}
+
+.search {
+  position: relative;
 }
 
 .search input{
-  width: 310px;
+  width: 313px;
   height: 38px;
   text-indent: 20px;
   border-radius: 5px;
   border-style: none;
   border: 1px solid #000;
   color: #000;
+  outline: none;
 }
+
 
 .header {
   text-align: left;
   font-size: 18px;
-  clear: both;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: space-between;
+
 }
 .header-right {
-  float: right;
+  text-align: right;
+
+}
+.time{
+  color: #fff;
+  opacity: 0.6;
+  font-size: 13px;
+  margin-top: 20px;
 }
 .header-left {
   float: left;
@@ -84,7 +143,7 @@ a {
 }
 
 .main {
-  margin: 60px auto;
+  margin: 40px auto;
 }
 
 .col-left {
@@ -103,7 +162,7 @@ a {
   position: relative;
 }
 button {
-  margin-top: 20px;
+  margin: 20px auto 40px;
   border: none;
   width: 100%;
   height: 40px;
@@ -117,7 +176,7 @@ button {
 
 .col-right {
   width: 520px;
-  height: 300px;
+  min-height: 300px;
   border-radius: 5px;
   background: #fff;
   opacity: 0.85;
@@ -132,6 +191,11 @@ table {
   width: 100%;
   font-size: 16px;
   padding: 0px 25px 10px;
+}
+
+table a {
+  color: #000;
+  text-decoration: none;
 }
 
 thead{
@@ -186,4 +250,67 @@ th:last-child {
   opacity: 0.9;
   top: 0;
   z-index: -1;
+}
+.gold {
+  padding-left: 2px;
+}
+.no-items-wrap {
+  text-align: center;
+  padding: 100px 0;
+}
+
+.no-results, .no-items {
+  font-size: 20px;
+  font-family: "RobotoRegular", sans-serif;
+  color: #3C4248;
+  position: relative;
+}
+
+.no-items::before {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 120px;
+  height: 1px;
+  top: -25px;
+  left: calc(50% - (120px/2));
+}
+
+.no-items::after {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 120px;
+  height: 1px;
+  top: 50px;
+  left: calc(50% - (120px/2));
+}
+
+.no-results::before {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 250px;
+  height: 1px;
+  top: -25px;
+  left: calc(50% - (250px/2));
+}
+
+.no-results::after {
+  content: ' ';
+  background: #000;
+  position: absolute;
+  width: 250px;
+  height: 1px;
+  top: 50px;
+  left: calc(50% - (250px/2));
+}
+
+@media (max-width: 1023px) {
+  .flex{
+    display: block;
+  }
+  .cont {
+    padding: 30px 10px;
+  }
 }

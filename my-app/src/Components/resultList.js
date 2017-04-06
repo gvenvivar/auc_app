@@ -3,7 +3,7 @@ import ResultListRow from './resultListRow'
 
 class resultList extends Component {
 
-	createResultList(){
+	/*createResultList(){
 		let list = [];
 		let addItem = this.props.additem;
 
@@ -14,15 +14,25 @@ class resultList extends Component {
 	        list.push(<ResultListRow item={item}  key={index} />)
 	        console.log(list);
     		}
+				return false;
     	})
-      
+			return false;
     });
     return list;
-	}
+	}*/
+
 
 	 render() {
 
-	 	
+		let list = [];
+ 		let items = this.props.items;
+
+ 		items.map((item, index) => {
+ 			list.push(<ResultListRow item={item}  key={item.id} />);
+			return false;
+ 		})
+
+
 
     return (
     	<div className="col-right">
@@ -31,18 +41,21 @@ class resultList extends Component {
 	          <tr>
 	            <th>Icon</th>
 	            <th>Name</th>
-	            <th>Price</th>
-	            <th>Avg</th>
+	            <th className='center'>Price</th>
+	            <th className='center'>Regional avg</th>
 	            <th>Qty</th>
 	          </tr>
 	        </thead>
 	        <tbody>
-	          {this.props.startSearch(this.createResultList())}
+	          {list}
 	        </tbody>
 	      </table>
 	      <div className="black_stripe"></div>
+				<div className='no-items-wrap'>
+					<div className='no-results'>Add items add press search button</div>
+				</div>
 	    </div>
-              
+
     );
   }
 }
