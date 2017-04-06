@@ -13,6 +13,12 @@ const items = [
   {item: 'sungrass', price: '99c', avg: '100c', quantity: 9999, icon: 'img/sungrass.jpg'} 
 ];
 
+const json = 'https://sweetpeach.pp.ua/item_db_img_test_sorted.json';
+
+fetch(json)
+  .then(response => response.json())
+  .then(json => console.log(json.items))
+
 
 class App extends Component {
   constructor(props) {
