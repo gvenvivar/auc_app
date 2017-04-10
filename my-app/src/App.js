@@ -44,9 +44,12 @@ class App extends Component {
 
   componentDidMount() {
 
+
     //fetch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
     const test_url ='https://sweetpeach.pp.ua/item_db_img_test_sorted.json';
+
+
 
     fetch(url)
       .then(response => response.json())
@@ -180,6 +183,31 @@ class App extends Component {
     xhr.send(idList);
   }
 
+  logIn (){
+    console.log('click');
+    let login = 'admin';
+    let pass = 'optsem63'
+    let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
+    console.log(logIn);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", 'https://sweetpeach.pp.ua/grape/test/', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    xhr.onload = () =>{
+      console.log(this.responseText);
+
+      let jsonResponse = JSON.parse(xhr.responseText);
+      this.setState({
+        itemList: jsonResponse.list,
+      })
+
+      //console.log(this.state.list);
+
+    }
+    //console.log(this.state.list);
+    xhr.send(logIn);
+  }
+
 
   deleteItem(itemToDel){
     console.log(itemToDel);
@@ -212,6 +240,7 @@ class App extends Component {
               updateInputServer={this.updateInputServer.bind(this)}
               updatedTime={this.state.updatedTime}
               transformTime={this.transformTime.bind(this)}
+              logIn={this.logIn.bind(this)}
             />
             <div className="main">
               <SearchList

@@ -13,7 +13,10 @@ class resultListRow extends Component {
 			price /=  10000;
 			price = price.toFixed(2);
 			price = parseFloat(price);
-			return price;
+			if(price > 1000){
+				price = Math.round(price);
+			}
+			return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 		}
 
     return (

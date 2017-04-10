@@ -160,8 +160,12 @@ class header extends Component {
               this.setState({autoComplite: '' });
               //fix wowhead tooltip
               let tooltip = document.getElementsByClassName('wowhead-tooltip');
-              tooltip[0].style.visibility = 'hidden';
-              tooltip[0].firstChild.style.visibility = 'hidden';
+              console.log(tooltip);
+              if(tooltip){
+                tooltip[0].style.visibility = 'hidden';
+                tooltip[0].firstChild.style.visibility = 'hidden';
+              }
+
             }
 
             }
@@ -190,7 +194,7 @@ class header extends Component {
 					</div>
 	      </div>
 	      <div className="header-right">
-	        <a href="#">Log in</a>
+	        <a href="#" id='login' onClick={this.props.logIn.bind(this)}>Log in</a>
           {addTimeBlock}
 	      </div>
 	    </div>
