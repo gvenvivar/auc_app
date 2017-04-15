@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
+import close from '../img/cerrar.png';
+import {capitalizeFirstLetter} from '../functions';
 let styles = {
   item: {
     padding: '2px 6px',
@@ -24,7 +26,6 @@ class header extends Component {
     super(props);
     this.state = {
       autoComplite: "",
-      serverAutocomplite: "",
     };
   }
 
@@ -45,8 +46,36 @@ class header extends Component {
     document.getElementById('server').blur();
     console.log('submit')
   }
+  closeModal(){
+    document.querySelector('.modal').style.visibility = 'hidden';
+    document.getElementById('email').value = '';
+    document.getElementById('psw').value = '';
+    document.querySelector('.loginError').innerHTML = '';
+    let modal = document.querySelector('.modal-content');
+    modal.classList.remove("open-modal");
+  }
+  openModal(){
+    document.querySelector('.modal').style.visibility = 'visible';
+    let modal = document.querySelector('.modal-content');
+    modal.className += ' open-modal';
+  }
+
+
+
 
 	 render() {
+     // When the user clicks anywhere outside of the modal, close it
+     window.onclick = function(event) {
+       let modal = document.querySelector('.modal');
+       let modalContent = document.querySelector('.modal-content');
+       if (event.target === modal) {
+           modal.style.visibility = 'hidden';
+           modalContent.classList.remove("open-modal");
+           document.getElementById('email').value = '';
+           document.getElementById('psw').value = '';
+           document.querySelector('.loginError').innerHTML = '';
+         }
+     }
 
      //generate server time
      let addTimeBlock;
@@ -74,14 +103,21 @@ class header extends Component {
 							</select>
               <div className="server" >
               <Autocomplete
-                value={this.state.serverAutocomplite}
-                inputProps={{name: "server", className:'server', id:"server",  ref:"server", placeholder:"Sargeras"}}
+                value={
+                  capitalizeFirstLetter(this.props.server)
+                /*this.state.serverAutocomplite*/}
+                inputProps={{name: "server", className:'server', id:"server",  ref:"server", placeholder:"Realm"}}
                 items={realmsList}
                 getItemValue={(item) => item.name}
-                onChange={(event, serverAutocomplite) => this.setState({ serverAutocomplite })}
+                onChange={
+                  this.props.updateInputServer
+                  /*(event, serverAutocomplite) =>{
+                  this.setState({ serverAutocomplite })}*/
+                }
                 onSelect={(serverAutocomplite, item) => {
-                  this.props.addSlug(item.slug);
-                  this.setState({ serverAutocomplite });
+                  this.props.addSlug(item);
+
+                  //this.setState({ serverAutocomplite });
                   document.getElementById('server').blur();
                   document.getElementById('search').focus();
                 }}
@@ -194,9 +230,30 @@ class header extends Component {
 					</div>
 	      </div>
 	      <div className="header-right">
-	        <a href="#" id='login' onClick={this.props.logIn.bind(this)}>Log in</a>
+	        <a href="#" id='login' onClick={this.openModal.bind(this)}>Log in</a>
+          <a href='#' id='signup'>Sign up</a>
           {addTimeBlock}
 	      </div>
+        <div className='modal'>
+          <div className='modal-content'>
+            <div className="closePop " onClick={this.closeModal.bind(this)}><img src={close} alt='close icon' /></div>
+            <h4>Log in</h4>
+            <form>
+              <label>
+                <span>Email</span>
+                <input type='text' name='email' placeholder='Your email' id='email' required />
+              </label>
+              <label>
+                <span>Password</span>
+                <input type='password' name='password' placeholder='Password' id='psw' required/>
+              </label>
+              <div className='loginError'></div>
+              <div className='btn-wrap'>
+                <button className='btn' id='login' onClick={this.props.logIn.bind(this)}>Log In</button>
+              </div>
+            </form>
+          </div>
+        </div>
 	    </div>
     );
   }

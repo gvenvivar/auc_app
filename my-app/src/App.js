@@ -6,6 +6,8 @@ import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
 import Autocomplete from 'react-autocomplete';
+import axios from 'axios';
+import {capitalizeFirstLetter} from './functions'
 
 
 /*const items = [
@@ -38,11 +40,15 @@ class App extends Component {
         list: [],
         region: 'en_US',
         server: 'sargeras',
+        serverSlug: 'sargeras',
         updatedTime: '',
     };
   }
 
   componentDidMount() {
+    //reset Realm on click
+    let input = document.getElementById('server');
+    input.addEventListener('click', ()=> this.setState({server: ''}))
 
 
     //fetch database json
@@ -88,7 +94,7 @@ class App extends Component {
     loadTooltipScript();
 
     if(this.state.itemList.length > 0){
-      document.getElementsByClassName('no-items-wrap')[0].style.display ='none';
+      document.querySelector('.no-items-wrap').style.display ='none';
     }
   }
 
@@ -96,32 +102,39 @@ class App extends Component {
     this.state.itemList.push(item.toLowerCase());
     console.log(this.state.itemList);
     this.setState({ itemList: this.state.itemList });
-    document.getElementsByClassName('no-items-wrap')[0].style.display = 'none';
+    document.querySelector('.no-items-wrap').style.display = 'none';
   }
 
   addSlug(item){
     this.setState({
-      server: item
+      server: item.name,
+      serverSlug: item.slug
     })
+    console.log(this.state.serverSlug);
   }
 
   updateRegion(event){
     this.setState({
       region: event.target.value,
+      server: 'sargeras',
+      list : []
     })
   }
 
   updateInputServer(event){
     this.setState({
-      server: event.target.value
+      server: event.target.value,
     })
-
   }
 
   transformTime(time){
     let currentTime = new Date();
     let timeSeconds =currentTime.getTime()/1000;;
     return parseInt((timeSeconds - time)/60);
+  }
+
+  tratata(){
+    console.log('tratata');
   }
 
 
@@ -139,7 +152,7 @@ class App extends Component {
     let strRegion = this.state.region;
 
     // take region value
-    let strServer = '&items[]=' + this.state.server;
+    let strServer = '&items[]=' + this.state.serverSlug;
     console.log(strServer);
     /*if(this.state.server === '') {
       strServer = '&items[]=sargeras';
@@ -183,29 +196,58 @@ class App extends Component {
     xhr.send(idList);
   }
 
-  logIn (){
-    console.log('click');
-    let login = 'admin';
-    let pass = 'optsem63'
+  logIn (e){
+    e.preventDefault();
+    let modal = document.querySelector('.modal-content');
+    let login = document.getElementById('email').value; //admin
+    let pass  = document.getElementById('psw').value; //'optsem63';
     let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
-    console.log(logIn);
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", 'https://sweetpeach.pp.ua/grape/test/', true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xhr.onload = () =>{
-      console.log(this.responseText);
+    axios.post('https://sweetpeach.pp.ua/grape/test/', logIn)
+    .then(response => {
+      console.log(response);
+      let data = response.data;
 
-      let jsonResponse = JSON.parse(xhr.responseText);
+      if (typeof data === "string"){
+        console.log(data);
+        document.querySelector('.loginError').innerHTML = data;
+      }
+
       this.setState({
-        itemList: jsonResponse.list,
+        itemList: response.data.items,
+        region: response.data.region[0],
+        server: response.data.region[1],
+        serverSlug:  response.data.region[2],
+        list : [],
       })
 
-      //console.log(this.state.list);
+    })
+    .then(()=>{
+      if(this.state.itemList.length>0){
+        document.querySelector('.modal').style.visibility = 'hidden';
+        modal.classList.remove("open-modal");
+        console.log('click');
+        document.getElementById('email').value = '';
+        document.getElementById('psw').value = '';
+        document.querySelector('.loginError').style.display = 'none';
 
-    }
-    //console.log(this.state.list);
-    xhr.send(logIn);
+        document.getElementById('login').innerHTML = capitalizeFirstLetter(login);
+        document.getElementById('login').style.textDecoration = 'none';
+        document.getElementById('signup').style.display = 'none';
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  resetRealmOnClick(){
+    let input = document.getElementById('server');
+    console.log('reset');
+    input.onclick = ()=> this.setState({
+      server: ''
+    })
   }
 
 
@@ -217,12 +259,13 @@ class App extends Component {
       this.setState({ itemList: this.state.itemList });
     console.log(this.state.itemList.length)
     if(this.state.itemList.length === 0)
-      document.getElementsByClassName('no-items-wrap')[0].style.display ='block';
+      document.querySelector('.no-items-wrap').style.display ='block';
 
   }
 
 
   render() {
+
 
 
     return (
@@ -232,6 +275,7 @@ class App extends Component {
             <Header
               usServers={this.state.usServers}
               euServers={this.state.euServers}
+              server={this.state.server}
               addToAuto={this.addToAuto.bind(this)}
               addSlug={this.addSlug.bind(this)}
               data={this.state.data}

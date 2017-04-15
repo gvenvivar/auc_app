@@ -8,6 +8,7 @@ html{
   display: none!important;
 }
 
+
 .App {
   justify-content: center;
   -ms-align-items: center;
@@ -41,6 +42,7 @@ html{
 .server{
   position: relative;
   display: inline-block;
+  cursor: pointer;
 }
 
 .servers{
@@ -74,6 +76,7 @@ select {
   color: #fff;
   font-size: 18px;
   margin-right: 20px;
+  cursor: pointer;
 
 }
 
@@ -113,11 +116,86 @@ select option {
   display: -ms-flex;
   display: flex;
   justify-content: space-between;
+}
+.modal{
+  visibility: hidden;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.85);
+}
+.modal img{
+  width: 100%;
+}
+.modal-content {
+    position: absolute;
+    background-color: #fff;
+    max-width: 375px;
+    max-height: 430px;
+    left: 50%;
+    top: 30%;
+    opacity: 0;
+    margin-top: -190px;
+    margin-left: -180px;
+    padding: 25px 35px 0;
+    transition: ease-in-out 0.3s;
+}
+.open-modal {
+    opacity: 1;
+    top: 50%;
+    transition: all 0.3s ease-in-out;
+}
+.modal-content h4 {
+  font-size: 30px;
+  text-align: center;
+  font-family: "RobotoRegular" , sans-serif;
+  opacity: 0.6;
+  font-weight: normal;
+  margin: 10px auto 20px;
+}
+.modal span{
+  font-family: "RobotoBold", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  font-weight: bold;
+}
 
+.modal input{
+  display: block;
+  margin: auto;
+  width: 310px;
+  height: 38px;
+  text-indent: 20px;
+  border-radius: 5px;
+  border-style: none;
+  border: 1px solid #000;
+  color: #000;
+  outline: none;
+  margin-bottom: 20px;
+}
+.loginError {
+  color: red;
+  font-size: 13px;
+}
+.closePop{
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
 }
 .header-right {
   text-align: right;
-
+}
+.header-right a {
+  display: inline-block;
+  margin-left: 20px;
 }
 .time{
   color: #fff;
@@ -163,6 +241,7 @@ a {
 }
 button {
   margin: 20px auto 40px;
+  border-radius: 5px;
   border: none;
   width: 100%;
   height: 40px;
@@ -326,7 +405,7 @@ th:last-child {
   .App-wrap {
     min-width: auto;
   }
-  
+
 
 }
 @media (max-width: 500px){
@@ -350,4 +429,9 @@ th:last-child {
   .cont {
     padding: 30px 0px;
   }
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
 }
