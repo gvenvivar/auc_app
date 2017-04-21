@@ -42,6 +42,9 @@ class App extends Component {
         server: 'sargeras',
         serverSlug: 'sargeras',
         updatedTime: '',
+        switchModal: true,
+        login: false,
+        psw: false,
     };
   }
 
@@ -68,10 +71,6 @@ class App extends Component {
         })
       })
 
-
-
-
-
     // load wowhed tooltip scripts
 
     function loadScript() {
@@ -93,16 +92,14 @@ class App extends Component {
     loadScript();
     loadTooltipScript();
 
-    if(this.state.itemList.length > 0){
-      document.querySelector('.no-items-wrap').style.display ='none';
-    }
+    this.udpateEmptyList();
   }
 
   addToAuto(item){
     this.state.itemList.push(item.toLowerCase());
     console.log(this.state.itemList);
     this.setState({ itemList: this.state.itemList });
-    document.querySelector('.no-items-wrap').style.display = 'none';
+    this.udpateEmptyList();
   }
 
   addSlug(item){
@@ -113,18 +110,58 @@ class App extends Component {
     console.log(this.state.serverSlug);
   }
 
+  tooltipCreator(item){
+    let tooltip_url = 'item=' + item.id;
+    if(item.id.toString().startsWith('82800')){
+      tooltip_url = 'npc=' + item.pet_id;
+    }
+    return tooltip_url;
+  }
+
   updateRegion(event){
     this.setState({
       region: event.target.value,
       server: 'sargeras',
+      serverSlug: 'sargeras',
       list : []
     })
+  }
+  updateSwitchModal(){
+    if(this.state.switchModal){
+      console.log(this.state.switchModal);
+      this.setState({
+        switchModal: false,
+      })
+      document.querySelector('.switchers').lastChild.classList.add("active");
+      document.querySelector('.switchers').firstChild.classList.remove("active");
+    } else{
+      console.log(this.state.switchModal);
+      this.setState({
+        switchModal: true,
+      })
+      document.querySelector('.switchers').lastChild.classList.remove("active");
+      document.querySelector('.switchers').firstChild.classList.add("active");
+    }
   }
 
   updateInputServer(event){
     this.setState({
       server: event.target.value,
     })
+  }
+  udpateEmptyList() {
+    if(this.state.itemList.length > 0){
+      document.querySelector('.no-items-wrap').style.display ='none';
+    } else{
+      document.querySelector('.no-items-wrap').style.display ='block';
+    }
+  }
+  updateEmptySearch(){
+    if(this.state.itemList.length > 0){
+      document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
+    } else {
+      document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+    }
   }
 
   transformTime(time){
@@ -133,19 +170,12 @@ class App extends Component {
     return parseInt((timeSeconds - time)/60);
   }
 
-  tratata(){
-    console.log('tratata');
-  }
-
-
 
   clickSearch(){
     console.log('click');
     console.log(this.state.servers);
     //hide no-items
-    if(this.state.itemList.length > 0){
-      document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
-    }
+    this.updateEmptySearch();
 
 
     //take value from select region
@@ -154,11 +184,6 @@ class App extends Component {
     // take region value
     let strServer = '&items[]=' + this.state.serverSlug;
     console.log(strServer);
-    /*if(this.state.server === '') {
-      strServer = '&items[]=sargeras';
-    } else {
-      strServer += '&items[]=' + this.state.server.toLowerCase();
-    }*/
 
     //creat ID list
     let idList = '';
@@ -189,11 +214,17 @@ class App extends Component {
         updatedTime: jsonResponse[0].time
       })
 
-      //console.log(this.state.list);
+      console.log(this.state.list);
 
     }
     //console.log(this.state.list);
     xhr.send(idList);
+
+    //udate User data
+    if(this.state.login && this.state.psw){
+      console.log('updaate');
+      this.updateUser();
+    }
   }
 
   logIn (e){
@@ -201,16 +232,20 @@ class App extends Component {
     let modal = document.querySelector('.modal-content');
     let login = document.getElementById('email').value; //admin
     let pass  = document.getElementById('psw').value; //'optsem63';
+    let msg   = document.querySelector('.error');
     let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
 
-    axios.post('https://sweetpeach.pp.ua/grape/test/', logIn)
+    if(login === ''){
+      msg.innerHTML = 'Please enter email';
+    } else{
+    axios.post('https://sweetpeach.pp.ua/grape/get-user/', logIn)
     .then(response => {
       console.log(response);
       let data = response.data;
 
       if (typeof data === "string"){
         console.log(data);
-        document.querySelector('.loginError').innerHTML = data;
+        msg.innerHTML = data;
       }
 
       this.setState({
@@ -219,27 +254,120 @@ class App extends Component {
         server: response.data.region[1],
         serverSlug:  response.data.region[2],
         list : [],
+        login: login,
+        psw: pass,
       })
+      //console.log(this.state.login)
+      //console.log(this.state.psw)
+      return response;
 
     })
-    .then(()=>{
-      if(this.state.itemList.length>0){
+    .then((response)=>{
+      console.log(response);
+      if(response.data !== 'Error - email or password'){
+        this.udpateEmptyList();
         document.querySelector('.modal').style.visibility = 'hidden';
         modal.classList.remove("open-modal");
         console.log('click');
         document.getElementById('email').value = '';
         document.getElementById('psw').value = '';
-        document.querySelector('.loginError').style.display = 'none';
+        document.querySelector('.error').style.display = 'none';
 
         document.getElementById('login').innerHTML = capitalizeFirstLetter(login);
         document.getElementById('login').style.textDecoration = 'none';
         document.getElementById('signup').style.display = 'none';
+        this.updateEmptySearch();
       }
 
     })
     .catch(function (error) {
       console.log(error);
     });
+  }
+  }
+
+  signUp(e){
+    e.preventDefault();
+
+    let login = document.getElementById('email').value;
+    let pass  = document.getElementById('psw').value;
+    let passR = document.getElementById('pswR').value;
+    let region = this.state.region;
+    let realm = this.state.server;
+    let realmSlug = this.state.serverSlug;
+    let msg = document.querySelector('.error');
+
+
+    let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
+    + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+    console.log(data);
+
+    this.state.data.map((item) => {
+      this.state.itemList.map((myItem) => {
+        if(myItem.toLowerCase() === item.name.toLowerCase()){
+          data += '&userdata[]=' + item.id;
+        }
+        return false;
+      })
+      return false;
+    });
+
+
+      if(pass === passR && login !=='' && pass !== ''){
+        axios.post('https://sweetpeach.pp.ua/grape/add-user/', data)
+        .then(response => {
+          let data = response.data;
+
+          if (data !== "Error - user already exists"){
+            console.log(data);
+          // open login modal
+          this.updateSwitchModal();
+          document.querySelector('.error').style.color = 'green';
+          document.querySelector('.error').innerHTML = 'Thanks for registration. Please log in';
+        } else{
+          msg.style.color = 'red';
+          msg.innerHTML = data;
+        }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+      if(login === '' || pass === ''){
+        msg.innerHTML = 'Please fill all fields';
+      }
+  }
+
+  updateUser(){
+    let login = this.state.login;
+    let pass = this.state.psw;
+    let region = this.state.region;
+    let realm = this.state.server;
+    let realmSlug = this.state.serverSlug;
+
+    let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
+    + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+    this.state.data.map((item) => {
+      this.state.itemList.map((myItem) => {
+        if(myItem.toLowerCase() === item.name.toLowerCase()){
+          data += '&userdata[]=' + item.id;
+        }
+        return false;
+      })
+      return false;
+    });
+
+    //post
+    axios.post('https://sweetpeach.pp.ua/grape/update-user/', data)
+    .then(response => {
+      let data = response.data;
+      console.log(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+
   }
 
   resetRealmOnClick(){
@@ -258,14 +386,11 @@ class App extends Component {
       this.state.itemList.splice(delItem, 1);
       this.setState({ itemList: this.state.itemList });
     console.log(this.state.itemList.length)
-    if(this.state.itemList.length === 0)
-      document.querySelector('.no-items-wrap').style.display ='block';
+    this.udpateEmptyList();
 
   }
 
-
   render() {
-
 
 
     return (
@@ -283,8 +408,12 @@ class App extends Component {
               updateRegion={this.updateRegion.bind(this)}
               updateInputServer={this.updateInputServer.bind(this)}
               updatedTime={this.state.updatedTime}
+              updateSwitchModal={this.updateSwitchModal.bind(this)}
               transformTime={this.transformTime.bind(this)}
               logIn={this.logIn.bind(this)}
+              signUp={this.signUp.bind(this)}
+              switchModal={this.state.switchModal}
+              tooltipCreator={this.tooltipCreator.bind(this)}
             />
             <div className="main">
               <SearchList
@@ -292,8 +421,12 @@ class App extends Component {
                 additem={this.state.itemList}
                 clickSearch={this.clickSearch.bind(this)}
                 delButton={this.deleteItem.bind(this)}
+                tooltipCreator={this.tooltipCreator.bind(this)}
               />
-              <ResultList items={this.state.list}  />
+              <ResultList items={this.state.list}
+              tooltipCreator={this.tooltipCreator.bind(this)}
+              data={this.state.data}
+                />
             </div>
           </div>
         </div>

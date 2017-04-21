@@ -8,11 +8,12 @@ class searchListRow extends Component {
      e.preventDefault();
      let item = this.props.item.name;
      this.props.delButton(item.toLowerCase());
-
    }
+
 
 	 render() {
     //let imagesrc = this.props.item.icon;
+
 
     return (
 
@@ -24,7 +25,7 @@ class searchListRow extends Component {
 
     <tr>
       <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
-      <th><a href='#' rel={'item=' + this.props.item.id}>{this.props.item.name}</a></th>
+      <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
       <th><a href="#"><img className="close" alt='deleteBtn' src={close} onClick={this.closeBtn.bind(this)} /></a></th>
     </tr>
 

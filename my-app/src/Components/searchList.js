@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import SearchListRow from './searchListRow'
+import SearchListRow from './searchListRow';
+import _ from 'lodash';
 
 class searchList extends Component {
 
@@ -16,18 +17,26 @@ class searchList extends Component {
 		//console.log(this.props);
 		let addItem = this.props.additem;
 		console.log(this.props.additem);
-    this.props.items.map((item, index, x)=> {
+    this.props.items.map((item, index, x, tooltipCreator)=> {
 			x = this.props.delButton;
+			tooltipCreator = this.props.tooltipCreator;
     	addItem.map(function(i){
     		if(i.toLowerCase() === item.name.toLowerCase()){
     			//console.log('same');
-	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} />)
-	        //console.log(list);
+	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} tooltipCreator={tooltipCreator}/>)
+
     		}
 				return false;
     	})
 			return false;
     });
+		//sort alphabetical
+
+		let sortAlpha = _.sortBy(list, 'props.item.name', function(n){
+			return n.name;
+		})
+		console.log(list);
+
 
     return (
       <div className="col-left">
@@ -41,7 +50,7 @@ class searchList extends Component {
               </tr>
             </thead>
             <tbody>
-              {list}
+              {sortAlpha}
             </tbody>
           </table>
           <div className="black_stripe"></div>

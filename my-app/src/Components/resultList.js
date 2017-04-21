@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ResultListRow from './resultListRow'
+import ResultListRow from './resultListRow';
+import _ from 'lodash';
 
 class resultList extends Component {
 
@@ -28,9 +29,16 @@ class resultList extends Component {
  		let items = this.props.items;
 
  		items.map((item, index) => {
- 			list.push(<ResultListRow item={item}  key={item.id} />);
+ 			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
 			return false;
  		})
+		//console.log(list.map((item)=>item.props.item.name));
+
+		//sort alphabetical
+		let sortAlpha = _.sortBy(list, 'props.item.name', function(n){
+			return n.name;
+		})
+		console.log(sortAlpha);
 
 
 
@@ -47,7 +55,7 @@ class resultList extends Component {
 	          </tr>
 	        </thead>
 	        <tbody>
-	          {list}
+	          {sortAlpha}
 	        </tbody>
 	      </table>
 	      <div className="black_stripe"></div>
