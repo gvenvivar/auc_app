@@ -14,16 +14,19 @@ class searchList extends Component {
 	  });*/
 
 		let list = [];
+		let count = 0;
 		//console.log(this.props);
 		let addItem = this.props.additem;
-		console.log(this.props.additem);
-    this.props.items.map((item, index, x, tooltipCreator)=> {
-			x = this.props.delButton;
-			tooltipCreator = this.props.tooltipCreator;
-    	addItem.map(function(i){
+
+    addItem.map((i)=> {
+			let x = this.props.delButton;
+			let tooltipCreator = this.props.tooltipCreator;
+    	this.props.items.map(function(item){
     		if(i.toLowerCase() === item.name.toLowerCase()){
-    			//console.log('same');
 	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} tooltipCreator={tooltipCreator}/>)
+					count++;
+					item.order=count;
+					//console.log(item);
 
     		}
 				return false;
@@ -32,10 +35,7 @@ class searchList extends Component {
     });
 		//sort alphabetical
 
-		let sortAlpha = _.sortBy(list, 'props.item.name', function(n){
-			return n.name;
-		})
-		console.log(list);
+		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
 
 
     return (
@@ -50,7 +50,7 @@ class searchList extends Component {
               </tr>
             </thead>
             <tbody>
-              {sortAlpha}
+              {desc_list}
             </tbody>
           </table>
           <div className="black_stripe"></div>

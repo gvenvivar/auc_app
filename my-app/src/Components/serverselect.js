@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import '../react-select.css';
+import {capitalizeFirstLetter} from '../functions';
 
 let servers = [
   { locale:"en_US", name:"Aegwynn", label:'Aegwynn', slug:"aegwynn" },
@@ -16,30 +17,18 @@ let servers = [
 
 class Serverselect extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-        value: '',
-    };
-  }
-
-  logChange(val) {
-    console.log(val);
-    this.setState({
-      value: val,
-    })
-  }
 
 render() {
+  let currentRealm = { label:capitalizeFirstLetter(this.props.server)}
+
 
 
  return (
    <Select
       name="form-field-name"
-      value={this.state.value}
-      options={servers}
-      onChange={this.logChange.bind(this)}
+      value={currentRealm}
+      options={this.props.realmsList}
+      onChange={(val) => this.props.addSlug(val)}
       className='realm'
       placeholder='Realm'
       valueKey='name'

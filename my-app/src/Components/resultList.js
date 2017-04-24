@@ -27,18 +27,17 @@ class resultList extends Component {
 
 		let list = [];
  		let items = this.props.items;
-
+		let count = 0;
  		items.map((item, index) => {
  			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
+			count++;
+			item.order=count;
 			return false;
  		})
 		//console.log(list.map((item)=>item.props.item.name));
 
 		//sort alphabetical
-		let sortAlpha = _.sortBy(list, 'props.item.name', function(n){
-			return n.name;
-		})
-		console.log(sortAlpha);
+		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
 
 
 
@@ -55,7 +54,7 @@ class resultList extends Component {
 	          </tr>
 	        </thead>
 	        <tbody>
-	          {sortAlpha}
+	          {desc_list}
 	        </tbody>
 	      </table>
 	      <div className="black_stripe"></div>

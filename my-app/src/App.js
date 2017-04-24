@@ -33,6 +33,7 @@ class App extends Component {
 
     this.state = {
         itemList: ['dreamleaf', 'starlight rose', 'fjarnskaggl', 'aethril', 'foxflower', 'felwort', 'flask of the whispered pact', 'flask of the seventh demon', 'flask of the countless armies', 'flask of ten thousand scars', 'potion of deadly grace', 'potion of the old war', 'potion of prolonged power'],
+        idList: [],
         data : [],
         usServers: [],
         euServers: [],
@@ -50,8 +51,8 @@ class App extends Component {
 
   componentDidMount() {
     //reset Realm on click
-    let input = document.getElementById('server');
-    input.addEventListener('click', ()=> this.setState({server: ''}))
+    //let input = document.getElementById('server');
+    //input.addEventListener('click', ()=> this.setState({server: ''}))
 
 
     //fetch database json
@@ -100,6 +101,16 @@ class App extends Component {
     console.log(this.state.itemList);
     this.setState({ itemList: this.state.itemList });
     this.udpateEmptyList();
+
+    //add item ID
+    this.state.itemList.map((item)=>{
+      this.state.data.map((data)=>{
+        if(item.toLowerCase() === data.name.toLowerCase()){
+          this.state.idList.push(data.id);
+        }
+      })
+    })
+    console.log(this.state.idList);
   }
 
   addSlug(item){
@@ -107,7 +118,7 @@ class App extends Component {
       server: item.name,
       serverSlug: item.slug
     })
-    console.log(this.state.serverSlug);
+    console.log(this.state.slug)
   }
 
   tooltipCreator(item){
@@ -148,6 +159,7 @@ class App extends Component {
     this.setState({
       server: event.target.value,
     })
+    console.log(this.state.server);
   }
   udpateEmptyList() {
     if(this.state.itemList.length > 0){
@@ -189,8 +201,8 @@ class App extends Component {
     let idList = '';
     idList += '&items[]=' + strRegion + strServer;
 
-    this.state.data.map((item) => {
-      this.state.itemList.map((myItem) => {
+    this.state.itemList.map((myItem) => {
+      this.state.data.map((item) => {
         if(myItem.toLowerCase() === item.name.toLowerCase()){
           idList += '&items[]=' + item.id;
         }

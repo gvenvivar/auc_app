@@ -54,6 +54,7 @@ input:-moz-placeholder { /* Firefox 18- */
 }
 .server{
   position: relative;
+  margin-bottom: -12px /*fix for react-select*/;
   display: inline-block;
   cursor: pointer;
 }
