@@ -6,8 +6,10 @@ class searchListRow extends Component {
 
    closeBtn(e){
      e.preventDefault();
-     let item = this.props.item.name;
-     this.props.delButton(item.toLowerCase());
+     //console.log(this)
+     let id = this.props.item.id;
+     let name = this.props.item.name
+     this.props.delButton(id);
    }
 
 

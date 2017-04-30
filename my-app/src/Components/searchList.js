@@ -22,7 +22,7 @@ class searchList extends Component {
 			let x = this.props.delButton;
 			let tooltipCreator = this.props.tooltipCreator;
     	this.props.items.map(function(item){
-    		if(i.toLowerCase() === item.name.toLowerCase()){
+    		if(i.id === item.id){
 	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} tooltipCreator={tooltipCreator}/>)
 					count++;
 					item.order=count;

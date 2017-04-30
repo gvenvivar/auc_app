@@ -32,7 +32,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-        itemList: ['dreamleaf', 'starlight rose', 'fjarnskaggl', 'aethril', 'foxflower', 'felwort', 'flask of the whispered pact', 'flask of the seventh demon', 'flask of the countless armies', 'flask of ten thousand scars', 'potion of deadly grace', 'potion of the old war', 'potion of prolonged power'],
+        itemList: [{name: 'Potion of Prolonged Power', id: 142117}, {name: 'sungrass', id: 8838}],
         idList: [],
         data : [],
         usServers: [],
@@ -54,10 +54,10 @@ class App extends Component {
     //let input = document.getElementById('server');
     //input.addEventListener('click', ()=> this.setState({server: ''}))
 
-
+    console.log(this.state.itemList)
     //fetch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
-    const test_url ='https://sweetpeach.pp.ua/item_db_img_test_sorted.json';
+    const test_url ='https://sweetpeach.pp.ua/item_db_img_v2.json';
 
 
 
@@ -96,21 +96,21 @@ class App extends Component {
     this.udpateEmptyList();
   }
 
-  addToAuto(item){
-    this.state.itemList.push(item.toLowerCase());
-    console.log(this.state.itemList);
+  addToAuto(name, id){
+    this.state.itemList.push({name: name.toLowerCase() , id:id});
     this.setState({ itemList: this.state.itemList });
     this.udpateEmptyList();
+    console.log(this.state.itemList);
 
     //add item ID
-    this.state.itemList.map((item)=>{
+    /*this.state.itemList.map((item)=>{
       this.state.data.map((data)=>{
         if(item.toLowerCase() === data.name.toLowerCase()){
           this.state.idList.push(data.id);
         }
       })
     })
-    console.log(this.state.idList);
+    console.log(this.state.idList);*/
   }
 
   addSlug(item){
@@ -162,6 +162,7 @@ class App extends Component {
     console.log(this.state.server);
   }
   udpateEmptyList() {
+
     if(this.state.itemList.length > 0){
       document.querySelector('.no-items-wrap').style.display ='none';
     } else{
@@ -201,13 +202,8 @@ class App extends Component {
     let idList = '';
     idList += '&items[]=' + strRegion + strServer;
 
-    this.state.itemList.map((myItem) => {
-      this.state.data.map((item) => {
-        if(myItem.toLowerCase() === item.name.toLowerCase()){
-          idList += '&items[]=' + item.id;
-        }
-        return false;
-      })
+    this.state.itemList.map((item) => {
+      idList += '&items[]=' + item.id;
       return false;
     });
     console.log(idList);
@@ -269,6 +265,7 @@ class App extends Component {
         login: login,
         psw: pass,
       })
+      console.log(this.state.itemList);
       //console.log(this.state.login)
       //console.log(this.state.psw)
       return response;
@@ -314,13 +311,9 @@ class App extends Component {
     + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
     console.log(data);
 
-    this.state.data.map((item) => {
-      this.state.itemList.map((myItem) => {
-        if(myItem.toLowerCase() === item.name.toLowerCase()){
-          data += '&userdata[]=' + item.id;
-        }
-        return false;
-      })
+    //create item list ID
+    this.state.itemList.map((item) => {
+      data += '&userdata[]=' + item.id;
       return false;
     });
 
@@ -359,18 +352,16 @@ class App extends Component {
 
     let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    this.state.data.map((item) => {
-      this.state.itemList.map((myItem) => {
-        if(myItem.toLowerCase() === item.name.toLowerCase()){
-          data += '&userdata[]=' + item.id;
-        }
-        return false;
-      })
+
+    console.log(this.state.itemList);
+    this.state.itemList.map((item) => {
+      data += '&userdata[]=' + item.id;
       return false;
     });
+    console.log(data)
 
     //post
-    axios.post('https://sweetpeach.pp.ua/grape/update-user/', data)
+    axios.post('https://sweetpeach.pp.ua/grape/update-user/',  data)
     .then(response => {
       let data = response.data;
       console.log(data);
@@ -393,11 +384,34 @@ class App extends Component {
 
   deleteItem(itemToDel){
     console.log(itemToDel);
-    let delItem = this.state.itemList.indexOf(itemToDel);
+
+    const toDelete = new Set([itemToDel]);
+    const newArray = this.state.itemList.filter(obj => !toDelete.has(obj.id));
+    this.setState({
+      itemList: newArray
+    })
+    console.log(this.state.itemList);
+
+  /*  let delItem = this.state.idList.indexOf(itemToDel);
     if(delItem>-1)
-      this.state.itemList.splice(delItem, 1);
-      this.setState({ itemList: this.state.itemList });
-    console.log(this.state.itemList.length)
+      //find ID name
+      this.state.data.map((item)=>{
+        if(item.id === itemToDel){
+          this.state.itemList.splice(item.name, 1);
+        }
+      })
+
+
+      //delete id
+      this.state.idList.splice(delItem, 1);
+      this.setState({
+        itemList: this.state.itemList,
+        idList: this.state.idList,
+       });
+
+
+    console.log(this.state.itemList);*/
+
     this.udpateEmptyList();
 
   }

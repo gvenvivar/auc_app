@@ -133,7 +133,7 @@ class header extends Component {
               this.setState({ autoComplite })
             } }
 						onSelect={(autoComplite, item) =>{
-              this.props.addToAuto(item.name);
+              this.props.addToAuto(item.name, item.id);
               this.setState({autoComplite: '' });
               //fix wowhead tooltip
               let tooltip = document.getElementsByClassName('wowhead-tooltip');
