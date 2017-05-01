@@ -5,9 +5,8 @@ import Header from './Components/header';
 import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
-import Autocomplete from 'react-autocomplete';
 import axios from 'axios';
-import {capitalizeFirstLetter} from './functions'
+import {capitalizeFirstLetter, cutEmail} from './functions'
 
 
 /*const items = [
@@ -97,11 +96,12 @@ class App extends Component {
   }
 
   addToAuto(name, id){
-    this.state.itemList.push({name: name.toLowerCase() , id:id});
-    this.setState({ itemList: this.state.itemList });
-    this.udpateEmptyList();
-    console.log(this.state.itemList);
-
+    if(id){
+      this.state.itemList.push({name: name.toLowerCase() , id:id});
+      this.setState({ itemList: this.state.itemList });
+      this.udpateEmptyList();
+      console.log(this.state.itemList);
+    }
     //add item ID
     /*this.state.itemList.map((item)=>{
       this.state.data.map((data)=>{
@@ -116,9 +116,11 @@ class App extends Component {
   addSlug(item){
     this.setState({
       server: item.name,
-      serverSlug: item.slug
+      serverSlug: item.slug,
+      list: [],
     })
-    console.log(this.state.slug)
+    document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+    //console.log(this.state.slug)
   }
 
   tooltipCreator(item){
@@ -136,6 +138,7 @@ class App extends Component {
       serverSlug: 'sargeras',
       list : []
     })
+    document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
   updateSwitchModal(){
     if(this.state.switchModal){
@@ -155,12 +158,7 @@ class App extends Component {
     }
   }
 
-  updateInputServer(event){
-    this.setState({
-      server: event.target.value,
-    })
-    console.log(this.state.server);
-  }
+
   udpateEmptyList() {
 
     if(this.state.itemList.length > 0){
@@ -282,7 +280,7 @@ class App extends Component {
         document.getElementById('psw').value = '';
         document.querySelector('.error').style.display = 'none';
 
-        document.getElementById('login').innerHTML = capitalizeFirstLetter(login);
+        document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(login));
         document.getElementById('login').style.textDecoration = 'none';
         document.getElementById('signup').style.display = 'none';
         this.updateEmptySearch();
@@ -382,42 +380,29 @@ class App extends Component {
   }
 
 
+
   deleteItem(itemToDel){
     console.log(itemToDel);
 
     const toDelete = new Set([itemToDel]);
     const newArray = this.state.itemList.filter(obj => !toDelete.has(obj.id));
     this.setState({
-      itemList: newArray
+      itemList: newArray,
     })
-    console.log(this.state.itemList);
+    if(newArray.length === 0){
+      console.log(newArray.length)
+      document.querySelector('.no-items-wrap').style.display ='block';
+    }
+  }
 
-  /*  let delItem = this.state.idList.indexOf(itemToDel);
-    if(delItem>-1)
-      //find ID name
-      this.state.data.map((item)=>{
-        if(item.id === itemToDel){
-          this.state.itemList.splice(item.name, 1);
-        }
-      })
-
-
-      //delete id
-      this.state.idList.splice(delItem, 1);
-      this.setState({
-        itemList: this.state.itemList,
-        idList: this.state.idList,
-       });
-
-
-    console.log(this.state.itemList);*/
-
-    this.udpateEmptyList();
-
+  deleteAll(){
+    this.setState({
+      itemList: [],
+    })
+    document.querySelector('.no-items-wrap').style.display ='block';
   }
 
   render() {
-
 
     return (
       <div className="App flex">
@@ -432,7 +417,6 @@ class App extends Component {
               data={this.state.data}
               region={this.state.region}
               updateRegion={this.updateRegion.bind(this)}
-              updateInputServer={this.updateInputServer.bind(this)}
               updatedTime={this.state.updatedTime}
               updateSwitchModal={this.updateSwitchModal.bind(this)}
               transformTime={this.transformTime.bind(this)}
@@ -447,6 +431,7 @@ class App extends Component {
                 additem={this.state.itemList}
                 clickSearch={this.clickSearch.bind(this)}
                 delButton={this.deleteItem.bind(this)}
+                deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
               />
               <ResultList items={this.state.list}

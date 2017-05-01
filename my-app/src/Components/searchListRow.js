@@ -8,7 +8,6 @@ class searchListRow extends Component {
      e.preventDefault();
      //console.log(this)
      let id = this.props.item.id;
-     let name = this.props.item.name
      this.props.delButton(id);
    }
 

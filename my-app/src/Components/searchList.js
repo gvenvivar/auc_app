@@ -33,7 +33,7 @@ class searchList extends Component {
     	})
 			return false;
     });
-		//sort alphabetical
+		//sort order
 
 		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
 
@@ -46,7 +46,7 @@ class searchList extends Component {
               <tr>
                 <th>Icon</th>
                 <th>Name</th>
-                <th>Delete</th>
+                <th><button className='reset-btn' onClick={this.props.deleteAll}>Reset</button></th>
               </tr>
             </thead>
             <tbody>

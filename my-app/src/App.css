@@ -32,7 +32,7 @@ input:-moz-placeholder { /* Firefox 18- */
   font-family: "Roboto", sans-serif;
   margin: 0 auto;
   min-width: 1024px;
-  min-height: 768px;
+  //min-height: 768px;
   //background: lightblue;
   //opacity: 0.85
 
@@ -279,6 +279,16 @@ button {
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   cursor: pointer;
+}
+.reset-btn{
+  margin: 0;
+  font-size: 12px;
+  background: none;
+  height: auto;
+  font-weight: bold;
+  text-align: right;
+  border: 1px solid #fff;
+  max-width: 46px;
 }
 
 .col-right {
