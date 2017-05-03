@@ -325,6 +325,9 @@ thead{
 thead tr{
   height: 30px;
 }
+.expanded{
+  background: #ccc;
+}
 
 
 .icon {

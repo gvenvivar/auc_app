@@ -36,7 +36,7 @@ class resultList extends Component {
  		})
 		//console.log(list.map((item)=>item.props.item.name));
 
-		//sort alphabetical
+		//sort order
 		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
 
 
@@ -53,9 +53,9 @@ class resultList extends Component {
 	            <th>Qty</th>
 	          </tr>
 	        </thead>
-	        <tbody>
+
 	          {desc_list}
-	        </tbody>
+	        
 	      </table>
 	      <div className="black_stripe"></div>
 				<div className='no-items-wrap'>

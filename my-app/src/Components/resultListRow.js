@@ -19,7 +19,28 @@ class resultListRow extends Component {
 			return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 		}
 
+
+		if(this.props.item.components){
+			return(
+				<tbody>
+				<tr>
+		      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+		      <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
+		      <th className='center'><span>{modifiedPrice}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
+		      <th className='center'><span>{modifiedAverage}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
+		      <th>{this.props.item.quantity}</th>
+		    </tr>
+				<tr className='expanded'>
+					<th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+					<th>Long Long Name</th>
+					<th></th>
+					<th>x3</th>
+					<th>123c</th>
+				</tr>
+				</tbody>
+		)}
     return (
+			<tbody>
 	    <tr>
 	      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
 	      <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
@@ -27,7 +48,7 @@ class resultListRow extends Component {
 	      <th className='center'><span>{modifiedAverage}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
 	      <th>{this.props.item.quantity}</th>
 	    </tr>
-
+			</tbody>
 
     );
   }
