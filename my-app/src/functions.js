@@ -5,3 +5,15 @@ export function capitalizeFirstLetter(string) {
 export function cutEmail(email) {
   return email.split('@')[0];
 }
+
+export function transformPrice(price) {
+	price /=  10000;
+	price = price.toFixed(2);
+	price = parseFloat(price);
+	if(price > 1000){
+		price = Math.round(price);
+	}
+	return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+

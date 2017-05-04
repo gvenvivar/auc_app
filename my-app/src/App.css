@@ -325,9 +325,33 @@ thead{
 thead tr{
   height: 30px;
 }
-.expanded{
-  background: #ccc;
+
+.expand{
+  display: none;
 }
+.expanded{
+  background: #f2f2f2;
+  padding: 0;
+  margin: 0;
+}
+.expanded tr:last-child{
+  box-shadow: none;
+}
+.expand-potion{
+  padding: 0;
+}
+
+
+.potion{
+  cursor: pointer;
+  padding: 0 10px;
+}
+.potion img{
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
 
 
 .icon {

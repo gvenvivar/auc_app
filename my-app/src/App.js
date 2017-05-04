@@ -36,7 +36,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-        itemList: [{name: 'Potion of Prolonged Power', id: 142117}, {name: 'sungrass', id: 8838}],
+        itemList: [{name: 'Potion of Prolonged Power', id: 142117}, {name: 'sungrass', id: 8838}, {name: "Potion of Deadly Grace", id: 127843}],
         idList: [],
         data : [],
         usServers: [],
