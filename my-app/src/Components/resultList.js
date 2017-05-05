@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ResultListRow from './resultListRow';
 import _ from 'lodash';
+import potion from '../img/potion-128.png';
 
 class resultList extends Component {
 
@@ -42,25 +43,31 @@ class resultList extends Component {
 
 
     return (
-    	<div className="col-right">
-	      <table>
-	         <thead>
-	          <tr>
-	            <th>Icon</th>
-	            <th>Name</th>
-	           	<th className='center'>Qty</th>
-	            <th className='center'>Regional avg</th>
-	            <th >Price</th>
-	          </tr>
-	        </thead>
+    	<div>
+	    <div className="col-right">
+	    	<div className='table-container'>
+		    	<div className="row row-head">
+		    		<div className="group group-left">
+			    		<div className="cell">Icon</div>
+			    		<div className="cell flex-grow-3">Name</div>
+		    		</div>
+		    		<div className="group group-right">
+			    		<div className="cell center">Qty</div>
+			    		<div className="cell center">Regional Avg</div>
+			    		<div className="cell">Price</div>
+			    	</div>
+		    	</div>
 
-	          {desc_list}
-	        
-	      </table>
-	      <div className="black_stripe"></div>
-				<div className='no-items-wrap'>
-					<div className='no-results'>Add items add press search button</div>
-				</div>
+		    	{desc_list}
+
+
+		    	<div className='no-items-wrap'>
+						<div className='no-results'>Add items add press search button</div>
+					</div>
+	    	</div>
+	    </div>
+
+
 	    </div>
 
     );

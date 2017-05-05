@@ -19,7 +19,7 @@ class resultListRow extends Component {
 
 	contentClass(isShow) {
 	  if (isShow) {
-	    return "";
+	    return "expand-open";
 	  }
 	  return "expand";
 	}
@@ -40,44 +40,67 @@ class resultListRow extends Component {
 			})
 
 			return(
-				<tbody>
-				<tr>
-		      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
-		      <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a> <span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span></th>
-		      <th className='center'>{this.props.item.quantity}</th>
-		      <th className='center'><span>{modifiedAverage}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
-		      <th><span>{modifiedPrice}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
-		    </tr>
-		    <tr>
-		    	<th colSpan='5' className='expand-potion'>
-		    	<div  className={this.contentClass(this.state.isShow)}>
-		    		<table className='expanded'>
-		    			<tbody>
-		    				{list}
-		    				<tr>
-		    					<th></th>
-		    					<th>Total rank 3 craft cost</th>
-		    					<th></th>
-		    					<th></th>
-		    					<th><span>{transformPrice(price/1.5)}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
-		    				</tr>
-		    			</tbody>
-		    		</table>
+				<div>
+		    	<div className="row row-body">
+		    		<div className="group group-left">
+			    		<div className="cell">
+			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} />
+			    		</div>
+			    		<div className='cell flex-grow-3'>
+			    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
+			    			<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
+			    		</div>
 		    		</div>
-		    	</th>
-		    </tr>
-				</tbody>
+		    		<div className="group group-right-body">
+			    		<div className='cell center'>{this.props.item.quantity}</div>
+			    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+			    	</div>
+		    	</div>
+		    	<div className={this.contentClass(this.state.isShow)}>
+
+		    		{list}
+
+		    		<div className="row row-body">
+			    		<div className="group group-left">
+				    		<div className="cell">
+				    		</div>
+				    		<div className='cell flex-grow-3'>
+				    				Total rank 3 cost
+				    		</div>
+			    		</div>
+			    		<div className="group group-right-body">
+				    		<div className='cell center'></div>
+				    		<div className='cell center'></div>
+				    		<div className='cell'><span>{transformPrice(price/1.5)}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+				    	</div>
+			    	</div>
+
+		    	</div>
+		    	
+	    	
+	    </div>
+
 		)}
     return (
-			<tbody>
-	    <tr>
-	      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
-	      <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
-	      <th className='center'>{this.props.item.quantity}</th>
-	      <th className='center'><span>{modifiedAverage}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
-	      <th><span>{modifiedPrice}</span><span className='gold'><img src="https://sweetpeach.pp.ua/gold.png" alt='gold_icon' /></span></th>
-	    </tr>
-			</tbody>
+    	<div>
+    	<div className="row row-body">
+    		<div className="group group-left">
+	    		<div className="cell">
+	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} />
+	    		</div>
+	    		<div className='cell flex-grow-3'>
+	    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
+	    		</div>
+    		</div>
+    		<div className="group group-right-body">
+	    		<div className='cell center'>{this.props.item.quantity}</div>
+	    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+	    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+	    	</div>
+    	</div>
+    	</div>
+
 
     );
   }

@@ -345,6 +345,7 @@ thead tr{
 .potion{
   cursor: pointer;
   padding: 0 10px;
+
 }
 .potion img{
   vertical-align: middle;
@@ -401,6 +402,7 @@ th:last-child {
 .no-items-wrap {
   text-align: center;
   padding: 100px 0;
+  font-weight: normal;
 }
 
 .no-results, .no-items {
@@ -450,6 +452,90 @@ th:last-child {
   left: calc(50% - (250px/2));
 }
 
+/*flexbox tables*/
+/* Fallbacks */
+
+.table-container {
+   display: table; 
+}
+.table-container .row {
+  display: table-row;
+}
+.table-container .cell {
+  display: table-cell;
+}
+
+@supports(display: flex) {
+.table-container {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+.table-container a{
+  color: #000;
+  text-decoration: none;
+}
+.table-container .row {
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 1px 0 #95989a;
+}
+.wrap { 
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}  
+.table-container .row .cell{
+  flex: 1;
+  -ms-align-self: center;
+  align-self: center;
+}
+.group-left .row .cell:first-child{
+  flex: 0 0 35px;
+}
+.group-right .cell:last-child,
+.group-right-body .cell:last-child{
+  text-align: right;
+}
+.flex-grow-2 {
+  flex-grow: 2!important;
+}
+.flex-grow-3 {
+  flex-grow: 3!important;
+}
+.group {
+  flex: 1;
+  flex-direction: row;
+  display: flex;
+}
+.group-left{
+  flex-grow: 1.5;
+}
+.row-head {
+  font-size: 12px;
+  background: #000;
+  opacity: 0.9;
+  color: #fff;
+}
+.row-body {
+  margin:  0 25px;
+  padding: 5px 0;
+}
+.row-head{
+  padding: 10px 25px;
+} 
+.expand-open{
+  margin-top: 1px;
+}
+.expand-open .row{
+  background: #c2c2c2;
+  border-bottom: 1px solid #000;
+}
+}
+
+
+
+/*end flexbox tables*/
+
 @media (max-width: 1023px) {
   .flex{
     display: block;
@@ -487,6 +573,37 @@ th:last-child {
   .header-right {
     display: none;
   }
+  
+  /*flexbox tables*/
+  .group {
+    flex-direction: column;
+  }
+  .group-left{
+    flex-direction: row;
+    flex-grow: 2;
+  }
+  .group-right-body .cell{
+    box-shadow: 0 1px 0 0 #95989a;
+    padding: 3px 0;
+  }
+  .group-right-body .cell:last-child{
+    box-shadow: none;
+    text-align: right;
+  }
+  .row .cell:first-child{
+    flex: 1;
+  }
+  .row-body {
+    margin:  0 10px;
+    padding: 5px 0 ;
+  }
+  .row-head{
+    padding: 10px 10px;
+  } 
+  .expand-open{
+    background: #c2c2c2;
+  }
+
 }
 
 @media (max-width: 480px) {
