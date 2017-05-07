@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
+import {capitalizeFirstLetter} from '../functions';
 import Modal from './modal';
 import Serverselect from './serverselect';
 let styles = {

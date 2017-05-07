@@ -29,6 +29,7 @@ class resultList extends Component {
 		let list = [];
  		let items = this.props.items;
 		let count = 0;
+		console.log(items);
  		items.map((item, index) => {
  			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
 			count++;

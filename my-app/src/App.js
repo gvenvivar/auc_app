@@ -76,6 +76,9 @@ class App extends Component {
         })
       })
 
+
+
+
     // load wowhed tooltip scripts
 
     function loadScript() {
@@ -99,6 +102,7 @@ class App extends Component {
 
     this.udpateEmptyList();
   }
+
 
   addToAuto(name, id){
     if(id){
@@ -211,9 +215,24 @@ class App extends Component {
     });
     console.log(idList);
 
+    fetch('https://sweetpeach.pp.ua/grape', {
+    	method: 'post',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    	body: idList
+    })
+    .then(response =>{
+      return response.json()
+    })
+    .then(json => {
+      this.setState({
+        list: json[1].items,
+        updatedTime: json[0].time
+      });
+    });
 
 
-    let xhr = new XMLHttpRequest();
+    //XMLHttpRequest
+    /*let xhr = new XMLHttpRequest();
     xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     xhr.onload = () =>{
@@ -229,7 +248,7 @@ class App extends Component {
 
     }
     //console.log(this.state.list);
-    xhr.send(idList);
+    xhr.send(idList);*/
 
     //udate User data
     if(this.state.login && this.state.psw){
@@ -441,7 +460,6 @@ class App extends Component {
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
-              data={this.state.data}
                 />
             </div>
           </div>

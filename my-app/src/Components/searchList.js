@@ -15,22 +15,34 @@ class searchList extends Component {
 
 		let list = [];
 		let count = 0;
-		//console.log(this.props);
-		let addItem = this.props.additem;
 
+		let newdata = this.props.newdata;
+		let addItem = this.props.additem;
+		console.log(addItem);
     addItem.map((i)=> {
 			let x = this.props.delButton;
 			let tooltipCreator = this.props.tooltipCreator;
+			//console.log(i.id);
+			//console.log(newdata[i.id])
+			/*New scheme
+			if(newdata[i.id]){
+				list.push(<SearchListRow item={newdata[i.id]}  key={newdata[i.id].id} delButton={x} tooltipCreator={tooltipCreator}/>)
+				count++;
+				newdata[i.id].order=count;
+			}*/
+
+
     	this.props.items.map(function(item){
     		if(i.id === item.id){
 	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} tooltipCreator={tooltipCreator}/>)
 					count++;
 					item.order=count;
-					//console.log(item);
 
     		}
 				return false;
-    	})
+    	});
+
+
 			return false;
     });
 		//sort order
