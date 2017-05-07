@@ -457,6 +457,7 @@ th:last-child {
 
 .table-container {
    display: table; 
+   font-size: 16px;
 }
 .table-container .row {
   display: table-row;
