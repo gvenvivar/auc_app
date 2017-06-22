@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import close from '../img/cerrar.png';
+import no_img from '../img/no_img.jpg';
 
 
 class searchListRow extends Component {
@@ -25,7 +26,7 @@ class searchListRow extends Component {
     </tr>*/
 
     <tr>
-      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} /></th>
+      <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/></th>
       <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
       <th><a href="#"><img className="close" alt='deleteBtn' src={close} onClick={this.closeBtn.bind(this)} /></a></th>
     </tr>

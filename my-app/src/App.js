@@ -1,42 +1,50 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import './App.css';
 import Header from './Components/header';
 import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
 import axios from 'axios';
-import {capitalizeFirstLetter, cutEmail} from './functions'
+import idb from 'idb';
+import {capitalizeFirstLetter, cutEmail} from './functions';
+import scrollToComponent from 'react-scroll-to-component';
+import ReactGA from 'react-ga';
 
 
-  /*if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js');
-    });
-}*/
-/*const items = [
-  {item: 'awesome robe', price: '999g', avg: '100g', quantity: 1, icon: 'img/inv_chest_cloth_19.jpg'},
-  {item: 'bf mace', price: '1p', avg: '2g', quantity: 4, icon: 'img/inv_hammer_16.jpg'},
-  {item: 'crab meat', price: '22s', avg: '22s', quantity: 222, icon: 'img/inv_misc_food_16.jpg'},
-  {item: 'scroll of wisdom', price: '99c', avg: '88c', quantity: 998, icon: 'img/inv_scroll_02.jpg'},
-  {item: 'sungrass', price: '99c', avg: '100c', quantity: 9999, icon: 'http://wow.zamimg.com/images/wow/icons/large/inv_misc_herb_18.jpg'}
-];*/
 
+//indexedDB
+if(!('indexedDB' in window)){
+    console.log('This browser does\'t support IndexDB');
+}
 
-/*document.addEventListener('DOMContentLoaded', function(){
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-  xhr.send('&items[]=ready');
-  console.log("loaded");
-});*/
+let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
+  switch (upgradeDb.oldVersion) {
+    case 0:
+      // a placeholder case so that the switch block will
+      // execute when the database is first created
+      // (oldVersion is 0)
+    case 1:
+      //console.log('Creating the products object store');
+      upgradeDb.createObjectStore('items', {keyPath: 'id'});
+      upgradeDb.createObjectStore('US_servers', {keyPath: 'name'});
+      upgradeDb.createObjectStore('EU_servers', {keyPath: 'name'});
+      upgradeDb.createObjectStore('auctions', {keyPath: 'id', unique: false});
+
+    case 2:
+      //console.log('Creating the products object store');
+      var store = upgradeDb.transaction.objectStore('auctions');
+      store.createIndex('server', 'server', {unique: false});
+
+  }
+});
+
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-        itemList: [{name: 'Potion of Prolonged Power', id: 142117}, {name: 'sungrass', id: 8838}, {name: "Potion of Deadly Grace", id: 127843}],
+        itemList: [],
         idList: [],
         data : [],
         usServers: [],
@@ -44,27 +52,75 @@ class App extends Component {
         servers:[],
         list: [],
         region: 'en_US',
-        server: 'sargeras',
+        server: 'Sargeras',
         serverSlug: 'sargeras',
         updatedTime: '',
         switchModal: true,
         login: false,
         psw: false,
     };
+
+
+
+    //Google Analitycs
+    // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
+    ReactGA.initialize('UA-69678952-2');
+    // This just needs to be called once since we have no routes in this case.
+    ReactGA.pageview(window.location.pathname);
   }
+
 
   componentDidMount() {
     //reset Realm on click
     //let input = document.getElementById('server');
     //input.addEventListener('click', ()=> this.setState({server: ''}))
 
-    console.log(this.state.itemList)
+    //stay login if refresh
+    //console.log(this.state.itemList)
+    let storedName = localStorage.getItem('log');
+    let storedPw = localStorage.getItem('pw');
+    let time = localStorage.getItem('time');
+    let nowTime = new Date().getTime();
+
+    if((nowTime - time) > 1000 * 60 * 60 * 14){
+      localStorage.clear();
+    }
+
+    if(storedName !== null){
+      let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
+
+      axios.post('https://sweetpeach.pp.ua/grape/get-user-cookie/', logIn)
+      .then(response => {
+        //console.log(response);
+
+        this.setState({
+          itemList: response.data.items,
+          region: response.data.region[0],
+          server: response.data.region[1],
+          serverSlug:  response.data.region[2],
+          list : [],
+          login: storedName,
+          psw: storedPw,
+        })
+        //console.log('list : ', this.state.itemList.length);
+        return response;
+      })
+      .then((response)=>{
+        //console.log(response);
+        if(response.data !== 'Error - email or password'){
+          this.udpateEmptyList();
+          document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
+
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
     //fetch database json
     const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
-    const test_url ='https://sweetpeach.pp.ua/item_db_img_v2.json';
-
-
-
     fetch(url)
       .then(response => response.json())
       .then(json => {
@@ -75,8 +131,47 @@ class App extends Component {
           euServers :json.realms.en_GB,
         })
       })
+      /*.then(() =>{
+        console.log("check for saving")
+        this.saveToIndex();
+      })*/
+      //callback if json can't load
+      .catch(() => {
+        console.log('can\'t load json data')
+        dbPromise.then(db => {
+          return db.transaction('items')
+            .objectStore('items').getAll();
+        }).then(allObjs => {
+          return allObjs;
+        }).then((arr) => {
+          this.setState({
+            data: arr
+          })
+        })
 
+        dbPromise.then(db => {
+          return db.transaction('US_servers')
+            .objectStore('US_servers').getAll();
+        }).then(allObjs => {
+          return allObjs;
+        }).then((arr) => {
+          this.setState({
+            usServers: arr
+          })
+        })
 
+        dbPromise.then(db => {
+          return db.transaction('EU_servers')
+            .objectStore('EU_servers').getAll();
+        }).then(allObjs => {
+          return allObjs;
+        }).then((arr) => {
+          this.setState({
+            euServers: arr
+          })
+        })
+
+      })
 
 
     // load wowhed tooltip scripts
@@ -97,29 +192,23 @@ class App extends Component {
       script.async = true;
       document.body.appendChild(script);
     }
-    loadScript();
-    loadTooltipScript();
+    var mq = window.matchMedia( "(max-width: 992px)" );
+    if(!mq.matches){
+      //console.log('loading wowhead scripts')
+      loadScript();
+      loadTooltipScript();
+    }
 
     this.udpateEmptyList();
   }
-
 
   addToAuto(name, id){
     if(id){
       this.state.itemList.push({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList();
-      console.log(this.state.itemList);
+      //console.log(this.state.itemList);
     }
-    //add item ID
-    /*this.state.itemList.map((item)=>{
-      this.state.data.map((data)=>{
-        if(item.toLowerCase() === data.name.toLowerCase()){
-          this.state.idList.push(data.id);
-        }
-      })
-    })
-    console.log(this.state.idList);*/
   }
 
   addSlug(item){
@@ -151,14 +240,14 @@ class App extends Component {
   }
   updateSwitchModal(){
     if(this.state.switchModal){
-      console.log(this.state.switchModal);
+      //console.log(this.state.switchModal);
       this.setState({
         switchModal: false,
       })
       document.querySelector('.switchers').lastChild.classList.add("active");
       document.querySelector('.switchers').firstChild.classList.remove("active");
     } else{
-      console.log(this.state.switchModal);
+      //console.log(this.state.switchModal);
       this.setState({
         switchModal: true,
       })
@@ -192,18 +281,29 @@ class App extends Component {
 
 
   clickSearch(){
-    console.log('click');
-    console.log(this.state.servers);
+    // console.log('click');
+    // console.log(this.state.list);
+    // console.log(this.state.servers);
     //hide no-items
     this.updateEmptySearch();
 
+    var mq = window.matchMedia( "(max-width: 1024px)" );
+    if(mq.matches){
+      //console.log('media');
+      let scrollTo = document.querySelector('.col-right');
+      scrollToComponent(scrollTo, {
+          offset: 1000,
+          align: 'top',
+          duration: 500
+      });
+    }
 
     //take value from select region
     let strRegion = this.state.region;
 
     // take region value
     let strServer = '&items[]=' + this.state.serverSlug;
-    console.log(strServer);
+    //console.log(strServer);
 
     //creat ID list
     let idList = '';
@@ -213,7 +313,7 @@ class App extends Component {
       idList += '&items[]=' + item.id;
       return false;
     });
-    console.log(idList);
+    //console.log(idList);
 
     fetch('https://sweetpeach.pp.ua/grape', {
     	method: 'post',
@@ -227,34 +327,89 @@ class App extends Component {
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time
+
       });
-    });
+      //save auctions to indexedDB
+      let list = this.state.list;
+      let server = this.state.server;
+      let region = this.state.region;
+      dbPromise.then(function(db) {
+          let tx = db.transaction('auctions', 'readwrite');
+          let store = tx.objectStore('auctions');
+          list.map(item => {
+              //console.log('Adding item: ', item);
+              item.server = `${region}_${server}`;
+              store.put(item);
+              return false;
+            })
+            return tx.complite;
+        })
+        .then(() => console.log('All search saved to indexedDb'))
+        .catch((e) => console.log('Error adding item: ', e))
+    })
+    .then(() =>{
+      //console.log("check for saving")
+      this.saveToIndex();
+    })
+    .catch((e) => {
+      console.log(e);
+      dbPromise.then(db => {
+        const tx = db.transaction('auctions');
+        let arr = [];
+        let server = `${this.state.region}_${this.state.server}`;
 
+        //adding offline caption
+        let iDiv = document.querySelector('.time');
+        iDiv.innerHTML = 'Offline mode';
 
-    //XMLHttpRequest
-    /*let xhr = new XMLHttpRequest();
-    xhr.open("POST", 'https://sweetpeach.pp.ua/grape', true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xhr.onload = () =>{
-      //console.log(this.responseText);
+        this.state.itemList.map((item) => {
+          tx.objectStore('auctions').get(item.id)
+          .then((obj) => {
+              let itemUndef = {
+                name: item.name,
+                id: item.id,
+                price: '',
+                quantity: 'offline',
+                average: '',
+              }
+              if(obj === undefined){
+                console.log(item.id);
+                db.transaction('items').objectStore('items').get(item.id).then((obj) =>{
+                  itemUndef.img_url = obj.img_url;
+                  itemUndef.name = obj.name;
+                })
+                arr.push(itemUndef)
+              }
+              if(obj && server !== obj.server){
+                itemUndef.img_url = obj.img_url;
+                itemUndef.name = obj.name;
+                arr.push(itemUndef);
+              }
+              if(obj && server === obj.server){
+                arr.push(obj)
+              }
 
-      let jsonResponse = JSON.parse(xhr.responseText);
-      this.setState({
-        list: jsonResponse[1].items,
-        updatedTime: jsonResponse[0].time
+          })
+          return false;
+        })
+
+        tx.complete.then(() => {
+          this.setState({
+            list: arr
+          })
+        });
+
       })
 
-      console.log(this.state.list);
+    })
 
-    }
-    //console.log(this.state.list);
-    xhr.send(idList);*/
 
     //udate User data
     if(this.state.login && this.state.psw){
-      console.log('updaate');
+      //console.log('updaate');
       this.updateUser();
     }
+
   }
 
   logIn (e){
@@ -270,11 +425,12 @@ class App extends Component {
     } else{
     axios.post('https://sweetpeach.pp.ua/grape/get-user/', logIn)
     .then(response => {
-      console.log(response);
+      //console.log(response);
       let data = response.data;
+      let token = data.auth_token;
 
       if (typeof data === "string"){
-        console.log(data);
+        //console.log(data);
         msg.innerHTML = data;
       }
 
@@ -285,36 +441,45 @@ class App extends Component {
         serverSlug:  response.data.region[2],
         list : [],
         login: login,
-        psw: pass,
+        psw: token,
       })
-      console.log(this.state.itemList);
+      //console.log(this.state.itemList);
+
+      //console.log('save login to localstore');
+      this.storeLogin(login, token);
       //console.log(this.state.login)
       //console.log(this.state.psw)
       return response;
 
     })
     .then((response)=>{
-      console.log(response);
+      //console.log(response);
       if(response.data !== 'Error - email or password'){
         this.udpateEmptyList();
         document.querySelector('.modal').style.visibility = 'hidden';
         modal.classList.remove("open-modal");
-        console.log('click');
         document.getElementById('email').value = '';
         document.getElementById('psw').value = '';
         document.querySelector('.error').style.display = 'none';
 
         document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(login));
         document.getElementById('login').style.textDecoration = 'none';
-        document.getElementById('signup').style.display = 'none';
+        //document.getElementById('signup').style.display = 'none';
         this.updateEmptySearch();
       }
-
     })
     .catch(function (error) {
       console.log(error);
     });
   }
+  }
+
+  storeLogin(log, pass){
+    let time_now  = (new Date()).getTime();
+    //console.log('saving login to localStorage')
+    localStorage.setItem('log', log);
+    localStorage.setItem('pw', pass);
+    localStorage.setItem('time', time_now);
   }
 
   signUp(e){
@@ -331,7 +496,7 @@ class App extends Component {
 
     let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    console.log(data);
+    //console.log(data);
 
     //create item list ID
     this.state.itemList.map((item) => {
@@ -346,7 +511,7 @@ class App extends Component {
           let data = response.data;
 
           if (data !== "Error - user already exists"){
-            console.log(data);
+            //console.log(data);
           // open login modal
           this.updateSwitchModal();
           document.querySelector('.error').style.color = 'green';
@@ -375,18 +540,19 @@ class App extends Component {
     let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
 
-    console.log(this.state.itemList);
+    //console.log(this.state.itemList);
     this.state.itemList.map((item) => {
       data += '&userdata[]=' + item.id;
       return false;
     });
-    console.log(data)
+    //console.log(data);
+
 
     //post
     axios.post('https://sweetpeach.pp.ua/grape/update-user/',  data)
     .then(response => {
       let data = response.data;
-      console.log(data);
+      //console.log(data);
     })
     .catch(function (error) {
       console.log(error);
@@ -397,7 +563,7 @@ class App extends Component {
 
   resetRealmOnClick(){
     let input = document.getElementById('server');
-    console.log('reset');
+    //console.log('reset');
     input.onclick = ()=> this.setState({
       server: ''
     })
@@ -406,7 +572,7 @@ class App extends Component {
 
 
   deleteItem(itemToDel){
-    console.log(itemToDel);
+    //console.log(itemToDel);
 
     const toDelete = new Set([itemToDel]);
     const newArray = this.state.itemList.filter(obj => !toDelete.has(obj.id));
@@ -414,7 +580,7 @@ class App extends Component {
       itemList: newArray,
     })
     if(newArray.length === 0){
-      console.log(newArray.length)
+      //console.log(newArray.length)
       document.querySelector('.no-items-wrap').style.display ='block';
     }
   }
@@ -426,9 +592,45 @@ class App extends Component {
     document.querySelector('.no-items-wrap').style.display ='block';
   }
 
+  saveToIndex(){
+    let usServers = this.state.usServers;
+    let euServers = this.state.euServers;
+    let data      = this.state.data;
+    this.addData(usServers, 'US_servers');
+    this.addData(euServers, 'EU_servers');
+    this.addData(data, 'items');
+  }
+
+  addData(data, name){
+    dbPromise.then(function(db) {
+        let tx = db.transaction(name, 'readwrite');
+        let store = tx.objectStore(name);
+        let count = store.count();
+        let dataCount = Object.keys(data).length;
+        count.then((count) => {
+          //console.log(count, dataCount);
+          if(count !== dataCount)
+          data.map(server => {
+            //console.log('Adding item: ', server);
+            store.add(server);
+            return false;
+          })
+          return tx.complite;
+        })
+      })
+      .then(() => console.log('All items load successfully'))
+      .catch((e) => console.log('Error adding item: ', e))
+
+  }
+
+
+
+
+
   render() {
 
     return (
+      <div className='wrapper'>
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
@@ -449,7 +651,7 @@ class App extends Component {
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
             />
-            <div className="main">
+            <div className="main clearfix">
               <SearchList
                 items={this.state.data}
                 additem={this.state.itemList}
@@ -464,6 +666,11 @@ class App extends Component {
             </div>
           </div>
         </div>
+      </div>
+      <footer>
+        <p>Art by <a href='#'>Chillalord</a></p>
+        <p>Outside of login, list of items, preferred server an region, no data is collected or stored</p>
+      </footer>
       </div>
     );
   }

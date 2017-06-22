@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Autocomplete from 'react-autocomplete';
-import {capitalizeFirstLetter} from '../functions';
 import Modal from './modal';
 import Serverselect from './serverselect';
+import no_img from '../img/no_img.jpg';
 let styles = {
   item: {
     padding: '2px 6px',
@@ -11,7 +11,7 @@ let styles = {
 
   highlightedItem: {
     color: 'white',
-    background: '#c6c6c6',
+    background: '#f5faff',
     padding: '2px 6px',
     cursor: 'default'
   },
@@ -65,16 +65,15 @@ class header extends Component {
   }
 
 
-
-
 	 render() {
 
 
      //generate server time
-     let addTimeBlock;
+     //let addTimeBlock;
      if(this.props.updatedTime>0){
-       addTimeBlock = (<div className='time'>Updated
-        {' ' +this.props.transformTime(this.props.updatedTime)} minutes ago</div>)
+       /*addTimeBlock = (<div className='time'>Updated
+        {' ' +this.props.transformTime(this.props.updatedTime)} minutes ago</div>)*/
+        document.querySelector('.time').innerHTML = `Updated ${this.props.transformTime(this.props.updatedTime)} minutes ago`
      }
 
      // Choose serverList (US/EU)
@@ -137,8 +136,7 @@ class header extends Component {
               this.setState({autoComplite: '' });
               //fix wowhead tooltip
               let tooltip = document.getElementsByClassName('wowhead-tooltip');
-              console.log(tooltip);
-              if(tooltip){
+              if(tooltip.length > 0 ){
                 tooltip[0].style.visibility = 'hidden';
                 tooltip[0].firstChild.style.visibility = 'hidden';
               }
@@ -148,8 +146,8 @@ class header extends Component {
             }
 						renderItem={(item, isHighlighted) => (
               <div style={isHighlighted ? styles.highlightedItem : styles.item}>
-                <img className="icon" src={item.img_url} alt={item.name} />
-							  <a href='#' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item.name}</a>
+                <img className="icon" src={item.img_url} alt={item.name}  onError={(e)=>{e.target.src = no_img}}/>
+							  <a href='#name' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item.name}</a>
               </div>
 						)}
 						menuStyle={{
@@ -171,9 +169,8 @@ class header extends Component {
 					</div>
 	      </div>
 	      <div className="header-right">
-	        <a href="#" id='login' onClick={this.openModal.bind(this)}>Log in</a>
-
-          {addTimeBlock}
+	        <a href="#login" id='login' onClick={this.openModal.bind(this)}>Log in</a>
+          <div className='time'></div>
 	      </div>
         <Modal logIn={this.props.logIn}
         signUp={this.props.signUp}

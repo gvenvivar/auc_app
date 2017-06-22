@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SearchListRow from './searchListRow';
-import _ from 'lodash';
+import {orderBy} from 'lodash';
 
 class searchList extends Component {
 
@@ -16,9 +16,8 @@ class searchList extends Component {
 		let list = [];
 		let count = 0;
 
-		let newdata = this.props.newdata;
 		let addItem = this.props.additem;
-		console.log(addItem);
+		//console.log(addItem);
     addItem.map((i)=> {
 			let x = this.props.delButton;
 			let tooltipCreator = this.props.tooltipCreator;
@@ -47,7 +46,7 @@ class searchList extends Component {
     });
 		//sort order
 
-		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
+		let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
 
 
     return (
@@ -67,10 +66,10 @@ class searchList extends Component {
           </table>
           <div className="black_stripe"></div>
 					<div className='no-items-wrap'>
-						<div className='no-items'>Your list is empty</div>
+						<div className='no-items'>Your item list is empty</div>
 					</div>
         </div>
-        <button onClick={this.props.clickSearch.bind(this)}>Start Search</button>
+        <button onClick={this.props.clickSearch.bind(this)}>Search</button>
       </div>
     );
   }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ResultListRow from './resultListRow';
-import _ from 'lodash';
-import potion from '../img/potion-128.png';
+import {orderBy} from 'lodash';
 
 class resultList extends Component {
 
@@ -29,7 +28,7 @@ class resultList extends Component {
 		let list = [];
  		let items = this.props.items;
 		let count = 0;
-		console.log(items);
+		//console.log(items);
  		items.map((item, index) => {
  			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
 			count++;
@@ -39,17 +38,17 @@ class resultList extends Component {
 		//console.log(list.map((item)=>item.props.item.name));
 
 		//sort order
-		let desc_list =  _.orderBy(list, ['props.item.order'], ['desc']);
+		let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
 
 
 
     return (
     	<div>
-	    <div className="col-right">
+	    <div className="col-right" >
 	    	<div className='table-container'>
 		    	<div className="row row-head">
 		    		<div className="group group-left">
-			    		<div className="cell">Icon</div>
+			    		<div className="cell icon-cell">Icon</div>
 			    		<div className="cell flex-grow-3">Name</div>
 		    		</div>
 		    		<div className="group group-right">
@@ -63,7 +62,7 @@ class resultList extends Component {
 
 
 		    	<div className='no-items-wrap'>
-						<div className='no-results'>Add items add press search button</div>
+						<div className='no-results'>Add items to your list and click search</div>
 					</div>
 	    	</div>
 	    </div>

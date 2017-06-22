@@ -23,16 +23,16 @@ class SignUp extends Component {
     return (
       <form className='signup'>
         <label>
-          <span>Email</span>
-          <input type='text' name='email' placeholder='Your email' id='email' required />
+          <span>Login or email</span>
+          <input type='text' name='email' placeholder='Login' id='email' required />
         </label>
         <label>
           <span>Password</span>
           <input type='password' name='password' placeholder='Password' id='psw' onChange={this.checkPasswords.bind(this)} required/>
         </label>
         <label className='repeatPass'>
-          <span>Repeat password</span>
-          <input type='password' name='passwordR' placeholder='Repeat password' id='pswR' onChange={this.checkPasswords.bind(this)} required/>
+          <span>Re-enter password</span>
+          <input type='password' name='passwordR' placeholder='Password' id='pswR' onChange={this.checkPasswords.bind(this)} required/>
         </label>
         <div className='error'></div>
         <div className='btn-wrap'>
