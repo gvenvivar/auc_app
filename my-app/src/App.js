@@ -410,6 +410,7 @@ class App extends Component {
   render() {
 
     return (
+      <div>
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
@@ -430,7 +431,7 @@ class App extends Component {
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
             />
-            <div className="main">
+            <div className="main clearfix">
               <SearchList
                 items={this.state.data}
                 additem={this.state.itemList}
@@ -446,6 +447,11 @@ class App extends Component {
             </div>
           </div>
         </div>
+      </div>
+      <footer>
+        <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
+        <p>Outside of login, list of items, preferred server and region, no data is collected or stored</p>
+      </footer>
       </div>
     );
   }
