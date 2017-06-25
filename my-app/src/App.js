@@ -89,7 +89,7 @@ class App extends Component {
     if(storedName !== null){
       let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
 
-      axios.post('https://sweetpeach.pp.ua/grape/get-user-cookie/', logIn)
+      axios.post('https://ahtool.com/grape/get-user-cookie/', logIn)
       .then(response => {
         //console.log(response);
 
@@ -120,7 +120,7 @@ class App extends Component {
     }
 
     //fetch database json
-    const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
+    const url = 'https://ahtool.com/item_db_img_sorted.json';
     fetch(url)
       .then(response => response.json())
       .then(json => {
@@ -315,7 +315,7 @@ class App extends Component {
     });
     //console.log(idList);
 
-    fetch('https://sweetpeach.pp.ua/grape', {
+    fetch('https://ahtool.com/grape', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
     	body: idList
@@ -423,7 +423,7 @@ class App extends Component {
     if(login === ''){
       msg.innerHTML = 'Please enter email';
     } else{
-    axios.post('https://sweetpeach.pp.ua/grape/get-user/', logIn)
+    axios.post('https://ahtool.com/grape/get-user/', logIn)
     .then(response => {
       //console.log(response);
       let data = response.data;
@@ -506,7 +506,7 @@ class App extends Component {
 
 
       if(pass === passR && login !=='' && pass !== ''){
-        axios.post('https://sweetpeach.pp.ua/grape/add-user/', data)
+        axios.post('https://ahtool.com/grape/add-user/', data)
         .then(response => {
           let data = response.data;
 
@@ -549,7 +549,7 @@ class App extends Component {
 
 
     //post
-    axios.post('https://sweetpeach.pp.ua/grape/update-user/',  data)
+    axios.post('https://ahtool.com/grape/update-user/',  data)
     .then(response => {
       let data = response.data;
       //console.log(data);
