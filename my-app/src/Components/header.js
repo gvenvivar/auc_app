@@ -107,7 +107,7 @@ class header extends Component {
 					<form onSubmit={this.handleAuto.bind(this)}>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Add to search..."}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}
 						items={this.props.data}
 						getItemValue={(item) => item.name}
 						sortItems={function sort (a, b, value) {

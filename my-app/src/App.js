@@ -668,7 +668,7 @@ class App extends Component {
         </div>
       </div>
       <footer>
-        <p>Art by <a href='#'>Chillalord</a></p>
+        <p>Art by <a href='https://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
         <p>Outside of login, list of items, preferred server an region, no data is collected or stored</p>
       </footer>
       </div>
