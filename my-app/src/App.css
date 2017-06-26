@@ -514,9 +514,6 @@ footer p{
 .table-container .row {
   display: table-row;
 }
-.table-container .cell {
-  display: table-cell;
-}
 
 @supports(display: flex) {
 .table-container {
