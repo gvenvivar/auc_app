@@ -609,12 +609,13 @@ class App extends Component {
         let dataCount = Object.keys(data).length;
         count.then((count) => {
           //console.log(count, dataCount);
-          if(count !== dataCount)
-          data.map(server => {
-            //console.log('Adding item: ', server);
-            store.add(server);
-            return false;
-          })
+          if(count !== dataCount){
+            data.map(server => {
+              //console.log('Adding item: ', server);
+              store.put(server);
+              return false;
+            })
+          }
           return tx.complite;
         })
       })
