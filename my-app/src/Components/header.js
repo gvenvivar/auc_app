@@ -70,10 +70,17 @@ class header extends Component {
 
      //generate server time
      //let addTimeBlock;
-     if(this.props.updatedTime>0){
-       /*addTimeBlock = (<div className='time'>Updated
-        {' ' +this.props.transformTime(this.props.updatedTime)} minutes ago</div>)*/
-        document.querySelector('.time').innerHTML = `Updated ${this.props.transformTime(this.props.updatedTime)} minutes ago`
+     let time = this.props.transformTime(this.props.updatedTime);
+     //console.log(time)
+
+     if(this.props.updatedTime){
+        document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
+     }
+     if(this.props.updatedTime && time===1){
+        document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
+     }
+     if(this.props.updatedTime && time > 91){
+        document.querySelector('.time').innerHTML = `Last update 90+ minutes ago`
      }
 
      // Choose serverList (US/EU)

@@ -635,6 +635,11 @@ class App extends Component {
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
+          <div className='contact-wrapper'>
+            <h2>AHtool</h2>
+            <h3> Super simple WoW auction house tool</h3>
+          </div>
+
             <Header
               usServers={this.state.usServers}
               euServers={this.state.euServers}
