@@ -70,7 +70,7 @@ h2::after{
   width: 100px;
   height: 1px;
   color: #fff;
-  background: rgb(181, 178, 180);
+  background: #fff;
   top: 16px;
   right: 0;
 }
