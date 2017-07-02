@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+    <meta name="theme-color" content="#0A355F">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -14,9 +17,14 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>AH tool</title>
   </head>
   <body>
+    <noscript>
+      <div className='noJS'>
+        You need to enable JavaScript to run this app.
+      </div>
+    </noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.

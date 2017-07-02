@@ -12,8 +12,8 @@ class LogIn extends Component {
     return (
       <form className='login'>
         <label>
-          <span>Email</span>
-          <input type='text' name='email' placeholder='Your email' id='email' required />
+          <span>Login or email</span>
+          <input type='text' name='email' placeholder='Login' id='email' required />
         </label>
         <label>
           <span>Password</span>

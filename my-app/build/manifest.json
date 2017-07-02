@@ -1,0 +1,35 @@
+{
+  "short_name": "AH tool",
+  "name": "Auction House tool",
+  "icons": [
+    {
+      "src": "app_icon.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "app_icon.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "app_icon.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "app_icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.jpg",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#0A355F",
+  "display": "standalone",
+  "theme_color": "#0A355F"
+}

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ResultListRowExpanded from './resultListRowExpanded';
 import {transformPrice} from '../functions';
 import potion from '../img/potion-128.png';
+import no_img from '../img/no_img.jpg';
+import gold from '../img/gold.png'
 
 class resultListRow extends Component {
 
@@ -10,7 +12,9 @@ class resultListRow extends Component {
     this.state = {isShow: false};
   }
 
-  handleClick() {
+  handleClick(event) {
+		let potion = event.currentTarget;
+		potion.classList.toggle("potion-open");
     this.setState(function(prevState) {
       return {isShow: !prevState.isShow};
     });
@@ -28,8 +32,8 @@ class resultListRow extends Component {
 
 		let modifiedPrice = transformPrice(this.props.item.price);
 		let modifiedAverage = transformPrice(this.props.item.average);
-		
-		 
+
+
 		if(this.props.item.components){
 			let list = [];
 			let price= 0 ;
@@ -44,7 +48,7 @@ class resultListRow extends Component {
 		    	<div className="row row-body">
 		    		<div className="group group-left">
 			    		<div className="cell">
-			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} />
+			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
 			    		</div>
 			    		<div className='cell flex-grow-3'>
 			    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
@@ -53,8 +57,8 @@ class resultListRow extends Component {
 		    		</div>
 		    		<div className="group group-right-body">
 			    		<div className='cell center'>{this.props.item.quantity}</div>
-			    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
-			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+			    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
+			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 			    	</div>
 		    	</div>
 		    	<div className={this.contentClass(this.state.isShow)}>
@@ -72,13 +76,13 @@ class resultListRow extends Component {
 			    		<div className="group group-right-body">
 				    		<div className='cell center'></div>
 				    		<div className='cell center'></div>
-				    		<div className='cell'><span>{transformPrice(price/1.5)}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+				    		<div className='cell'><span>{transformPrice(price/1.5)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 				    	</div>
 			    	</div>
 
 		    	</div>
-		    	
-	    	
+
+
 	    </div>
 
 		)}
@@ -87,7 +91,7 @@ class resultListRow extends Component {
     	<div className="row row-body">
     		<div className="group group-left">
 	    		<div className="cell">
-	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} />
+	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
 	    		</div>
 	    		<div className='cell flex-grow-3'>
 	    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
@@ -95,8 +99,8 @@ class resultListRow extends Component {
     		</div>
     		<div className="group group-right-body">
 	    		<div className='cell center'>{this.props.item.quantity}</div>
-	    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
-	    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src="https://sweetpeach.pp.ua/gold.png" alt="gold_icon" /></span></div>
+	    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
+	    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 	    	</div>
     	</div>
     	</div>
