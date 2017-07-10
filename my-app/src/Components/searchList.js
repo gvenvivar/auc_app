@@ -1,8 +1,27 @@
 import React, { Component } from 'react';
 import SearchListRow from './searchListRow';
 import {orderBy} from 'lodash';
+import close from '../img/cerrar.png';
+
+import DragSortableList from 'react-drag-sortable';
 
 class searchList extends Component {
+
+	onSort(sortedList) {
+		let saveOrder = [];
+    //console.log("sortedList", sortedList);
+    sortedList.map(item => {
+    	let name = item.content.props.children[0].props.children.props.alt;
+    	let id = item.content.props.children[0].props.children.props.id;
+    	saveOrder.push({
+    		name : name,
+    		id : id
+    	}) 
+    	
+    })
+    this.props.dragList(saveOrder)
+    //console.log(saveOrder)
+ 	}
 
 
 	 render() {
@@ -15,25 +34,32 @@ class searchList extends Component {
 
 		let list = [];
 		let count = 0;
+		let drag = [];
+		
+
+
 
 		let addItem = this.props.additem;
 		//console.log(addItem);
     addItem.map((i)=> {
-			let x = this.props.delButton;
+			let del = this.props.delButton;
 			let tooltipCreator = this.props.tooltipCreator;
 			//console.log(i.id);
 			//console.log(newdata[i.id])
-			/*New scheme
-			if(newdata[i.id]){
-				list.push(<SearchListRow item={newdata[i.id]}  key={newdata[i.id].id} delButton={x} tooltipCreator={tooltipCreator}/>)
-				count++;
-				newdata[i.id].order=count;
-			}*/
 
 
     	this.props.items.map(function(item){
     		if(i.id === item.id){
-	        list.push(<SearchListRow item={item}  key={item.id} delButton={x} tooltipCreator={tooltipCreator}/>)
+	        list.push(<SearchListRow item={item}  key={item.id} delButton={del} tooltipCreator={tooltipCreator}/>)
+	        drag.push({content: (<div className='search_row'>
+	        	<div className='icon_c'><img className="icon" src={item.img_url} alt={item.name} id={item.id} /></div>
+	        	<div className='name_c'><a href='#' rel={tooltipCreator(item)}>{item.name}</a></div>
+	        	<a className='close_c' href="#"><img className="close" alt='deleteBtn' src={close} onClick={(e) => {
+	        		e.preventDefault();
+	        		let id = item.id;
+	        		del(id);
+	        	}} /></a>
+	        </div>)});
 					count++;
 					item.order=count;
 
@@ -48,8 +74,33 @@ class searchList extends Component {
 
 		let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
 
+		//console.log(drag);
 
-    return (
+		
+		return (
+      <div className="col-left">
+        <div className="items-table">
+          
+           <div className="search_header">
+					    <div className="icon_c">Icon</div>
+					    <div className="name_c">Name</div>
+					    <div className="reset_c"><button className='reset-btn' onClick={this.props.deleteAll}>Reset</button></div>
+					  </div>
+
+					  <DragSortableList items={drag} onSort={this.onSort.bind(this)} dropBackTransitionDuration={0.3} type="vertical"/>
+
+          <div className="black_stripe"></div>
+					<div className='no-items-wrap'>
+						<div className='no-items'>Your item list is empty</div>
+					</div>
+        </div>
+        <button onClick={this.props.clickSearch.bind(this)}>Search</button>
+      </div>
+    );
+
+		// Old table layout //
+
+    /*return (
       <div className="col-left">
         <div className="items-table">
           <table>
@@ -61,7 +112,7 @@ class searchList extends Component {
               </tr>
             </thead>
             <tbody>
-              {desc_list}
+              <DragSortableList items={drag} onSort={this.onSort.bind(this)} dropBackTransitionDuration={0.3} type="vertical"/>
             </tbody>
           </table>
           <div className="black_stripe"></div>
@@ -71,7 +122,7 @@ class searchList extends Component {
         </div>
         <button onClick={this.props.clickSearch.bind(this)}>Search</button>
       </div>
-    );
+    );*/
   }
 }
 

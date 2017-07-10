@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
+import DragSortableList from 'react-drag-sortable';
 
 
 class searchListRow extends Component {
@@ -18,12 +19,6 @@ class searchListRow extends Component {
 
 
     return (
-
-   /* <tr>
-      <th><img className="icon" src={this.props.item.icon} alt={this.props.item.item} /></th>
-      <th>{this.props.item.item}</th>
-      <th><a href="#"><img className="close" src={close} /></a></th>
-    </tr>*/
 
     <tr>
       <th><img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/></th>

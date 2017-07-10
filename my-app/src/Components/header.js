@@ -70,10 +70,17 @@ class header extends Component {
 
      //generate server time
      //let addTimeBlock;
-     if(this.props.updatedTime>0){
-       /*addTimeBlock = (<div className='time'>Updated
-        {' ' +this.props.transformTime(this.props.updatedTime)} minutes ago</div>)*/
-        document.querySelector('.time').innerHTML = `Updated ${this.props.transformTime(this.props.updatedTime)} minutes ago`
+     let time = this.props.transformTime(this.props.updatedTime);
+     //console.log(time)
+
+     if(this.props.updatedTime){
+        document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
+     }
+     if(this.props.updatedTime && time===1){
+        document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
+     }
+     if(this.props.updatedTime && time > 91){
+        document.querySelector('.time').innerHTML = `Last update 90+ minutes ago`
      }
 
      // Choose serverList (US/EU)
@@ -107,7 +114,7 @@ class header extends Component {
 					<form onSubmit={this.handleAuto.bind(this)}>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Add to search..."}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}
 						items={this.props.data}
 						getItemValue={(item) => item.name}
 						sortItems={function sort (a, b, value) {
@@ -157,12 +164,12 @@ class header extends Component {
 							padding:  '0',
 							fontSize: '90%',
 							position: 'absolute',
-							top: '38px', // height of your input
+							top: '58px', // height of your input
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,
               maxHeight: "300px",
-              textAlign: 'left'
+              textAlign: 'left',
 						}}
 					/>
 					</form>

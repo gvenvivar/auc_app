@@ -11,7 +11,6 @@ import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
 
 
-
 //indexedDB
 if(!('indexedDB' in window)){
     console.log('This browser does\'t support IndexDB');
@@ -40,6 +39,8 @@ let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
 
 
 class App extends Component {
+
+
   constructor(props) {
     super(props);
 
@@ -89,7 +90,7 @@ class App extends Component {
     if(storedName !== null){
       let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
 
-      axios.post('https://sweetpeach.pp.ua/grape/get-user-cookie/', logIn)
+      axios.post('https://ahtool.com/grape/get-user-cookie/', logIn)
       .then(response => {
         //console.log(response);
 
@@ -120,7 +121,7 @@ class App extends Component {
     }
 
     //fetch database json
-    const url = 'https://sweetpeach.pp.ua/item_db_img_sorted.json';
+    const url = 'https://ahtool.com/item_db_img_sorted.json';
     fetch(url)
       .then(response => response.json())
       .then(json => {
@@ -204,11 +205,15 @@ class App extends Component {
 
   addToAuto(name, id){
     if(id){
-      this.state.itemList.push({name: name.toLowerCase() , id:id});
+      this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList();
       //console.log(this.state.itemList);
     }
+  }
+  dragList(drag){
+    this.setState({ itemList: drag });
+    //console.log(this.state.itemList);
   }
 
   addSlug(item){
@@ -315,7 +320,7 @@ class App extends Component {
     });
     //console.log(idList);
 
-    fetch('https://sweetpeach.pp.ua/grape', {
+    fetch('https://ahtool.com/grape', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
     	body: idList
@@ -423,7 +428,7 @@ class App extends Component {
     if(login === ''){
       msg.innerHTML = 'Please enter email';
     } else{
-    axios.post('https://sweetpeach.pp.ua/grape/get-user/', logIn)
+    axios.post('https://ahtool.com/grape/get-user/', logIn)
     .then(response => {
       //console.log(response);
       let data = response.data;
@@ -506,7 +511,7 @@ class App extends Component {
 
 
       if(pass === passR && login !=='' && pass !== ''){
-        axios.post('https://sweetpeach.pp.ua/grape/add-user/', data)
+        axios.post('https://ahtool.com/grape/add-user/', data)
         .then(response => {
           let data = response.data;
 
@@ -549,7 +554,7 @@ class App extends Component {
 
 
     //post
-    axios.post('https://sweetpeach.pp.ua/grape/update-user/',  data)
+    axios.post('https://ahtool.com/grape/update-user/',  data)
     .then(response => {
       let data = response.data;
       //console.log(data);
@@ -609,12 +614,13 @@ class App extends Component {
         let dataCount = Object.keys(data).length;
         count.then((count) => {
           //console.log(count, dataCount);
-          if(count !== dataCount)
-          data.map(server => {
-            //console.log('Adding item: ', server);
-            store.add(server);
-            return false;
-          })
+          if(count !== dataCount){
+            data.map(server => {
+              //console.log('Adding item: ', server);
+              store.put(server);
+              return false;
+            })
+          }
           return tx.complite;
         })
       })
@@ -628,14 +634,19 @@ class App extends Component {
 
 
   render() {
+    
 
     return (
       <div>
-      <h2>AH<span>tool</span></h2>
       <div className='wrapper'>
       <div className="App flex">
         <div className="App-wrap">
           <div className="cont">
+          <div className='contact-wrapper'>
+            <h2>AHtool</h2>
+            <h3> Super simple WoW auction house tool</h3>
+          </div>
+
             <Header
               usServers={this.state.usServers}
               euServers={this.state.euServers}
@@ -661,6 +672,7 @@ class App extends Component {
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
+                dragList={this.dragList.bind(this)}
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
