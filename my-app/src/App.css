@@ -664,6 +664,7 @@ footer p{
 }
 .items-table{
   font-weight: bold;
+  overflow: auto;
 }
 .icon_c{
   flex-basis: 40px;
