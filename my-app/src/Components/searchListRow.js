@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
-import DragSortableList from 'react-drag-sortable';
 
 
 class searchListRow extends Component {
@@ -25,8 +24,9 @@ class searchListRow extends Component {
       <th><a href='#' rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a></th>
       <th><a href="#"><img className="close" alt='deleteBtn' src={close} onClick={this.closeBtn.bind(this)} /></a></th>
     </tr>
-
+    
     );
+
   }
 }
 

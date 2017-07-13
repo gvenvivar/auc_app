@@ -9,6 +9,7 @@ import idb from 'idb';
 import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
+import {arrayMove} from 'react-sortable-hoc';
 
 
 //indexedDB
@@ -204,7 +205,8 @@ class App extends Component {
   }
 
   addToAuto(name, id){
-    if(id){
+    let index = this.state.itemList.findIndex(i => i.id === id);
+    if(id && index === -1){
       this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList();
@@ -213,7 +215,7 @@ class App extends Component {
   }
   dragList(drag){
     this.setState({ itemList: drag });
-    //console.log(this.state.itemList);
+    console.log(this.state.itemList);
   }
 
   addSlug(item){
@@ -297,7 +299,7 @@ class App extends Component {
       //console.log('media');
       let scrollTo = document.querySelector('.col-right');
       scrollToComponent(scrollTo, {
-          offset: 1000,
+          offset: 20,
           align: 'top',
           duration: 500
       });
@@ -629,7 +631,11 @@ class App extends Component {
 
   }
 
-
+  onSortEnd = ({oldIndex, newIndex}) => {
+    this.setState({
+      itemList: arrayMove(this.state.itemList, oldIndex, newIndex),
+    });
+  };
 
 
 
@@ -673,6 +679,8 @@ class App extends Component {
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
                 dragList={this.dragList.bind(this)}
+                onSortEnd={this.onSortEnd.bind(this)}
+                list={this.state.items}
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}

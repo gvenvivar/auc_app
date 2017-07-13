@@ -379,7 +379,7 @@ button {
 table {
   width: 100%;
   font-size: 16px;
-  padding: 0px 25px 10px;
+  padding: 0px 25px;
 }
 
 table a {
@@ -388,14 +388,15 @@ table a {
 }
 
 thead{
-  font-size: 12px;
-  //background: #000;
   opacity: .8;
   color: #fff;
 }
 
 thead tr{
-  height: 30px;
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  line-height: 32px;
 }
 
 .expand{
@@ -438,14 +439,13 @@ thead tr{
   border-radius: 2px;
 }
 
-
-
 .icon {
   width: 25px;
   height: 25px;
   border: 1px solid #95989a;
   border-radius: 2px;
   vertical-align: middle;
+  margin-right: 7px;
   /*background-image: url(img/no_img.jpg);*/
 }
 
@@ -456,7 +456,13 @@ thead tr{
 }
 
 tbody tr {
-  box-shadow: 0 1px 0 #95989a
+  box-shadow: 0 1px 0 #95989a;
+}
+tbody tr:last-child{
+  box-shadow: none;
+}
+tbody th{
+  padding: 4px 0;
 }
 
 th {
