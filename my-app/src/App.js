@@ -10,6 +10,7 @@ import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
+import 'babel-polyfill';
 
 
 //indexedDB

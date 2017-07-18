@@ -11,6 +11,7 @@
     "react-scroll-to-component": "^1.0.1"
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "lodash": "^4.17.4",
     "react": "^15.4.2",
     "react-autocomplete": "^1.4.1",
