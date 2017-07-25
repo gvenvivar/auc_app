@@ -9,7 +9,8 @@ import idb from 'idb';
 import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
-
+import {arrayMove} from 'react-sortable-hoc';
+import 'babel-polyfill';
 
 
 //indexedDB
@@ -40,6 +41,8 @@ let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
 
 
 class App extends Component {
+
+
   constructor(props) {
     super(props);
 
@@ -203,12 +206,17 @@ class App extends Component {
   }
 
   addToAuto(name, id){
-    if(id){
-      this.state.itemList.push({name: name.toLowerCase() , id:id});
+    let index = this.state.itemList.findIndex(i => i.id === id);
+    if(id && index === -1){
+      this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList();
       //console.log(this.state.itemList);
     }
+  }
+  dragList(drag){
+    this.setState({ itemList: drag });
+    console.log(this.state.itemList);
   }
 
   addSlug(item){
@@ -292,7 +300,7 @@ class App extends Component {
       //console.log('media');
       let scrollTo = document.querySelector('.col-right');
       scrollToComponent(scrollTo, {
-          offset: 1000,
+          offset: 20,
           align: 'top',
           duration: 500
       });
@@ -624,13 +632,19 @@ class App extends Component {
 
   }
 
-
+  onSortEnd = ({oldIndex, newIndex}) => {
+    this.setState({
+      itemList: arrayMove(this.state.itemList, oldIndex, newIndex),
+    });
+  };
 
 
 
   render() {
 
+
     return (
+      <div>
       <div className='wrapper'>
       <div className="App flex">
         <div className="App-wrap">
@@ -665,6 +679,9 @@ class App extends Component {
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
+                dragList={this.dragList.bind(this)}
+                onSortEnd={this.onSortEnd.bind(this)}
+                list={this.state.items}
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
@@ -674,9 +691,10 @@ class App extends Component {
         </div>
       </div>
       <footer>
-        <p>Art by <a href='https://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
-        <p>Outside of login, list of items, preferred server an region, no data is collected or stored</p>
+        <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
+        <p>Outside of login, list of items, preferred server and region, no data is collected or stored</p>
       </footer>
+      </div>
       </div>
     );
   }
