@@ -58,7 +58,7 @@ class resultList extends Component {
 			    	</div>
 		    	</div>
 
-		    	{desc_list}
+		    	{list}
 
 
 		    	<div className='no-items-wrap'>

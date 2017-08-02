@@ -164,12 +164,12 @@ class header extends Component {
 							padding:  '0',
 							fontSize: '90%',
 							position: 'absolute',
-							top: '38px', // height of your input
+							top: '58px', // height of your input
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,
               maxHeight: "300px",
-              textAlign: 'left'
+              textAlign: 'left',
 						}}
 					/>
 					</form>
