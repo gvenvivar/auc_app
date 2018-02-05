@@ -312,12 +312,19 @@ class App extends Component {
     return parseInt((timeSeconds - time)/60);
   }
 
+  close_error(){
+    let error_msg = document.querySelector('.API_error');
+    error_msg.classList.remove("API_error_open");
+    console.log('remove error msg');
+  }
 
   clickSearch(){
     // console.log('click');
     // console.log(this.state.list);
     // console.log(this.state.servers);
     //hide no-items
+    document.querySelector('.API_error').classList.add('API_error_open');
+
     this.updateEmptySearch();
 
     var mq = window.matchMedia( "(max-width: 1024px)" );
@@ -756,6 +763,7 @@ class App extends Component {
       <div>
       <div className='wrapper'>
       <div className="App flex">
+        <div className='API_error' onClick={this.close_error.bind(this)}>Sorry, problems with Blizzard APi</div>
         <div className="App-wrap">
           <div className="cont">
           <div className='contact-wrapper'>
