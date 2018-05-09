@@ -5,12 +5,13 @@ import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
 import axios from 'axios';
-import idb from 'idb';
+//import idb from 'idb';
 import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
 import 'babel-polyfill';
+import Dexie from 'dexie';
 
 
 //indexedDB
@@ -18,7 +19,7 @@ if(!('indexedDB' in window)){
     console.log('This browser does\'t support IndexDB');
 }
 
-let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
+/*let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
       // a placeholder case so that the switch block will
@@ -37,6 +38,14 @@ let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
       store.createIndex('server', 'server', {unique: false});
 
   }
+});*/
+
+var db = new Dexie('items-jsons');
+db.version(4).stores({
+    US_servers: 'name',
+    EU_servers: 'name',
+    items: 'id',
+    auctions: 'id, server'
 });
 
 
@@ -141,38 +150,54 @@ class App extends Component {
       //callback if json can't load
       .catch(() => {
         console.log('can\'t load json data')
-        dbPromise.then(db => {
-          return db.transaction('items')
-            .objectStore('items').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
-          this.setState({
-            data: arr
-          })
-        })
+        // dbPromise.then(db => {
+        //   return db.transaction('items')
+        //     .objectStore('items').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     data: arr
+        //   })
+        // })
+        //
+        // dbPromise.then(db => {
+        //   return db.transaction('US_servers')
+        //     .objectStore('US_servers').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     usServers: arr
+        //   })
+        // })
+        //
+        // dbPromise.then(db => {
+        //   return db.transaction('EU_servers')
+        //     .objectStore('EU_servers').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     euServers: arr
+        //   })
+        // })
 
-        dbPromise.then(db => {
-          return db.transaction('US_servers')
-            .objectStore('US_servers').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
+        db.US_servers.toArray().then((arr) => {
           this.setState({
-            usServers: arr
-          })
-        })
-
-        dbPromise.then(db => {
-          return db.transaction('EU_servers')
-            .objectStore('EU_servers').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
+              usServers: arr
+            })
+        });
+        db.EU_servers.toArray().then((arr) => {
           this.setState({
-            euServers: arr
-          })
-        })
+              euServers: arr
+            })
+        });
+        db.items.toArray().then((arr) => {
+          this.setState({
+              data: arr
+            })
+        });
 
       })
 
@@ -238,12 +263,46 @@ class App extends Component {
   }
 
   updateRegion(event){
-    this.setState({
-      region: event.target.value,
-      server: 'sargeras',
-      serverSlug: 'sargeras',
-      list : []
-    })
+    let identicalRealm = false;
+    console.log(this.state.server, this.state.region);
+    if(this.state.region === 'en_US'){
+      this.state.euServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+    if(this.state.region === 'en_GB'){
+      this.state.usServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+
+    if(identicalRealm){
+      this.setState({
+        region: event.target.value,
+        list : []
+      })
+    }
+    else{
+      this.setState({
+        region: event.target.value,
+        server: 'sargeras',
+        serverSlug: 'sargeras',
+        list : []
+      })
+    }
+    //Old chage realm default functionality
+    // this.setState({
+    //   region: event.target.value,
+    //   server: 'sargeras',
+    //   serverSlug: 'sargeras',
+    //   list : []
+    // })
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
   updateSwitchModal(){
@@ -287,12 +346,19 @@ class App extends Component {
     return parseInt((timeSeconds - time)/60);
   }
 
+  close_error(){
+    let error_msg = document.querySelector('.API_error');
+    error_msg.classList.remove("API_error_open");
+    console.log('remove error msg');
+  }
 
   clickSearch(){
     // console.log('click');
     // console.log(this.state.list);
     // console.log(this.state.servers);
     //hide no-items
+    //document.querySelector('.API_error').classList.add('API_error_open');
+
     this.updateEmptySearch();
 
     var mq = window.matchMedia( "(max-width: 1024px)" );
@@ -321,7 +387,7 @@ class App extends Component {
       idList += '&items[]=' + item.id;
       return false;
     });
-    //console.log(idList);
+    console.log(idList);
 
     fetch('https://ahtool.com/grape', {
     	method: 'post',
@@ -332,46 +398,63 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
+      console.log(json);
+      if(json[2].error_msg.length>0){
+        console.log(json[2].error_msg);
+        document.querySelector('.API_error').classList.add('API_error_open');
+      }
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time
-
       });
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;
       let region = this.state.region;
-      dbPromise.then(function(db) {
-          let tx = db.transaction('auctions', 'readwrite');
-          let store = tx.objectStore('auctions');
-          list.map(item => {
+      // dbPromise.then(function(db) {
+      //     let tx = db.transaction('auctions', 'readwrite');
+      //     let store = tx.objectStore('auctions');
+      //     list.map(item => {
+      //         //console.log('Adding item: ', item);
+      //         item.server = `${region}_${server}`;
+      //         store.put(item);
+      //         return false;
+      //       })
+      //       return tx.complite;
+      //   })
+      //   .then(() => console.log('All search saved to indexedDb'))
+      //   .catch((e) => console.log('Error adding item: ', e))
+
+        db.open().then(function (db) {
+            // Database openeded successfully
+            list.map(item => {
               //console.log('Adding item: ', item);
               item.server = `${region}_${server}`;
-              store.put(item);
+              db.auctions.put(item);
               return false;
             })
-            return tx.complite;
         })
         .then(() => console.log('All search saved to indexedDb'))
         .catch((e) => console.log('Error adding item: ', e))
+
+
     })
     .then(() =>{
-      //console.log("check for saving")
+      console.log("check for saving to idb");
       this.saveToIndex();
     })
     .catch((e) => {
       console.log(e);
-      dbPromise.then(db => {
-        const tx = db.transaction('auctions');
-        let arr = [];
+      let arr = [];
+        console.log('open');
         let server = `${this.state.region}_${this.state.server}`;
-
         //adding offline caption
         let iDiv = document.querySelector('.time');
         iDiv.innerHTML = 'Offline mode';
 
         this.state.itemList.map((item) => {
-          tx.objectStore('auctions').get(item.id)
+          console.log('map');
+          db.auctions.get(item.id)
           .then((obj) => {
               let itemUndef = {
                 name: item.name,
@@ -379,14 +462,15 @@ class App extends Component {
                 price: '',
                 quantity: 'offline',
                 average: '',
+                img_url: ''
               }
               if(obj === undefined){
-                console.log(item.id);
-                db.transaction('items').objectStore('items').get(item.id).then((obj) =>{
+                db.items.get(item.id).then((obj) =>{
                   itemUndef.img_url = obj.img_url;
                   itemUndef.name = obj.name;
+                  console.log('asd')
                 })
-                arr.push(itemUndef)
+                arr.push(itemUndef);
               }
               if(obj && server !== obj.server){
                 itemUndef.img_url = obj.img_url;
@@ -397,17 +481,67 @@ class App extends Component {
                 arr.push(obj)
               }
 
+              this.setState({
+                list: arr
+              })
+
           })
-          return false;
         })
 
-        tx.complete.then(() => {
-          this.setState({
-            list: arr
-          })
-        });
 
-      })
+
+
+
+
+
+
+      // dbPromise.then(db => {
+      //   const tx = db.transaction('auctions');
+      //   let arr = [];
+      //   let server = `${this.state.region}_${this.state.server}`;
+      //
+      //   //adding offline caption
+      //   let iDiv = document.querySelector('.time');
+      //   iDiv.innerHTML = 'Offline mode';
+      //
+      //   this.state.itemList.map((item) => {
+      //     tx.objectStore('auctions').get(item.id)
+      //     .then((obj) => {
+      //         let itemUndef = {
+      //           name: item.name,
+      //           id: item.id,
+      //           price: '',
+      //           quantity: 'offline',
+      //           average: '',
+      //         }
+      //         if(obj === undefined){
+      //           console.log(item.id);
+      //           db.transaction('items').objectStore('items').get(item.id).then((obj) =>{
+      //             itemUndef.img_url = obj.img_url;
+      //             itemUndef.name = obj.name;
+      //           })
+      //           arr.push(itemUndef)
+      //         }
+      //         if(obj && server !== obj.server){
+      //           itemUndef.img_url = obj.img_url;
+      //           itemUndef.name = obj.name;
+      //           arr.push(itemUndef);
+      //         }
+      //         if(obj && server === obj.server){
+      //           arr.push(obj)
+      //         }
+      //
+      //     })
+      //     return false;
+      //   })
+      //
+      //   tx.complete.then(() => {
+      //     this.setState({
+      //       list: arr
+      //     })
+      //   });
+      //
+      // })
 
     })
 
@@ -604,32 +738,52 @@ class App extends Component {
     let usServers = this.state.usServers;
     let euServers = this.state.euServers;
     let data      = this.state.data;
-    this.addData(usServers, 'US_servers');
-    this.addData(euServers, 'EU_servers');
-    this.addData(data, 'items');
+    this.addData(usServers, db.US_servers);
+    this.addData(euServers, db.EU_servers);
+    this.addData(data, db.items);
   }
 
   addData(data, name){
-    dbPromise.then(function(db) {
-        let tx = db.transaction(name, 'readwrite');
-        let store = tx.objectStore(name);
-        let count = store.count();
-        let dataCount = Object.keys(data).length;
-        count.then((count) => {
-          //console.log(count, dataCount);
-          if(count !== dataCount){
-            data.map(server => {
-              //console.log('Adding item: ', server);
-              store.put(server);
-              return false;
-            })
-          }
-          return tx.complite;
-        })
-      })
-      .then(() => console.log('All items load successfully'))
-      .catch((e) => console.log('Error adding item: ', e))
+    // dbPromise.then(function(db) {
+    //     let tx = db.transaction(name, 'readwrite');
+    //     let store = tx.objectStore(name);
+    //     let count = store.count();
+    //     let dataCount = Object.keys(data).length;
+    //     count.then((count) => {
+    //       //console.log(count, dataCount);
+    //       if(count !== dataCount){
+    //         data.map(server => {
+    //           //console.log('Adding item: ', server);
+    //           store.put(server);
+    //           return false;
+    //         })
+    //       }
+    //       return tx.complite;
+    //     })
+    //   })
+    //   .then(() => console.log('All items load successfully'))
+    //   .catch((e) => console.log('Error adding item: ', e))
 
+      db.open().then(function (db) {
+          // Database openeded successfully
+          let dataCount = data.length;
+          let count = name.count();
+          count.then((count) => {
+            //console.log(dataCount, count)
+            if(dataCount !== count){
+              data.map((item) => {
+                //console.log('Adding item: ', item);
+                name.put(item);
+              });
+            }
+          });
+
+      })
+      .then(()=> console.log('all items load successfully'))
+      .catch ((err) => {
+          // Error occurred
+          console.log('Error adding item: ', err)
+      });
   }
 
   onSortEnd = ({oldIndex, newIndex}) => {
@@ -647,6 +801,7 @@ class App extends Component {
       <div>
       <div className='wrapper'>
       <div className="App flex">
+        <div className='API_error' onClick={this.close_error.bind(this)}>Sorry, problems with Blizzard APi</div>
         <div className="App-wrap">
           <div className="cont">
           <div className='contact-wrapper'>

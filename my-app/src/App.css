@@ -94,14 +94,33 @@ h2::before{
   align-items: center;
 }
 
+.API_error {
+  background: #000;
+  opacity: 0.8;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  color:#fff;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 15px 0;
+  z-index: 999;
+  margin-top: -80px;
+  transition: 0.3s all ease-in-out;
+}
+.API_error_open{
+  margin-top: 0;
+  cursor: pointer;
+}
+
 .App-wrap {
   font-family: "Roboto", sans-serif;
   margin: 0 auto;
   min-width: 1024px;
-  //min-height: 768px;
-  //background: lightblue;
-  //opacity: 0.85
-
+  /* min-height: 768px;
+  background: lightblue;
+  opacity: 0.85 */
 }
 
 .flex{
