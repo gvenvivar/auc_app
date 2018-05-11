@@ -263,12 +263,46 @@ class App extends Component {
   }
 
   updateRegion(event){
-    this.setState({
-      region: event.target.value,
-      server: 'sargeras',
-      serverSlug: 'sargeras',
-      list : []
-    })
+    let identicalRealm = false;
+    console.log(this.state.server, this.state.region);
+    if(this.state.region === 'en_US'){
+      this.state.euServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+    if(this.state.region === 'en_GB'){
+      this.state.usServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+
+    if(identicalRealm){
+      this.setState({
+        region: event.target.value,
+        list : []
+      })
+    }
+    else{
+      this.setState({
+        region: event.target.value,
+        server: 'sargeras',
+        serverSlug: 'sargeras',
+        list : []
+      })
+    }
+    //Old chage realm default functionality
+    // this.setState({
+    //   region: event.target.value,
+    //   server: 'sargeras',
+    //   serverSlug: 'sargeras',
+    //   list : []
+    // })
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
   updateSwitchModal(){
@@ -323,7 +357,7 @@ class App extends Component {
     // console.log(this.state.list);
     // console.log(this.state.servers);
     //hide no-items
-    document.querySelector('.API_error').classList.add('API_error_open');
+    //document.querySelector('.API_error').classList.add('API_error_open');
 
     this.updateEmptySearch();
 
@@ -353,7 +387,7 @@ class App extends Component {
       idList += '&items[]=' + item.id;
       return false;
     });
-    //console.log(idList);
+    console.log(idList);
 
     fetch('https://ahtool.com/grape', {
     	method: 'post',
@@ -364,10 +398,14 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
+      console.log(json);
+      if(json[2].error_msg.length>0){
+        console.log(json[2].error_msg);
+        document.querySelector('.API_error').classList.add('API_error_open');
+      }
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time
-
       });
       //save auctions to indexedDB
       let list = this.state.list;

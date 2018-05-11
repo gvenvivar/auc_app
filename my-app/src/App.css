@@ -112,6 +112,7 @@ h2::before{
 }
 .API_error_open{
   margin-top: 0;
+  cursor: pointer;
 }
 
 .App-wrap {
