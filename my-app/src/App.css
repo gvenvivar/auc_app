@@ -1,5 +1,6 @@
 html{
   height: 100%;
+  width: 100%;
 }
 body{
   position: relative;
@@ -97,7 +98,7 @@ h2::before{
 .API_error {
   background: #000;
   opacity: 0.8;
-  position: absolute;
+  position: fixed;
   top: 0;
   width: 100%;
   text-align: center;
