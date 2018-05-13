@@ -3,6 +3,7 @@ import Autocomplete from 'react-autocomplete';
 import Modal from './modal';
 import Serverselect from './serverselect';
 import no_img from '../img/no_img.jpg';
+import tips from '../img/tips.png';
 let styles = {
   item: {
     padding: '2px 6px',
@@ -108,7 +109,6 @@ class header extends Component {
               </div>
 	          </form>
           </div>
-
 
 					<div className='search'>
 					<form onSubmit={this.handleAuto.bind(this)}>
