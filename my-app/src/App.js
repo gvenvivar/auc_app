@@ -70,6 +70,7 @@ class App extends Component {
         switchModal: true,
         login: false,
         psw: false,
+        error_msg: 'Sorry, problems with Blizzard APi',
     };
 
 
@@ -405,7 +406,8 @@ class App extends Component {
       }
       this.setState({
         list: json[1].items,
-        updatedTime: json[0].time
+        updatedTime: json[0].time,
+        error_msg: json[2].error_msg,
       });
       //save auctions to indexedDB
       let list = this.state.list;
@@ -451,6 +453,9 @@ class App extends Component {
         //adding offline caption
         let iDiv = document.querySelector('.time');
         iDiv.innerHTML = 'Offline mode';
+        this.setState({
+          error_msg: 'Offline mode',
+        });
 
         this.state.itemList.map((item) => {
           console.log('map');
@@ -801,7 +806,7 @@ class App extends Component {
       <div>
       <div className='wrapper'>
       <div className="App flex">
-        <div className='API_error' onClick={this.close_error.bind(this)}>Sorry, problems with Blizzard APi</div>
+        <div className='API_error' onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
         <div className="App-wrap">
           <div className="cont">
           <div className='contact-wrapper'>

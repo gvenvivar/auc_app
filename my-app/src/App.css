@@ -1,11 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah');
 html{
   height: 100%;
+  width: 100%;
 }
 body{
   position: relative;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   min-height: 100%;
+}
+.body_noScroll{
+  overflow: hidden;
 }
 body::after{
   content:  '';
@@ -205,7 +210,7 @@ select option {
   border: 1px solid #000;
   color: #000;
   outline: none;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 
@@ -218,7 +223,8 @@ select option {
   justify-content: space-between;
   margin-top: -43px;
 }
-.modal{
+.modal,
+.tips_overlay{
   visibility: hidden;
   position: fixed;
   z-index: 100;
@@ -410,6 +416,9 @@ thead{
   opacity: .8;
   color: #fff;
 }
+thead tr th{
+  padding: 8px 0;
+}
 
 thead tr{
   font-size: 12px;
@@ -500,7 +509,7 @@ th:last-child {
 
 .black_stripe {
   position: absolute;
-  height: 36px;
+  height: 51px;
   width: 100%;
   background: #000;
   opacity: 0.9;
@@ -717,6 +726,91 @@ footer p{
 }
 
 
+/*Tips block/need help */
+.tips{
+  display: flex;
+  color: #dadfe1;
+  font-size: 12px;
+}
+.tips_b{
+  cursor: pointer;
+  line-height: 18px;
+}
+.tips span img{
+  width: 18px;
+  height: 18px;
+  padding: 0 10px 0 5px;
+  vertical-align: bottom;
+}
+.tips_overlay{
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 18px;
+  line-height: 22px;
+  overflow: hidden;
+}
+.tips_container{
+  margin: 0 auto 0;
+  max-width: 884px;
+  height: 100%;
+  position: relative;
+}
+.tips_realm{
+  position: absolute;
+  left: 160px;
+  top: 40px;
+}
+.tips_realm img{
+  vertical-align: sub;
+}
+.tips_item_name{
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  left: 325px;
+  top: 108px;
+}
+.tips_item_name img{
+  align-self: center;
+}
+.tips_login{
+  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 60px;
+}
+.tips_watch_list{
+  position: absolute;
+  left: 0px;
+  top: 225px;
+  display: flex;
+}
+.tips_watch_list_text{
+  padding: 0 10px;
+}
+.tips_watch_list_text h3{
+  font-size: 30px;
+  font-family: 'Gloria Hallelujah', cursive;
+  padding: 30px 0;
+  text-align: left;
+}
+.tips_search{
+  position: absolute;
+  left: 0;
+  top: 545px;
+  text-align: center;
+}
+.tips_search p{
+  margin: 0;
+}
+.closeTips{
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+}
+
 
 
 
@@ -761,6 +855,12 @@ footer p{
   footer{
     position: relative;
   }
+  .tips_overlay{
+    display: none;
+  }
+  .tips{
+    display: none;
+  }
 }
 
 @media (min-width: 1440px){
@@ -770,7 +870,15 @@ footer p{
   .col-right{
     width: 640px;
   }
-
+  .tips_container{
+    max-width: 1060px;
+  }
+  thead tr th{
+    padding: 0;
+  }
+  .black_stripe{
+    height: 36px;
+  }
 }
 
 @media (max-width: 500px){
