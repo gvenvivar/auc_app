@@ -430,7 +430,7 @@ class App extends Component {
         db.open().then(function (db) {
             // Database openeded successfully
             list.map(item => {
-              //console.log('Adding item: ', item);
+              console.log('Adding item: ', item);
               item.server = `${region}_${server}`;
               db.auctions.put(item);
               return false;
@@ -746,9 +746,11 @@ class App extends Component {
     this.addData(usServers, db.US_servers);
     this.addData(euServers, db.EU_servers);
     this.addData(data, db.items);
+    console.log('saving to index func');
   }
 
   addData(data, name){
+    console.log('adding data func')
     // dbPromise.then(function(db) {
     //     let tx = db.transaction(name, 'readwrite');
     //     let store = tx.objectStore(name);
@@ -774,7 +776,7 @@ class App extends Component {
           let dataCount = data.length;
           let count = name.count();
           count.then((count) => {
-            //console.log(dataCount, count)
+            console.log(dataCount, count)
             if(dataCount !== count){
               data.map((item) => {
                 //console.log('Adding item: ', item);
