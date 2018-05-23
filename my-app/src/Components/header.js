@@ -59,6 +59,9 @@ class header extends Component {
     document.querySelector('.modal').style.visibility = 'visible';
     let modal = document.querySelector('.modal-content');
     modal.className += ' open-modal';
+    if(localStorage.getItem('log')){
+      document.querySelector('.logout').style.display = 'block';
+    }
   }
 
   signUp(){
@@ -74,6 +77,9 @@ class header extends Component {
     document.body.className +=' body_noScroll';
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    //remove popup error
+    let error_msg = document.querySelector('.API_error');
+    error_msg.classList.remove("API_error_open");
   }
   closeTips(){
     document.querySelector('.tips_overlay').style.visibility = 'hidden';
@@ -202,7 +208,7 @@ class header extends Component {
 							padding:  '0',
 							fontSize: '90%',
 							position: 'absolute',
-							top: '58px', // height of your input
+							top: '42px', // height of your input
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,

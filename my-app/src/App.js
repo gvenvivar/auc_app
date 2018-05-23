@@ -45,7 +45,8 @@ db.version(4).stores({
     US_servers: 'name',
     EU_servers: 'name',
     items: 'id',
-    auctions: 'id, server'
+    auctions: 'id, server',
+    stringData: 'all'
 });
 
 
@@ -194,11 +195,17 @@ class App extends Component {
               euServers: arr
             })
         });
-        db.items.toArray().then((arr) => {
+        // db.items.toArray().then((arr) => {
+        //   this.setState({
+        //       data: arr
+        //     })
+        // });
+        db.stringData.get(1)
+        .then((item)=>{
           this.setState({
-              data: arr
-            })
-        });
+               data: item.data
+             })
+        })
 
       })
 
@@ -351,6 +358,8 @@ class App extends Component {
     let error_msg = document.querySelector('.API_error');
     error_msg.classList.remove("API_error_open");
     console.log('remove error msg');
+    //Adding marker to sessionStorage
+    sessionStorage.setItem('error', 'close');
   }
 
   clickSearch(){
@@ -399,8 +408,8 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
-      console.log(json);
-      if(json[2].error_msg.length>0){
+      //console.log(json);
+      if(json[2].error_msg.length>0 && !sessionStorage.getItem('error')){
         console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
@@ -430,7 +439,7 @@ class App extends Component {
         db.open().then(function (db) {
             // Database openeded successfully
             list.map(item => {
-              console.log('Adding item: ', item);
+              //console.log('Adding item: ', item);
               item.server = `${region}_${server}`;
               db.auctions.put(item);
               return false;
@@ -458,24 +467,41 @@ class App extends Component {
         });
 
         this.state.itemList.map((item) => {
-          console.log('map');
+          console.log('map itemList');
+          // console.log(item);
+          let itemUndef = {
+            name: item.name,
+            id: item.id,
+            price: '',
+            quantity: 'offline',
+            average: '',
+            img_url: ''
+          };
           db.auctions.get(item.id)
           .then((obj) => {
-              let itemUndef = {
-                name: item.name,
-                id: item.id,
-                price: '',
-                quantity: 'offline',
-                average: '',
-                img_url: ''
-              }
               if(obj === undefined){
-                db.items.get(item.id).then((obj) =>{
-                  itemUndef.img_url = obj.img_url;
-                  itemUndef.name = obj.name;
-                  console.log('asd')
+                // Old items db
+                // db.items.get(item.id).then((obj) =>{
+                //   itemUndef.img_url = obj.img_url;
+                //   itemUndef.name = obj.name;
+                // })
+
+                //New one string items db
+                db.stringData.get(1)
+                .then((item)=>{
+                    return item.data
+                })
+                .then((res)=>{
+                  return res.find(a => a.id===item.id);
+                })
+                .then((obj)=>{
+                    //console.log(itemUndef.name, item.name);
+                    itemUndef.img_url = obj.img_url;
+                    itemUndef.name = obj.name;
+                    //console.log(itemUndef.name, obj.name)
                 })
                 arr.push(itemUndef);
+                //console.log(arr);
               }
               if(obj && server !== obj.server){
                 itemUndef.img_url = obj.img_url;
@@ -489,7 +515,7 @@ class App extends Component {
               this.setState({
                 list: arr
               })
-
+              // console.log(this.state.list)
           })
         })
 
@@ -745,8 +771,19 @@ class App extends Component {
     let data      = this.state.data;
     this.addData(usServers, db.US_servers);
     this.addData(euServers, db.EU_servers);
-    this.addData(data, db.items);
-    console.log('saving to index func');
+    //this.addData(data, db.items);
+
+    //trying one string save method
+    db.stringData.put({all:1, data:data})
+
+    // .then((all)=>{
+    //   return  db.stringData.get(all);
+    // })
+    // .then((item)=>{
+    //   let result = item.data.find(a => a.id===25);
+    //   console.log(result);
+    // })
+    //console.log(JSON.stringify(data));
   }
 
   addData(data, name){

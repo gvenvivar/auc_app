@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import close from '../img/cerrar.png';
+import close from '../img/cerrar2.png';
 import LogIn from './logIn';
 import SignUp from './signup';
 
@@ -13,10 +13,13 @@ class Modal extends Component {
     document.getElementById('email').value = '';
     document.getElementById('psw').value = '';
     document.querySelector('.error').innerHTML = '';
-
     modal.classList.remove("open-modal");
   }
 
+  logOut(){
+    localStorage.clear();
+    window.location.reload();
+  }
 
 
 
@@ -56,6 +59,7 @@ class Modal extends Component {
                <a href='#' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
                <a href='#' onClick={this.props.updateSwitchModal}>Sign up</a>
              </div>
+             <div className='logout' onClick={this.logOut.bind(this)}>Log out</div>
              <LogIn logIn={this.props.logIn} />
            </div>
          </div>
@@ -70,6 +74,7 @@ class Modal extends Component {
           <a href='#' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
           <a href='#' onClick={this.props.updateSwitchModal}>Sign up</a>
           </div>
+          <div className='logout' onClick={this.logOut.bind(this)}>Log out</div>
           <SignUp signUp={this.props.signUp} />
         </div>
       </div>

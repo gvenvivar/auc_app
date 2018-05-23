@@ -309,10 +309,17 @@ select option {
 }
 .closePop{
   position: absolute;
-  width: 35px;
-  height: 35px;
-  top: 15px;
+  width: 25px;
+  height: 25px;
+  top: 25px;
   right: 15px;
+  cursor: pointer;
+}
+.logout{
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 60px;
   cursor: pointer;
 }
 .header-right {
@@ -486,9 +493,9 @@ thead tr{
 tbody tr {
   box-shadow: 0 1px 0 #95989a;
 }
-tbody tr:last-child{
+/* tbody tr:last-child{
   box-shadow: none;
-}
+} */
 tbody th{
   padding: 4px 0;
 }
