@@ -67,7 +67,7 @@ class resultListRow extends Component {
 		    		</div>
 		    		<div className="group group-right-body">
 			    		<div className='cell center'>{this.props.item.quantity}</div>
-			    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
+			    		<div className='cell center avg'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 			    	</div>
 		    	</div>
@@ -109,7 +109,7 @@ class resultListRow extends Component {
     		</div>
     		<div className="group group-right-body">
 	    		<div className='cell center'>{this.props.item.quantity}</div>
-	    		<div className='cell center'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
+	    		<div className='cell center avg'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 	    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 	    	</div>
     	</div>

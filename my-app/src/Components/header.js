@@ -155,7 +155,7 @@ class header extends Component {
           </div>
 
 					<div className='search'>
-					<form onSubmit={this.handleAuto.bind(this)}>
+					<form onSubmit={this.handleAuto.bind(this)} tabindex='1'>
 					<Autocomplete
 						value={this.state.autoComplite}
 						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}

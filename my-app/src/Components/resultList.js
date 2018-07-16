@@ -53,7 +53,7 @@ class resultList extends Component {
 		    		</div>
 		    		<div className="group group-right">
 			    		<div className="cell center">Qty</div>
-			    		<div className="cell center">Regional Avg</div>
+			    		<div className="cell center avg">Regional Avg</div>
 			    		<div className="cell">Price</div>
 			    	</div>
 		    	</div>
