@@ -4,16 +4,16 @@ import {orderBy} from 'lodash';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
 
-import DragSortableList from 'react-drag-sortable';
+// import DragSortableList from 'react-drag-sortable';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 const SortableItem = SortableElement(({value, delBtn, tooltipCreator}) =>{
 
 	return(
-		<tr>
+		<tr className="draggable">
   		<th><img className="icon" src={value.img_url} alt={value.name} onError={(e)=>{e.target.src = no_img}}/></th>
   		<th><a href='#' rel={tooltipCreator(value)}>{value.name}</a></th>
-  		<th><a href="#"><img className="close" alt='deleteBtn' src={close} 
+  		<th><a href="#"><img className="close" alt='deleteBtn' src={close}
 	  		onClick={(e)=>{
 	  			e.preventDefault();
 	  			delBtn(value.id);
@@ -45,8 +45,8 @@ class searchList extends Component {
     	saveOrder.push({
     		name : name,
     		id : id
-    	}) 
-    	
+    	})
+
     })
     this.props.dragList(saveOrder)
     //console.log(saveOrder)
@@ -78,7 +78,7 @@ class searchList extends Component {
 		let count = 0;
 		let drag = [];
 		let fullList =[];
-		
+
 
 		let addItem = this.props.additem;
 		//console.log(addItem);
@@ -109,7 +109,7 @@ class searchList extends Component {
     		}
 				return false;
     	});
-    	
+
 
 			return false;
     });
@@ -149,7 +149,7 @@ class searchList extends Component {
 		/*return (
       <div className="col-left">
         <div className="items-table">
-          
+
            <div className="search_header">
 					    <div className="icon_c">Icon</div>
 					    <div className="name_c">Name</div>
