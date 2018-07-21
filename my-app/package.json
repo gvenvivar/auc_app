@@ -11,13 +11,18 @@
     "react-scroll-to-component": "^1.0.1"
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "dexie": "^1.5.1",
     "lodash": "^4.17.4",
     "react": "^15.4.2",
     "react-autocomplete": "^1.4.1",
     "react-dom": "^15.4.2",
+    "react-drag-list": "^1.0.2",
+    "react-drag-sortable": "^1.0.4",
     "react-ga": "^2.2.0",
     "react-input-autosize": "1.1.0",
     "react-select": "^1.0.0-rc.3",
+    "react-sortable-hoc": "^0.6.5",
     "whatwg-fetch": "^2.0.3"
   },
   "scripts": {

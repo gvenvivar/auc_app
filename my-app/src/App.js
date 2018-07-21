@@ -5,11 +5,13 @@ import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
 import axios from 'axios';
-import idb from 'idb';
+//import idb from 'idb';
 import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
-
+import {arrayMove} from 'react-sortable-hoc';
+import 'babel-polyfill';
+import Dexie from 'dexie';
 
 
 //indexedDB
@@ -17,7 +19,7 @@ if(!('indexedDB' in window)){
     console.log('This browser does\'t support IndexDB');
 }
 
-let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
+/*let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
       // a placeholder case so that the switch block will
@@ -36,10 +38,21 @@ let dbPromise = idb.open('items-jsons', 4, function(upgradeDb) {
       store.createIndex('server', 'server', {unique: false});
 
   }
+});*/
+
+var db = new Dexie('items-jsons');
+db.version(4).stores({
+    US_servers: 'name',
+    EU_servers: 'name',
+    items: 'id',
+    auctions: 'id, server',
+    stringData: 'all'
 });
 
 
 class App extends Component {
+
+
   constructor(props) {
     super(props);
 
@@ -58,6 +71,7 @@ class App extends Component {
         switchModal: true,
         login: false,
         psw: false,
+        error_msg: 'Sorry, problems with Blizzard APi',
     };
 
 
@@ -138,37 +152,59 @@ class App extends Component {
       //callback if json can't load
       .catch(() => {
         console.log('can\'t load json data')
-        dbPromise.then(db => {
-          return db.transaction('items')
-            .objectStore('items').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
-          this.setState({
-            data: arr
-          })
-        })
+        // dbPromise.then(db => {
+        //   return db.transaction('items')
+        //     .objectStore('items').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     data: arr
+        //   })
+        // })
+        //
+        // dbPromise.then(db => {
+        //   return db.transaction('US_servers')
+        //     .objectStore('US_servers').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     usServers: arr
+        //   })
+        // })
+        //
+        // dbPromise.then(db => {
+        //   return db.transaction('EU_servers')
+        //     .objectStore('EU_servers').getAll();
+        // }).then(allObjs => {
+        //   return allObjs;
+        // }).then((arr) => {
+        //   this.setState({
+        //     euServers: arr
+        //   })
+        // })
 
-        dbPromise.then(db => {
-          return db.transaction('US_servers')
-            .objectStore('US_servers').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
+        db.US_servers.toArray().then((arr) => {
           this.setState({
-            usServers: arr
-          })
-        })
-
-        dbPromise.then(db => {
-          return db.transaction('EU_servers')
-            .objectStore('EU_servers').getAll();
-        }).then(allObjs => {
-          return allObjs;
-        }).then((arr) => {
+              usServers: arr
+            })
+        });
+        db.EU_servers.toArray().then((arr) => {
           this.setState({
-            euServers: arr
-          })
+              euServers: arr
+            })
+        });
+        // db.items.toArray().then((arr) => {
+        //   this.setState({
+        //       data: arr
+        //     })
+        // });
+        db.stringData.get(1)
+        .then((item)=>{
+          this.setState({
+               data: item.data
+             })
         })
 
       })
@@ -203,12 +239,17 @@ class App extends Component {
   }
 
   addToAuto(name, id){
-    if(id){
-      this.state.itemList.push({name: name.toLowerCase() , id:id});
+    let index = this.state.itemList.findIndex(i => i.id === id);
+    if(id && index === -1){
+      this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList();
       //console.log(this.state.itemList);
     }
+  }
+  dragList(drag){
+    this.setState({ itemList: drag });
+    console.log(this.state.itemList);
   }
 
   addSlug(item){
@@ -230,12 +271,46 @@ class App extends Component {
   }
 
   updateRegion(event){
-    this.setState({
-      region: event.target.value,
-      server: 'sargeras',
-      serverSlug: 'sargeras',
-      list : []
-    })
+    let identicalRealm = false;
+    console.log(this.state.server, this.state.region);
+    if(this.state.region === 'en_US'){
+      this.state.euServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+    if(this.state.region === 'en_GB'){
+      this.state.usServers.map(item =>{
+          if(item.name === this.state.server){
+            identicalRealm = true;
+          }
+        });
+        console.log(identicalRealm);
+    }
+
+    if(identicalRealm){
+      this.setState({
+        region: event.target.value,
+        list : []
+      })
+    }
+    else{
+      this.setState({
+        region: event.target.value,
+        server: 'sargeras',
+        serverSlug: 'sargeras',
+        list : []
+      })
+    }
+    //Old chage realm default functionality
+    // this.setState({
+    //   region: event.target.value,
+    //   server: 'sargeras',
+    //   serverSlug: 'sargeras',
+    //   list : []
+    // })
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
   updateSwitchModal(){
@@ -279,12 +354,21 @@ class App extends Component {
     return parseInt((timeSeconds - time)/60);
   }
 
+  close_error(){
+    let error_msg = document.querySelector('.API_error');
+    error_msg.classList.remove("API_error_open");
+    console.log('remove error msg');
+    //Adding marker to sessionStorage
+    sessionStorage.setItem('error', 'close');
+  }
 
   clickSearch(){
     // console.log('click');
     // console.log(this.state.list);
     // console.log(this.state.servers);
     //hide no-items
+    //document.querySelector('.API_error').classList.add('API_error_open');
+
     this.updateEmptySearch();
 
     var mq = window.matchMedia( "(max-width: 1024px)" );
@@ -292,7 +376,7 @@ class App extends Component {
       //console.log('media');
       let scrollTo = document.querySelector('.col-right');
       scrollToComponent(scrollTo, {
-          offset: 1000,
+          offset: 20,
           align: 'top',
           duration: 500
       });
@@ -313,7 +397,7 @@ class App extends Component {
       idList += '&items[]=' + item.id;
       return false;
     });
-    //console.log(idList);
+    console.log(idList);
 
     fetch('https://ahtool.com/grape', {
     	method: 'post',
@@ -324,61 +408,100 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
+      //console.log(json);
+      if(json[2].error_msg.length>0 && !sessionStorage.getItem('error')){
+        console.log(json[2].error_msg);
+        document.querySelector('.API_error').classList.add('API_error_open');
+      }
       this.setState({
         list: json[1].items,
-        updatedTime: json[0].time
-
+        updatedTime: json[0].time,
+        error_msg: json[2].error_msg,
       });
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;
       let region = this.state.region;
-      dbPromise.then(function(db) {
-          let tx = db.transaction('auctions', 'readwrite');
-          let store = tx.objectStore('auctions');
-          list.map(item => {
+      // dbPromise.then(function(db) {
+      //     let tx = db.transaction('auctions', 'readwrite');
+      //     let store = tx.objectStore('auctions');
+      //     list.map(item => {
+      //         //console.log('Adding item: ', item);
+      //         item.server = `${region}_${server}`;
+      //         store.put(item);
+      //         return false;
+      //       })
+      //       return tx.complite;
+      //   })
+      //   .then(() => console.log('All search saved to indexedDb'))
+      //   .catch((e) => console.log('Error adding item: ', e))
+
+        db.open().then(function (db) {
+            // Database openeded successfully
+            list.map(item => {
               //console.log('Adding item: ', item);
               item.server = `${region}_${server}`;
-              store.put(item);
+              db.auctions.put(item);
               return false;
             })
-            return tx.complite;
         })
         .then(() => console.log('All search saved to indexedDb'))
         .catch((e) => console.log('Error adding item: ', e))
+
+
     })
     .then(() =>{
-      //console.log("check for saving")
+      console.log("check for saving to idb");
       this.saveToIndex();
     })
     .catch((e) => {
       console.log(e);
-      dbPromise.then(db => {
-        const tx = db.transaction('auctions');
-        let arr = [];
+      let arr = [];
+        console.log('open');
         let server = `${this.state.region}_${this.state.server}`;
-
         //adding offline caption
         let iDiv = document.querySelector('.time');
         iDiv.innerHTML = 'Offline mode';
+        this.setState({
+          error_msg: 'Offline mode',
+        });
 
         this.state.itemList.map((item) => {
-          tx.objectStore('auctions').get(item.id)
+          console.log('map itemList');
+          // console.log(item);
+          let itemUndef = {
+            name: item.name,
+            id: item.id,
+            price: '',
+            quantity: 'offline',
+            average: '',
+            img_url: ''
+          };
+          db.auctions.get(item.id)
           .then((obj) => {
-              let itemUndef = {
-                name: item.name,
-                id: item.id,
-                price: '',
-                quantity: 'offline',
-                average: '',
-              }
               if(obj === undefined){
-                console.log(item.id);
-                db.transaction('items').objectStore('items').get(item.id).then((obj) =>{
-                  itemUndef.img_url = obj.img_url;
-                  itemUndef.name = obj.name;
+                // Old items db
+                // db.items.get(item.id).then((obj) =>{
+                //   itemUndef.img_url = obj.img_url;
+                //   itemUndef.name = obj.name;
+                // })
+
+                //New one string items db
+                db.stringData.get(1)
+                .then((item)=>{
+                    return item.data
                 })
-                arr.push(itemUndef)
+                .then((res)=>{
+                  return res.find(a => a.id===item.id);
+                })
+                .then((obj)=>{
+                    //console.log(itemUndef.name, item.name);
+                    itemUndef.img_url = obj.img_url;
+                    itemUndef.name = obj.name;
+                    //console.log(itemUndef.name, obj.name)
+                })
+                arr.push(itemUndef);
+                //console.log(arr);
               }
               if(obj && server !== obj.server){
                 itemUndef.img_url = obj.img_url;
@@ -389,17 +512,67 @@ class App extends Component {
                 arr.push(obj)
               }
 
+              this.setState({
+                list: arr
+              })
+              // console.log(this.state.list)
           })
-          return false;
         })
 
-        tx.complete.then(() => {
-          this.setState({
-            list: arr
-          })
-        });
 
-      })
+
+
+
+
+
+
+      // dbPromise.then(db => {
+      //   const tx = db.transaction('auctions');
+      //   let arr = [];
+      //   let server = `${this.state.region}_${this.state.server}`;
+      //
+      //   //adding offline caption
+      //   let iDiv = document.querySelector('.time');
+      //   iDiv.innerHTML = 'Offline mode';
+      //
+      //   this.state.itemList.map((item) => {
+      //     tx.objectStore('auctions').get(item.id)
+      //     .then((obj) => {
+      //         let itemUndef = {
+      //           name: item.name,
+      //           id: item.id,
+      //           price: '',
+      //           quantity: 'offline',
+      //           average: '',
+      //         }
+      //         if(obj === undefined){
+      //           console.log(item.id);
+      //           db.transaction('items').objectStore('items').get(item.id).then((obj) =>{
+      //             itemUndef.img_url = obj.img_url;
+      //             itemUndef.name = obj.name;
+      //           })
+      //           arr.push(itemUndef)
+      //         }
+      //         if(obj && server !== obj.server){
+      //           itemUndef.img_url = obj.img_url;
+      //           itemUndef.name = obj.name;
+      //           arr.push(itemUndef);
+      //         }
+      //         if(obj && server === obj.server){
+      //           arr.push(obj)
+      //         }
+      //
+      //     })
+      //     return false;
+      //   })
+      //
+      //   tx.complete.then(() => {
+      //     this.setState({
+      //       list: arr
+      //     })
+      //   });
+      //
+      // })
 
     })
 
@@ -596,43 +769,83 @@ class App extends Component {
     let usServers = this.state.usServers;
     let euServers = this.state.euServers;
     let data      = this.state.data;
-    this.addData(usServers, 'US_servers');
-    this.addData(euServers, 'EU_servers');
-    this.addData(data, 'items');
+    this.addData(usServers, db.US_servers);
+    this.addData(euServers, db.EU_servers);
+    //this.addData(data, db.items);
+
+    //trying one string save method
+    db.stringData.put({all:1, data:data})
+
+    // .then((all)=>{
+    //   return  db.stringData.get(all);
+    // })
+    // .then((item)=>{
+    //   let result = item.data.find(a => a.id===25);
+    //   console.log(result);
+    // })
+    //console.log(JSON.stringify(data));
   }
 
   addData(data, name){
-    dbPromise.then(function(db) {
-        let tx = db.transaction(name, 'readwrite');
-        let store = tx.objectStore(name);
-        let count = store.count();
-        let dataCount = Object.keys(data).length;
-        count.then((count) => {
-          //console.log(count, dataCount);
-          if(count !== dataCount){
-            data.map(server => {
-              //console.log('Adding item: ', server);
-              store.put(server);
-              return false;
-            })
-          }
-          return tx.complite;
-        })
-      })
-      .then(() => console.log('All items load successfully'))
-      .catch((e) => console.log('Error adding item: ', e))
+    console.log('adding data func')
+    // dbPromise.then(function(db) {
+    //     let tx = db.transaction(name, 'readwrite');
+    //     let store = tx.objectStore(name);
+    //     let count = store.count();
+    //     let dataCount = Object.keys(data).length;
+    //     count.then((count) => {
+    //       //console.log(count, dataCount);
+    //       if(count !== dataCount){
+    //         data.map(server => {
+    //           //console.log('Adding item: ', server);
+    //           store.put(server);
+    //           return false;
+    //         })
+    //       }
+    //       return tx.complite;
+    //     })
+    //   })
+    //   .then(() => console.log('All items load successfully'))
+    //   .catch((e) => console.log('Error adding item: ', e))
 
+      db.open().then(function (db) {
+          // Database openeded successfully
+          let dataCount = data.length;
+          let count = name.count();
+          count.then((count) => {
+            console.log(dataCount, count)
+            if(dataCount !== count){
+              data.map((item) => {
+                //console.log('Adding item: ', item);
+                name.put(item);
+              });
+            }
+          });
+
+      })
+      .then(()=> console.log('all items load successfully'))
+      .catch ((err) => {
+          // Error occurred
+          console.log('Error adding item: ', err)
+      });
   }
 
-
+  onSortEnd = ({oldIndex, newIndex}) => {
+    this.setState({
+      itemList: arrayMove(this.state.itemList, oldIndex, newIndex),
+    });
+  };
 
 
 
   render() {
 
+
     return (
+      <div>
       <div className='wrapper'>
       <div className="App flex">
+        <div className='API_error' onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
         <div className="App-wrap">
           <div className="cont">
           <div className='contact-wrapper'>
@@ -665,6 +878,9 @@ class App extends Component {
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
+                dragList={this.dragList.bind(this)}
+                onSortEnd={this.onSortEnd.bind(this)}
+                list={this.state.items}
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
@@ -674,9 +890,10 @@ class App extends Component {
         </div>
       </div>
       <footer>
-        <p>Art by <a href='https://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
-        <p>Outside of login, list of items, preferred server an region, no data is collected or stored</p>
+        <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
+        <p>Outside of login, list of items, preferred server and region, no data is collected or stored</p>
       </footer>
+      </div>
       </div>
     );
   }

@@ -3,6 +3,13 @@ import Autocomplete from 'react-autocomplete';
 import Modal from './modal';
 import Serverselect from './serverselect';
 import no_img from '../img/no_img.jpg';
+import tips_icon from '../img/tips.png';
+import tips_arrow from '../img/arrow_left.png';
+import tips_arrow_up from '../img/watch_list_arrow.png';
+import tips_line from '../img/login_line.png';
+import tips_line_search from '../img/search_arrow.png';
+import close_tips from '../img/close.png';
+
 let styles = {
   item: {
     padding: '2px 6px',
@@ -52,6 +59,9 @@ class header extends Component {
     document.querySelector('.modal').style.visibility = 'visible';
     let modal = document.querySelector('.modal-content');
     modal.className += ' open-modal';
+    if(localStorage.getItem('log')){
+      document.querySelector('.logout').style.display = 'block';
+    }
   }
 
   signUp(){
@@ -61,7 +71,19 @@ class header extends Component {
 
     login.style.display = 'none';
     signup.style.display = 'block';
-
+  }
+  openTips(){
+    document.querySelector('.tips_overlay').style.visibility = 'visible';
+    document.body.className +=' body_noScroll';
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    //remove popup error
+    let error_msg = document.querySelector('.API_error');
+    error_msg.classList.remove("API_error_open");
+  }
+  closeTips(){
+    document.querySelector('.tips_overlay').style.visibility = 'hidden';
+    document.body.classList.remove("body_noScroll");
   }
 
 
@@ -109,9 +131,31 @@ class header extends Component {
 	          </form>
           </div>
 
+          <div className='tips'>
+            <div className='tips_b' onClick={this.openTips.bind(this)}>
+            <span><img src={tips_icon} /></span>
+            Need help?
+            </div>
+            <div className='tips_overlay' onClick={this.closeTips.bind(this)}>
+              <img className='closeTips' src={close_tips} />
+              <div className='tips_container'>
+                <div className='tips_realm'><img src={tips_arrow} />Set your Region and Realm</div>
+                <div className='tips_item_name'><img src={tips_arrow} /><div className='tips_item_name_text'>Search for items to add <br/> to your watch list</div></div>
+                <div className='tips_login'><img src={tips_line} /><br/>Login to save<br/> your settings<br/> between devices</div>
+                <div className='tips_watch_list'>
+                  <img src={tips_arrow_up} />
+                  <div className='tips_watch_list_text'>
+                    <h3>Your watch list</h3>
+                    <p>List of items you selected<br/> can be organized with<br/> drag & drop.</p>
+                  </div>
+                </div>
+                <div className='tips_search'><img src={tips_line_search} /><p>Fetch results</p></div>
+              </div>
+            </div>
+          </div>
 
 					<div className='search'>
-					<form onSubmit={this.handleAuto.bind(this)}>
+					<form onSubmit={this.handleAuto.bind(this)} tabindex='1'>
 					<Autocomplete
 						value={this.state.autoComplite}
 						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}
@@ -164,12 +208,12 @@ class header extends Component {
 							padding:  '0',
 							fontSize: '90%',
 							position: 'absolute',
-							top: '38px', // height of your input
+							top: '42px', // height of your input
 							left: 0,
 							overflow: 'auto',
 							zIndex: 20,
               maxHeight: "300px",
-              textAlign: 'left'
+              textAlign: 'left',
 						}}
 					/>
 					</form>

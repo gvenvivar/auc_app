@@ -1,11 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah');
 html{
   height: 100%;
+  width: 100%;
 }
 body{
   position: relative;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   min-height: 100%;
+}
+.body_noScroll{
+  overflow: hidden;
 }
 body::after{
   content:  '';
@@ -19,6 +24,7 @@ body::after{
   bottom: 0;
   z-index: -1;
 }
+
 *::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: #999;
 }
@@ -62,7 +68,8 @@ h3{
   font-family: "Roboto", sans-serif;
   text-align: center;
   font-size: 13px;
-  color: rgb(181, 178, 180);
+  color: #fff;
+  opacity: 0.85;
 }
 h2::after{
   position: absolute;
@@ -92,14 +99,33 @@ h2::before{
   align-items: center;
 }
 
+.API_error {
+  background: #000;
+  opacity: 0.8;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  color:#fff;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 15px 0;
+  z-index: 999;
+  margin-top: -80px;
+  transition: 0.3s all ease-in-out;
+}
+.API_error_open{
+  margin-top: 0;
+  cursor: pointer;
+}
+
 .App-wrap {
   font-family: "Roboto", sans-serif;
   margin: 0 auto;
   min-width: 1024px;
-  //min-height: 768px;
-  //background: lightblue;
-  //opacity: 0.85
-
+  /* min-height: 768px;
+  background: lightblue;
+  opacity: 0.85 */
 }
 
 .flex{
@@ -114,8 +140,9 @@ h2::before{
 }
 
 .cont {
-  padding: 30px 70px 60px;
+  padding: 30px 15px 60px;
 }
+
 .server{
   position: relative;
   margin-bottom: -12px /*fix for react-select*/;
@@ -183,7 +210,7 @@ select option {
   border: 1px solid #000;
   color: #000;
   outline: none;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 
@@ -196,7 +223,8 @@ select option {
   justify-content: space-between;
   margin-top: -43px;
 }
-.modal{
+.modal,
+.tips_overlay{
   visibility: hidden;
   position: fixed;
   z-index: 100;
@@ -281,10 +309,17 @@ select option {
 }
 .closePop{
   position: absolute;
-  width: 35px;
-  height: 35px;
-  top: 15px;
+  width: 25px;
+  height: 25px;
+  top: 25px;
   right: 15px;
+  cursor: pointer;
+}
+.logout{
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 60px;
   cursor: pointer;
 }
 .header-right {
@@ -372,27 +407,44 @@ button {
   position: relative;
   overflow: hidden;
 }
+.col-right a{
+  cursor: default;
+}
+table a,
+.draggable:hover{
+  cursor: move;
+}
 
 table {
   width: 100%;
   font-size: 16px;
-  padding: 0px 25px 10px;
+  padding: 0px;
 }
 
 table a {
   color: #000;
   text-decoration: none;
 }
+tr th:first-child{
+  padding-left: 20px;
+}
+tr th:last-child{
+  padding-right: 20px;
+}
 
 thead{
-  font-size: 12px;
-  //background: #000;
   opacity: .8;
   color: #fff;
 }
+thead tr th{
+  padding: 8px 0;
+}
 
 thead tr{
-  height: 30px;
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  line-height: 32px;
 }
 
 .expand{
@@ -410,7 +462,15 @@ thead tr{
   padding: 0;
 }
 
-
+.have-potion{
+  border: 2px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0px 2px 6px 2px #000;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  vertical-align: middle;
+}
 .potion{
   margin-left: auto;
   text-align: center;
@@ -422,7 +482,7 @@ thead tr{
 }
 .potion-open{
   box-shadow: none;
-  border: none;
+  border: 3px solid #fff;
   transition: all 0.2s ease-in-out;
 }
 .potion img{
@@ -435,14 +495,13 @@ thead tr{
   border-radius: 2px;
 }
 
-
-
 .icon {
   width: 25px;
   height: 25px;
-  border: 1px solid #95989a;
-  border-radius: 2px;
+  border: 2px solid #fff;
+  border-radius: 3px;
   vertical-align: middle;
+  margin-right: 7px;
   /*background-image: url(img/no_img.jpg);*/
 }
 
@@ -450,10 +509,17 @@ thead tr{
   width: 25px;
   height: 25px;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 tbody tr {
-  box-shadow: 0 1px 0 #95989a
+  box-shadow: 0 1px 0 #95989a;
+}
+/* tbody tr:last-child{
+  box-shadow: none;
+} */
+tbody th{
+  padding: 4px 0;
 }
 
 th {
@@ -472,19 +538,20 @@ th:last-child {
 
 .black_stripe {
   position: absolute;
-  height: 32px;
+  height: 51px;
   width: 100%;
   background: #000;
   opacity: 0.9;
   top: 0;
+  left: 0;
   z-index: -1;
 }
 .gold {
-  padding-left: 2px;
+  padding-left: 5px;
 }
 .no-items-wrap {
   text-align: center;
-  padding: 100px 0;
+  padding: 115px 0;
   font-weight: normal;
 }
 
@@ -533,6 +600,21 @@ th:last-child {
   height: 1px;
   top: 50px;
   left: calc(50% - (250px/2));
+}
+footer {
+  background: #000;
+  text-align: center;
+  color: #fff;
+  opacity: 0.7;
+  padding: 20px 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+footer p{
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 footer {
@@ -615,24 +697,152 @@ footer p{
   color: #fff;
 }
 .row-body {
-  margin:  0 25px;
-  padding: 5px 0;
+  padding: 5px 20px;
 }
 .row-head{
   padding: 10px 25px;
 }
 .expand-open{
   margin-top: 1px;
+  cursor: pointer;
 }
 .expand-open .row{
   background: #c2c2c2;
-  border-bottom: 1px solid #000;
 }
 }
-
-
 
 /*end flexbox tables*/
+
+
+/* New left Column Flexbox Layout */
+.search_header {
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  height: 36px;
+  align-items: center;
+  font-size: 12px;
+  padding: 0 25px;
+}
+.items-table{
+  font-weight: bold;
+  overflow: auto;
+}
+.icon_c{
+  flex-basis: 40px;
+  align-items: center;
+}
+.name_c{
+  flex: 1;
+  align-self: center;
+}
+.close_c{
+  align-self: center;
+}
+.name_c a{
+  color: #000;
+  text-decoration: none;
+}
+.search_row{
+  margin: 0 25px;
+  padding: 5px 0;
+  box-shadow: 0 1px 0 #95989a;
+  display: flex;
+}
+.draggable:last-child .search_row{
+  box-shadow: none;
+}
+
+
+/*Tips block/need help */
+.tips{
+  display: flex;
+  color: #dadfe1;
+  font-size: 12px;
+}
+.tips_b{
+  cursor: pointer;
+  line-height: 18px;
+}
+.tips span img{
+  width: 18px;
+  height: 18px;
+  padding: 0 10px 0 5px;
+  vertical-align: bottom;
+}
+.tips_overlay{
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 18px;
+  line-height: 22px;
+  overflow: hidden;
+}
+.tips_container{
+  margin: 0 auto 0;
+  max-width: 992px;
+  height: 100%;
+  position: relative;
+}
+.tips_realm{
+  position: absolute;
+  left: 160px;
+  top: 40px;
+}
+.tips_realm img{
+  vertical-align: sub;
+}
+.tips_item_name{
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  left: 325px;
+  top: 108px;
+}
+.tips_item_name img{
+  align-self: center;
+}
+.tips_login{
+  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 60px;
+}
+.tips_watch_list{
+  position: absolute;
+  left: 0px;
+  top: 225px;
+  display: flex;
+}
+.tips_watch_list_text{
+  padding: 0 10px;
+}
+.tips_watch_list_text h3{
+  font-size: 30px;
+  font-family: 'Gloria Hallelujah', cursive;
+  padding: 30px 0;
+  text-align: left;
+}
+.tips_search{
+  position: absolute;
+  left: 0;
+  top: 545px;
+  text-align: center;
+}
+.tips_search p{
+  margin: 0;
+}
+.closeTips{
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+}
+
+
+
+
+/* Media queries*/
 
 @media (max-width: 1023px) {
   .contact-wrapper{
@@ -673,18 +883,41 @@ footer p{
   footer{
     position: relative;
   }
+  .tips_overlay{
+    display: none;
+  }
+  .tips{
+    display: none;
+  }
+}
+@media (min-width: 1024px){
+  .col-right{
+    width: 640px;
+  }
 }
 
 @media (min-width: 1440px){
   .App-wrap{
     min-width: 1200px;
   }
-  .col-right{
-    width: 640px;
+  .tips_container{
+    max-width: 1060px;
   }
-
+  thead tr th{
+    padding: 0;
+  }
+  .black_stripe{
+    height: 36px;
+  }
+  .cont {
+    padding: 30px 70px 60px;
 }
-
+}
+@media (max-width: 640px){
+  .avg{
+    display: none;
+  }
+}
 @media (max-width: 500px){
   .header {
     -webkit-flex-direction: column;
