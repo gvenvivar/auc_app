@@ -138,6 +138,9 @@ h2::before{
 .center {
   text-align: center;
 }
+.right{
+  text-align: right;
+}
 
 .cont {
   padding: 30px 15px 60px;
@@ -419,6 +422,7 @@ table {
   width: 100%;
   font-size: 16px;
   padding: 0px;
+  border-collapse: collapse;
 }
 
 table a {
@@ -433,11 +437,12 @@ tr th:last-child{
 }
 
 thead{
-  opacity: .8;
+  opacity: .9;
+  background: #000;
   color: #fff;
 }
 thead tr th{
-  padding: 8px 0;
+  padding: 9px 0;
 }
 
 thead tr{
@@ -481,8 +486,9 @@ thead tr{
   box-shadow: 0 2px 4px #000;
 }
 .potion-open{
-  box-shadow: none;
-  border: 3px solid #fff;
+  box-shadow: 0px 0px 1px #000;
+  border-radius: 0px;
+  border: 2px solid #fff;
   transition: all 0.2s ease-in-out;
 }
 .potion img{
@@ -512,14 +518,15 @@ thead tr{
   cursor: pointer;
 }
 
-tbody tr {
-  box-shadow: 0 1px 0 #95989a;
+.items-table table > tbody tr:nth-child(odd) {
+  /* box-shadow: 0 1px 0 #95989a; */
+  background: #dedede;
 }
 /* tbody tr:last-child{
   box-shadow: none;
 } */
 tbody th{
-  padding: 4px 0;
+  padding: 5px 0;
 }
 
 th {
@@ -535,10 +542,12 @@ th:last-child {
 .red {
   color: #ec0606;
 }
-
+.drag_helper a{
+  color: #000;
+}
 .black_stripe {
   position: absolute;
-  height: 51px;
+  height: 50px;
   width: 100%;
   background: #000;
   opacity: 0.9;
@@ -657,7 +666,7 @@ footer p{
 .table-container .row {
   display: flex;
   flex-direction: row;
-  box-shadow: 0 1px 0 #95989a;
+  /* box-shadow: 0 1px 0 #95989a; */
 }
 .wrap {
   -webkit-flex-wrap: wrap;
@@ -688,7 +697,7 @@ footer p{
   display: flex;
 }
 .group-left{
-  flex-grow: 1.5;
+  flex-grow: 1;
 }
 .row-head {
   font-size: 12px;
@@ -696,18 +705,18 @@ footer p{
   opacity: 0.9;
   color: #fff;
 }
+.table-container > div:nth-child(even){
+  background: #dedede;
+}
 .row-body {
   padding: 5px 20px;
 }
 .row-head{
-  padding: 10px 25px;
+  padding: 18px 25px;
 }
 .expand-open{
   margin-top: 1px;
   cursor: pointer;
-}
-.expand-open .row{
-  background: #c2c2c2;
 }
 }
 
@@ -903,12 +912,6 @@ footer p{
   .tips_container{
     max-width: 1060px;
   }
-  thead tr th{
-    padding: 0;
-  }
-  .black_stripe{
-    height: 36px;
-  }
   .cont {
     padding: 30px 70px 60px;
 }
@@ -916,6 +919,9 @@ footer p{
 @media (max-width: 640px){
   .avg{
     display: none;
+  }
+  .group-left{
+    flex-grow: 1.5;
   }
 }
 @media (max-width: 500px){
@@ -967,9 +973,6 @@ footer p{
   }
   .row-head{
     padding: 10px 10px;
-  }
-  .expand-open{
-    background: #c2c2c2;
   }
 
 }
