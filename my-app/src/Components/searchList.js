@@ -132,14 +132,13 @@ class searchList extends Component {
                 <th><button className='reset-btn' onClick={this.props.deleteAll}>Reset</button></th>
               </tr>
             </thead>
-            <SortableList items={fullList} onSortEnd={this.props.onSortEnd} delBtn={this.props.delButton} tooltipCreator={this.props.tooltipCreator} shouldCancelStart={this.shouldCancelStart}/>
+            <SortableList items={fullList} onSortEnd={this.props.onSortEnd} lockAxis='y' helperClass='drag_helper' delBtn={this.props.delButton} tooltipCreator={this.props.tooltipCreator} shouldCancelStart={this.shouldCancelStart}/>
           </table>
-          <div className="black_stripe"></div>
 					<div className='no-items-wrap'>
 						<div className='no-items'>Your item list is empty</div>
 					</div>
         </div>
-        <button onClick={this.props.clickSearch.bind(this)}>Search</button>
+        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search</button>
       </div>
     );
 

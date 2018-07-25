@@ -836,6 +836,12 @@ class App extends Component {
     });
   };
 
+  searchOnEnter(){
+    if (document.hasFocus()) {
+      console.log('have focus');
+    }
+  }
+
 
 
   render() {

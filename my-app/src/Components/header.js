@@ -131,6 +131,7 @@ class header extends Component {
 	          </form>
           </div>
 
+
           <div className='tips'>
             <div className='tips_b' onClick={this.openTips.bind(this)}>
             <span><img src={tips_icon} /></span>
@@ -155,10 +156,10 @@ class header extends Component {
           </div>
 
 					<div className='search'>
-					<form onSubmit={this.handleAuto.bind(this)} tabindex='1'>
+					<form onSubmit={this.handleAuto.bind(this)}>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name", tabIndex:'1'}}
 						items={this.props.data}
 						getItemValue={(item) => item.name}
 						sortItems={function sort (a, b, value) {
