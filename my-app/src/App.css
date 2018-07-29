@@ -478,12 +478,12 @@ thead tr{
 }
 .attach_plus{
   position: absolute;
-  left: -25px;
+  left: -30px;
   height: 39px;
   background: #fff;
   display: flex;
   align-items: center;
-  padding-left: 15px;
+  padding: 0px 10px;
   border-radius: 20%;
 }
 .potion{
@@ -520,6 +520,8 @@ thead tr{
   margin-right: 7px;
   /*background-image: url(img/no_img.jpg);*/
 }
+
+tbody >.draggable:nth-child(odd) .icon,
 .table-container > div:nth-child(even) .icon{
   border-color: #dedede;
 }
@@ -726,10 +728,10 @@ footer p{
   background: #dedede;
 }
 .row-body {
-  padding: 5px 20px 5px 20px;
+  padding: 5px 10px 5px 10px;
 }
 .row-head{
-  padding: 18px 20px 18px 20px;
+  padding: 17px 10px 17px 10px;
 }
 .expand-open{
   margin-top: 1px;
