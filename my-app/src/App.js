@@ -12,6 +12,7 @@ import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
 import 'babel-polyfill';
 import Dexie from 'dexie';
+import logo from './img/logo.png';
 
 
 //indexedDB

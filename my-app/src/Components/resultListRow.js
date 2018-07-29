@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ResultListRowExpanded from './resultListRowExpanded';
 import {transformPrice} from '../functions';
-import potion from '../img/potion-128.png';
+import potion from '../img/plus.png';
 import no_img from '../img/no_img.jpg';
 import gold from '../img/gold.png'
 
@@ -55,10 +55,14 @@ class resultListRow extends Component {
 
 			return(
 				<div>
+					<div className="attach_plus">
+						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
+					</div>
 		    	<div className="row row-body">
 		    		<div className="group group-left">
+
 			    		<div className="cell">
-			    			<img className="have-potion" onClick={this.handleClick.bind(this)} src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
+			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
 			    		</div>
 			    		<div className='cell flex-grow-3'>
 			    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
@@ -75,7 +79,7 @@ class resultListRow extends Component {
 
 		    		{list}
 
-		    		<div className="row row-body">
+		    		<div className="row row-body expand-total">
 			    		<div className="group group-left">
 				    		<div className="cell">
 				    		</div>

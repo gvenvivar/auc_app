@@ -371,7 +371,7 @@ a {
   border-radius: 5px;
   background: #fff;
   opacity: 0.85;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   position: relative;
 }
 button {
@@ -404,11 +404,11 @@ button {
   border-radius: 5px;
   background: #fff;
   opacity: 0.85;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   display: inline-block;
   float: right;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .col-right a{
   cursor: default;
@@ -468,7 +468,7 @@ thead tr{
 }
 
 .have-potion{
-  border: 2px solid #fff;
+  /* border: 2px solid #fff; */
   border-radius: 3px;
   box-shadow: 0px 2px 6px 2px #000;
   width: 25px;
@@ -476,19 +476,29 @@ thead tr{
   cursor: pointer;
   vertical-align: middle;
 }
+.attach_plus{
+  position: absolute;
+  left: -25px;
+  height: 39px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  border-radius: 20%;
+}
 .potion{
   margin-left: auto;
   text-align: center;
   align-self: center;
   cursor: pointer;
-  border: 2px solid #ccc;
+  /* border: 2px solid #ccc; */
   border-radius: 3px;
   box-shadow: 0 2px 4px #000;
 }
 .potion-open{
   box-shadow: 0px 0px 1px #000;
   border-radius: 0px;
-  border: 2px solid #fff;
+  /* border: 2px solid #fff; */
   transition: all 0.2s ease-in-out;
 }
 .potion img{
@@ -509,6 +519,12 @@ thead tr{
   vertical-align: middle;
   margin-right: 7px;
   /*background-image: url(img/no_img.jpg);*/
+}
+.table-container > div:nth-child(even) .icon{
+  border-color: #dedede;
+}
+.table-container > div:nth-child(even) .attach_plus{
+  background: #dedede;
 }
 
 .close {
@@ -544,6 +560,7 @@ th:last-child {
 }
 .drag_helper a{
   color: #000;
+  text-decoration: none;
 }
 .black_stripe {
   position: absolute;
@@ -709,14 +726,18 @@ footer p{
   background: #dedede;
 }
 .row-body {
-  padding: 5px 20px;
+  padding: 5px 20px 5px 20px;
 }
 .row-head{
-  padding: 18px 25px;
+  padding: 18px 20px 18px 20px;
 }
 .expand-open{
   margin-top: 1px;
+  border-top: 1px solid #95989a;
   cursor: pointer;
+}
+.expand-total{
+  border-top: 1px solid #95989a;
 }
 }
 

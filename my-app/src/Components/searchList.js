@@ -3,6 +3,7 @@ import SearchListRow from './searchListRow';
 import {orderBy} from 'lodash';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
+import {cutName25} from '../functions';
 
 // import DragSortableList from 'react-drag-sortable';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
@@ -12,7 +13,7 @@ const SortableItem = SortableElement(({value, delBtn, tooltipCreator}) =>{
 	return(
 		<tr className="draggable">
   		<th><img className="icon" src={value.img_url} alt={value.name} onError={(e)=>{e.target.src = no_img}}/></th>
-  		<th><a href='#' rel={tooltipCreator(value)}>{value.name}</a></th>
+  		<th><a href='#' rel={tooltipCreator(value)}>{cutName25(value.name)}</a></th>
   		<th><a href="#"><img className="close" alt='deleteBtn' src={close}
 	  		onClick={(e)=>{
 	  			e.preventDefault();
