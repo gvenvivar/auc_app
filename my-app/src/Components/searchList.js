@@ -9,7 +9,6 @@ import {cutName25} from '../functions';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 const SortableItem = SortableElement(({value, delBtn, tooltipCreator}) =>{
-
 	return(
 		<tr className="draggable">
   		<th><img className="icon" src={value.img_url} alt={value.name} onError={(e)=>{e.target.src = no_img}}/></th>
@@ -93,7 +92,7 @@ class searchList extends Component {
     	this.props.items.map(function(item){
     		if(i.id === item.id){
     			fullList.push(item);
-	        list.push(<SearchListRow item={item}  key={item.id} delButton={del} tooltipCreator={tooltipCreator}/>)
+	        //list.push(<SearchListRow item={item}  key={item.id} delButton={del} tooltipCreator={tooltipCreator}/>)
 
 	        /*drag.push({content: (<div className='search_row'>
 	        	<div className='icon_c'><img className="icon" src={item.img_url} alt={item.name} id={item.id} /></div>

@@ -102,6 +102,8 @@ class App extends Component {
     }
 
     if(storedName !== null){
+      //console.log('user login now')
+
       let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
 
       axios.post('https://ahtool.com/grape/get-user-cookie/', logIn)
@@ -140,6 +142,7 @@ class App extends Component {
       .then(response => response.json())
       .then(json => {
         //console.log(json.items);
+        console.log('data url fetched')
         this.setState({
           data: json.items,
           usServers :json.realms.en_US,

@@ -17,6 +17,10 @@ export function transformPrice(price) {
 }
 
 export function cutName25(name) {
-  let limit = name.substring(0, 20) + '...';
-  return limit;
+  if(name.length>20){
+    let limit = name.substring(0, 20) + '...';
+    return limit;
+  } else{
+    return name;
+  }
 }
