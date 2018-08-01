@@ -12,7 +12,7 @@ import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
 import 'babel-polyfill';
 import Dexie from 'dexie';
-import logo from './img/logo.png';
+import sword from './img/sword.png';
 
 
 //indexedDB
@@ -854,6 +854,7 @@ class App extends Component {
       <div className="App flex">
         <div className='API_error' onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
         <div className="App-wrap">
+          <img className="logo" src={sword} alt='logo' />
           <div className="cont">
           <div className='contact-wrapper'>
             <h2>AHtool</h2>

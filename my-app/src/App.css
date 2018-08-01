@@ -14,7 +14,7 @@ body{
 }
 body::after{
   content:  '';
-  background: url(img/frostmourne_by_chillalord-d5ka9vy.jpg)  no-repeat center center fixed; ;
+  background: url(img/frostmourne_by_chillalord-d5ka9vy_dark.jpg)  no-repeat center center fixed; ;
   background-size: cover;
   background-color: #000813;
   position: absolute;
@@ -49,6 +49,11 @@ input:-moz-placeholder { /* Firefox 18- */
   max-width: 320px;
   margin: 0 auto;
 }
+.logo{
+  position: absolute;
+  left: calc(50% - 16px);
+  top: 15px;
+}
 
 h2{
   margin: 0;
@@ -58,6 +63,7 @@ h2{
   font-family: "Roboto Slab";
   padding-left: 3px;
   font-size: 24px;
+  line-height: 24px;
   color: rgb(230, 226, 229);
   position: relative;
 }
@@ -68,6 +74,7 @@ h3{
   font-family: "Roboto", sans-serif;
   text-align: center;
   font-size: 13px;
+  line-height: 13px;
   color: #fff;
   opacity: 0.85;
 }
@@ -143,7 +150,7 @@ h2::before{
 }
 
 .cont {
-  padding: 30px 15px 60px;
+  padding: 60px 15px 60px;
 }
 
 .server{
@@ -430,10 +437,10 @@ table a {
   text-decoration: none;
 }
 tr th:first-child{
-  padding-left: 20px;
+  padding-left: 10px;
 }
 tr th:last-child{
-  padding-right: 20px;
+  padding-right: 10px;
 }
 
 thead{
@@ -528,6 +535,9 @@ tbody >.draggable:nth-child(odd) .icon,
 .table-container > div:nth-child(even) .attach_plus{
   background: #dedede;
 }
+.table-container > div:last-child{
+  border-radius: 0 0 5px 5px;
+}
 
 .close {
   width: 25px;
@@ -581,6 +591,7 @@ th:last-child {
   text-align: center;
   padding: 115px 0;
   font-weight: normal;
+  border-radius: 5px;
 }
 
 .no-results, .no-items {
@@ -732,6 +743,7 @@ footer p{
 }
 .row-head{
   padding: 17px 10px 17px 10px;
+  border-radius: 5px 5px 0 0;
 }
 .expand-open{
   margin-top: 1px;
@@ -809,7 +821,7 @@ footer p{
   overflow: hidden;
 }
 .tips_container{
-  margin: 0 auto 0;
+  margin: 20px auto 0;
   max-width: 992px;
   height: 100%;
   position: relative;
@@ -895,7 +907,7 @@ footer p{
     display: block;
   }
   .cont {
-    padding: 30px 10px;
+    padding: 60px 10px;
   }
   .col-left {
     display: block;
@@ -936,7 +948,7 @@ footer p{
     max-width: 1060px;
   }
   .cont {
-    padding: 30px 70px 60px;
+    padding: 60px 70px 60px;
 }
 }
 @media (max-width: 640px){
@@ -1003,7 +1015,7 @@ footer p{
 @media (max-width: 480px) {
 
   .cont {
-    padding: 30px 0px;
+    padding: 60px 0px;
   }
 }
 
