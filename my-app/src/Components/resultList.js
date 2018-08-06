@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ResultListRow from './resultListRow';
-import {orderBy} from 'lodash';
+//import {orderBy} from 'lodash';
 
 class resultList extends Component {
 
@@ -38,7 +38,7 @@ class resultList extends Component {
 		//console.log(list.map((item)=>item.props.item.name));
 
 		//sort order
-		let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
+		//let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
 
 
 

@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import SearchListRow from './searchListRow';
-import {orderBy} from 'lodash';
+// import SearchListRow from './searchListRow';
+// import {orderBy} from 'lodash';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
 import {cutName25} from '../functions';
 
 // import DragSortableList from 'react-drag-sortable';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 
 const SortableItem = SortableElement(({value, delBtn, tooltipCreator}) =>{
 	return(
 		<tr className="draggable">
   		<th><img className="icon" src={value.img_url} alt={value.name} onError={(e)=>{e.target.src = no_img}}/></th>
-  		<th><a href='#' rel={tooltipCreator(value)}>{cutName25(value.name)}</a></th>
-  		<th><a href="#"><img className="close" alt='deleteBtn' src={close}
+  		<th><a href={null} rel={tooltipCreator(value)}>{cutName25(value.name)}</a></th>
+  		<th><a href={null}><img className="close" alt='deleteBtn' src={close}
 	  		onClick={(e)=>{
 	  			e.preventDefault();
 	  			delBtn(value.id);
@@ -74,17 +74,17 @@ class searchList extends Component {
 
 	  });*/
 
-		let list = [];
-		let count = 0;
-		let drag = [];
+		// let list = [];
+		// let count = 0;
+		//let drag = [];
 		let fullList =[];
 
 
 		let addItem = this.props.additem;
 		//console.log(addItem);
     addItem.map((i)=> {
-			let del = this.props.delButton;
-			let tooltipCreator = this.props.tooltipCreator;
+			//let del = this.props.delButton;
+			// let tooltipCreator = this.props.tooltipCreator;
 			//console.log(i.id);
 			//console.log(newdata[i.id])
 
@@ -116,31 +116,40 @@ class searchList extends Component {
 		//sort order
 		//console.log(fullList);
 
-		let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
+		// let desc_list =  orderBy(list, ['props.item.order'], ['desc']);
+		let sort;
+
+		if(window.matchMedia("(min-width: 500px)").matches){
+			sort = <SortableList items={fullList} onSortEnd={this.props.onSortEnd} lockAxis='y' helperClass='drag_helper' delBtn={this.props.delButton} tooltipCreator={this.props.tooltipCreator} shouldCancelStart={this.shouldCancelStart}/>
+		}
+		else{
+			sort = <SortableList items={fullList} onSortEnd={this.props.onSortEnd} pressDelay={500} lockAxis='y' helperClass='drag_helper' delBtn={this.props.delButton} tooltipCreator={this.props.tooltipCreator} shouldCancelStart={this.shouldCancelStart}/>
+		}
 
 		//console.log(drag);
 
 		//React Sortable (HOC)
-		return (
-      <div className="col-left">
-        <div className="items-table">
-          <table>
-             <thead>
-              <tr>
-                <th>Icon</th>
-                <th>Name</th>
-                <th><button className='reset-btn' onClick={this.props.deleteAll}>Reset</button></th>
-              </tr>
-            </thead>
-            <SortableList items={fullList} onSortEnd={this.props.onSortEnd} lockAxis='y' helperClass='drag_helper' delBtn={this.props.delButton} tooltipCreator={this.props.tooltipCreator} shouldCancelStart={this.shouldCancelStart}/>
-          </table>
-					<div className='no-items-wrap'>
-						<div className='no-items'>Your item list is empty</div>
-					</div>
-        </div>
-        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search</button>
-      </div>
-    );
+			return (
+	      <div className="col-left">
+	        <div className="items-table">
+	          <table>
+	             <thead>
+	              <tr>
+	                <th>Icon</th>
+	                <th>Name</th>
+	                <th><button className='reset-btn' onClick={this.props.deleteAll}>Reset</button></th>
+	              </tr>
+	            </thead>
+	            {sort}
+	          </table>
+						<div className='no-items-wrap'>
+							<div className='no-items'>Your item list is empty</div>
+						</div>
+	        </div>
+	        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search</button>
+	      </div>
+	    );
+
 
 
 

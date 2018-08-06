@@ -24,3 +24,13 @@ export function cutName25(name) {
     return name;
   }
 }
+
+export function cutAvg(num){
+  if(num % 1){
+    //console.log('no íntenger');
+    return num;
+  }
+  else{
+    return Math.round(num);
+  }
+}

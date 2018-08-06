@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import ResultListRowExpanded from './resultListRowExpanded';
+import ResultListRowTotalCost from './resultListRowTotalCost';
+import ResultListRowMarkup from './resultListRowMarkup';
 import {transformPrice} from '../functions';
 import potion from '../img/plus.png';
-import no_img from '../img/no_img.jpg';
-import gold from '../img/gold.png'
+// import no_img from '../img/no_img.jpg';
+// import gold from '../img/gold.png'
 
 class resultListRow extends Component {
 	//Old potion icon
@@ -42,143 +44,62 @@ class resultListRow extends Component {
 
 		let modifiedPrice = transformPrice(this.props.item.price);
 		let modifiedAverage = transformPrice(this.props.item.average);
+		let text = '';
+		let list = [];
+		let price= 0 ;
 
-		// console.log(this.props.item.compo);
-		if(this.props.item.components&&this.props.item.alchemy==='TRUE'){
-			console.log(this.props.item);
-			let list = [];
-			let price= 0 ;
+
+
+		//Check if alchemy receipt
+		if(this.props.item.components && this.props.item.alchemy==='TRUE'){
+			// console.log(this.props.item);
+			if(this.props.item.rank3==="TRUE"){
+				text = 'Rank 3' ;
+			}
 			this.props.item.components.map((items) => {
 				list.push(<ResultListRowExpanded item={items}  key={items.id} />)
 				price +=items.amount * items.price;
 				return false;
 			})
-
 			return(
 				<div>
 					<div className="attach_plus">
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
-		    	<div className="row row-body">
-		    		<div className="group group-left">
-
-			    		<div className="cell">
-			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
-			    		</div>
-			    		<div className='cell flex-grow-3'>
-			    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
-
-			    		</div>
-		    		</div>
-		    		<div className="group group-right-body">
-			    		<div className='cell center'>{this.props.item.quantity}</div>
-			    		<div className='cell right avg'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-			    	</div>
-		    	</div>
+		    	<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator}/>
 		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
-
-		    		{list}
-
-		    		<div className="row row-body expand-total">
-			    		<div className="group group-left">
-				    		<div className="cell">
-				    		</div>
-				    		<div className='cell flex-grow-3'>
-				    				Total rank 3 cost
-				    		</div>
-			    		</div>
-			    		<div className="group group-right-body">
-				    		<div className='cell center'></div>
-				    		<div className='cell right'></div>
-				    		<div className='cell'><span>{transformPrice(price/1.5)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-				    	</div>
-			    	</div>
-
+		    	{list}
+		    	<ResultListRowTotalCost price={price/1.5} text={text}/>
 		    	</div>
-
-
 	    </div>
 
 		)}
+		//Check if NON-alchemy receipt
 		if(this.props.item.components&&this.props.item.alchemy==='FALSE'){
-			console.log(this.props.item);
-			let list = [];
-			let price= 0 ;
+			// console.log(this.props.item);
+			if(this.props.item.rank3==="TRUE"){
+				text = 'Rank 3' ;
+			}
 			this.props.item.components.map((items) => {
 				list.push(<ResultListRowExpanded item={items}  key={items.id} />)
 				price +=items.amount * items.price;
 				return false;
 			})
-
 			return(
 				<div>
 					<div className="attach_plus">
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
-		    	<div className="row row-body">
-		    		<div className="group group-left">
-
-			    		<div className="cell">
-			    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
-			    		</div>
-			    		<div className='cell flex-grow-3'>
-			    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
-
-			    		</div>
-		    		</div>
-		    		<div className="group group-right-body">
-			    		<div className='cell center'>{this.props.item.quantity}</div>
-			    		<div className='cell right avg'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-			    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-			    	</div>
-		    	</div>
+		    	<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator}/>
 		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
-
-		    		{list}
-
-		    		<div className="row row-body expand-total">
-			    		<div className="group group-left">
-				    		<div className="cell">
-				    		</div>
-				    		<div className='cell flex-grow-3'>
-				    				Total rank 3 cost
-				    		</div>
-			    		</div>
-			    		<div className="group group-right-body">
-				    		<div className='cell center'></div>
-				    		<div className='cell right'></div>
-				    		<div className='cell'><span>{transformPrice(price)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-				    	</div>
-			    	</div>
-
+		    	{list}
+		    	<ResultListRowTotalCost price={price} text={text}/>
 		    	</div>
-
-
 	    </div>
-
 		)
 		}
     return (
-    	<div>
-    	<div className="row row-body">
-    		<div className="group group-left">
-	    		<div className="cell">
-	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
-	    		</div>
-	    		<div className='cell flex-grow-3'>
-	    			<a href="#" rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
-	    		</div>
-    		</div>
-    		<div className="group group-right-body">
-	    		<div className='cell center'>{this.props.item.quantity}</div>
-	    		<div className='cell right avg'><span>{modifiedAverage}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-	    		<div className='cell'><span>{modifiedPrice}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-	    	</div>
-    	</div>
-    	</div>
-
-
+			<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator}/>
     );
   }
 }

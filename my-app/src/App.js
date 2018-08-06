@@ -142,7 +142,7 @@ class App extends Component {
       .then(response => response.json())
       .then(json => {
         //console.log(json.items);
-        console.log('data url fetched')
+        // console.log('data url fetched')
         this.setState({
           data: json.items,
           usServers :json.realms.en_US,
@@ -155,7 +155,11 @@ class App extends Component {
       })*/
       //callback if json can't load
       .catch(() => {
-        console.log('can\'t load json data')
+        console.log('can\'t load json data');
+        this.setState({
+          error_msg: "Sorry no connection. Offline mode"
+        })
+        document.querySelector('.API_error').classList.add('API_error_open');
         // dbPromise.then(db => {
         //   return db.transaction('items')
         //     .objectStore('items').getAll();
@@ -282,6 +286,7 @@ class App extends Component {
           if(item.name === this.state.server){
             identicalRealm = true;
           }
+          return false;
         });
         console.log(identicalRealm);
     }
@@ -290,6 +295,7 @@ class App extends Component {
           if(item.name === this.state.server){
             identicalRealm = true;
           }
+          return false;
         });
         console.log(identicalRealm);
     }
@@ -355,7 +361,7 @@ class App extends Component {
   transformTime(time){
     let currentTime = new Date();
     let timeSeconds =currentTime.getTime()/1000;;
-    return parseInt((timeSeconds - time)/60);
+    return parseInt((timeSeconds - time)/60, 10);
   }
 
   close_error(){
@@ -401,7 +407,7 @@ class App extends Component {
       idList += '&items[]=' + item.id;
       return false;
     });
-    console.log(idList);
+    // console.log(idList);
 
     fetch('https://ahtool.com/grape', {
     	method: 'post',
@@ -460,6 +466,10 @@ class App extends Component {
     })
     .catch((e) => {
       console.log(e);
+      //Show offline mode msg
+      document.querySelector('.API_error').classList.add('API_error_open');
+
+
       let arr = [];
         console.log('open');
         let server = `${this.state.region}_${this.state.server}`;
@@ -521,6 +531,7 @@ class App extends Component {
               })
               // console.log(this.state.list)
           })
+          return false;
         })
 
 
@@ -727,10 +738,10 @@ class App extends Component {
 
     //post
     axios.post('https://ahtool.com/grape/update-user/',  data)
-    .then(response => {
-      let data = response.data;
-      //console.log(data);
-    })
+    // .then(response => {
+    //   let data = response.data;
+    //   //console.log(data);
+    // })
     .catch(function (error) {
       console.log(error);
     });
@@ -822,6 +833,7 @@ class App extends Component {
               data.map((item) => {
                 //console.log('Adding item: ', item);
                 name.put(item);
+                return false;
               });
             }
           });

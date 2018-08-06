@@ -134,23 +134,23 @@ class header extends Component {
 
           <div className='tips'>
             <div className='tips_b' onClick={this.openTips.bind(this)}>
-            <span><img src={tips_icon} /></span>
+            <span><img src={tips_icon} alt='open tips'/></span>
             Need help?
             </div>
             <div className='tips_overlay' onClick={this.closeTips.bind(this)}>
-              <img className='closeTips' src={close_tips} />
+              <img className='closeTips' src={close_tips} alt='close tips'/>
               <div className='tips_container'>
-                <div className='tips_realm'><img src={tips_arrow} />Set your Region and Realm</div>
-                <div className='tips_item_name'><img src={tips_arrow} /><div className='tips_item_name_text'>Search for items to add <br/> to your watch list</div></div>
-                <div className='tips_login'><img src={tips_line} /><br/>Login to save<br/> your settings<br/> between devices</div>
+                <div className='tips_realm'><img src={tips_arrow} alt='arrow'/>Set your Region and Realm</div>
+                <div className='tips_item_name'><img src={tips_arrow} alt='arrow'/><div className='tips_item_name_text'>Search for items to add <br/> to your watch list</div></div>
+                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Login to save<br/> your settings<br/> between devices</div>
                 <div className='tips_watch_list'>
-                  <img src={tips_arrow_up} />
+                  <img src={tips_arrow_up} alt='arrow'/>
                   <div className='tips_watch_list_text'>
                     <h3>Your watch list</h3>
                     <p>List of items you selected<br/> can be organized with<br/> drag & drop.</p>
                   </div>
                 </div>
-                <div className='tips_search'><img src={tips_line_search} /><p>Fetch results</p></div>
+                <div className='tips_search'><img src={tips_line_search} alt='tips_line_search'/><p>Fetch results</p></div>
               </div>
             </div>
           </div>
