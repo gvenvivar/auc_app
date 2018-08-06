@@ -157,7 +157,7 @@ class App extends Component {
       .catch(() => {
         console.log('can\'t load json data');
         this.setState({
-          error_msg: "Sorry no connection. Offline mode"
+          error_msg: "Sorry, no connection. Offline mode"
         })
         document.querySelector('.API_error').classList.add('API_error_open');
         // dbPromise.then(db => {
@@ -914,7 +914,7 @@ class App extends Component {
       </div>
       <footer>
         <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
-        <p>Outside of login, list of items, preferred server and region, no data is collected or stored</p>
+        <p>A web app for quick World of Warcraft auction house monitoring, with multiple item search.</p>
       </footer>
       </div>
       </div>
