@@ -72,7 +72,7 @@ class App extends Component {
         switchModal: true,
         login: false,
         psw: false,
-        error_msg: 'Sorry, problems with Blizzard APi',
+        error_msg: 'Sorry, no connection. Offline mode',
     };
 
 
@@ -83,7 +83,6 @@ class App extends Component {
     // This just needs to be called once since we have no routes in this case.
     ReactGA.pageview(window.location.pathname);
   }
-
 
   componentDidMount() {
     //reset Realm on click
@@ -127,12 +126,12 @@ class App extends Component {
         if(response.data !== 'Error - email or password'){
           this.udpateEmptyList();
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
-
         }
 
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function () {
+        console.log('cant load https://ahtool.com/grape/get-user-cookie/');
+        document.querySelector('.API_error').classList.add('API_error_open');
       });
     }
 
@@ -391,6 +390,7 @@ class App extends Component {
           duration: 500
       });
     }
+    document.querySelector('.loading').style.display = 'block';
 
     //take value from select region
     let strRegion = this.state.region;
@@ -419,15 +419,16 @@ class App extends Component {
     })
     .then(json => {
       //console.log(json);
-      if(json[2].error_msg.length>0 && !sessionStorage.getItem('error')){
-        console.log(json[2].error_msg);
-        document.querySelector('.API_error').classList.add('API_error_open');
-      }
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
+      if(json[2].error_msg.length>0 && !sessionStorage.getItem('error')){
+        console.log(json[2].error_msg);
+        document.querySelector('.API_error').classList.add('API_error_open');
+      }
+      document.querySelector('.loading').style.display = 'none';
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;

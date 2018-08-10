@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import {orderBy} from 'lodash';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
+import loading from '../img/loading.gif';
 import {cutName25} from '../functions';
 
 // import DragSortableList from 'react-drag-sortable';
@@ -146,7 +147,7 @@ class searchList extends Component {
 							<div className='no-items'>Your item list is empty</div>
 						</div>
 	        </div>
-	        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search</button>
+	        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search<img className='loading' src={loading} alt='loading'/></button>
 	      </div>
 	    );
 

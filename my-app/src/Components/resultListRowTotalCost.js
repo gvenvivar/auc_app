@@ -17,8 +17,6 @@ class resultListTotalCost extends Component {
           </div>
         </div>
         <div className="group group-right-body">
-          <div className='cell center'></div>
-          <div className='cell right'></div>
           <div className='cell'><span>{transformPrice(this.props.price)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
         </div>
       </div>

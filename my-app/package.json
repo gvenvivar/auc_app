@@ -1,6 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
+  "homepage" : "http://gvenvivar.github.io",
   "private": true,
   "devDependencies": {
     "axios": "^0.16.1",

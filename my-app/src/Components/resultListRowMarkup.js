@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import gold from '../img/gold.png';
 import no_img from '../img/no_img.jpg';
-// import potion from '../img/plus.png';
+import potion from '../img/plus.png';
 
 
 
@@ -47,6 +47,9 @@ class resultListRowMarkup extends Component {
   	    		<div className='cell flex-grow-3'>
   	    			<a href={null} rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
   	    		</div>
+            {this.props.showPotionInside===true &&
+              <span className='potion inside_potion' onClick={this.props.handleClick}><img src={potion} alt='toogle'/></span>
+            }
       		</div>
       		<div className="group group-right-body">
   	    		<div className='cell center'>{this.props.item.quantity}</div>

@@ -41,6 +41,9 @@ input:-moz-placeholder { /* Firefox 18- */
   color: #fff;
   margin: 20px auto;
 }
+.wrapper{
+  overflow: hidden;
+}
 
 .wowhead-tooltip-powered{
   display: none!important;
@@ -393,6 +396,15 @@ button {
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   cursor: pointer;
+  position: relative;
+}
+.loading{
+  width: 15px;
+  height: 15px;
+  top: 14px;
+  left: calc(50% + 35px);
+  position: absolute;
+  display: none;
 }
 .reset-btn{
   margin: 0;
@@ -516,6 +528,9 @@ thead tr{
 .potion-open img{
   box-shadow: inset 1px 1px 4px #000;
   border-radius: 2px;
+}
+.inside_potion{
+  display: none;
 }
 
 .icon {
@@ -922,7 +937,7 @@ footer p{
     max-width: 640px;
   }
   .App-wrap {
-    min-width: auto;
+    min-width: 100%;
   }
   footer{
     position: relative;
@@ -950,6 +965,14 @@ footer p{
   .cont {
     padding: 60px 70px 60px;
 }
+}
+@media (max-width: 740px){
+  .inside_potion{
+    display: block;
+  }
+  .attach_plus{
+    display: none;
+  }
 }
 @media (max-width: 640px){
   .avg{
@@ -992,9 +1015,24 @@ footer p{
     flex-grow: 2;
   }
   .group-right-body .cell{
-    box-shadow: 0 1px 0 0 #95989a;
+    /* box-shadow: 0 1px 0 0 #95989a; */
     padding: 3px 0;
+    position: relative;
   }
+  .group-right-body .cell::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 3px);
+    width: 6px;
+    height: 1px;
+    background: #000;
+  }
+  .group-right-body .cell:last-child::after,
+  .expand-total .cell:after{
+    content: none;
+  }
+
   .group-right-body .cell:last-child{
     box-shadow: none;
     text-align: right;
