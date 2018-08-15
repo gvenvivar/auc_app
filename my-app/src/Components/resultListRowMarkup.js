@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import gold from '../img/gold.png';
 import no_img from '../img/no_img.jpg';
 import potion from '../img/plus.png';
+import {cutName} from '../functions';
 
 
 
@@ -45,7 +46,7 @@ class resultListRowMarkup extends Component {
   	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
   	    		</div>
   	    		<div className='cell flex-grow-3'>
-  	    			<a href={null} rel={this.props.tooltipCreator(this.props.item)}>{this.props.item.name}</a>
+  	    			<a href={null} rel={this.props.tooltipCreator(this.props.item)}>{cutName(this.props.item.name, 30)}</a>
   	    		</div>
             {this.props.showPotionInside===true &&
               <span className='potion inside_potion' onClick={this.props.handleClick}><img src={potion} alt='toogle'/></span>

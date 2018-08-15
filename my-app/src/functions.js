@@ -16,9 +16,9 @@ export function transformPrice(price) {
 	return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
-export function cutName25(name) {
-  if(name.length>20){
-    let limit = name.substring(0, 20) + '...';
+export function cutName(name, len) {
+  if(name.length>len){
+    let limit = name.substring(0, len) + '...';
     return limit;
   } else{
     return name;

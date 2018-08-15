@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 // import {orderBy} from 'lodash';
 import close from '../img/cerrar.png';
 import no_img from '../img/no_img.jpg';
-import loading from '../img/loading.gif';
-import {cutName25} from '../functions';
+import loading from '../img/loading2.gif';
+import {cutName} from '../functions';
 
 // import DragSortableList from 'react-drag-sortable';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
@@ -13,7 +13,7 @@ const SortableItem = SortableElement(({value, delBtn, tooltipCreator}) =>{
 	return(
 		<tr className="draggable">
   		<th><img className="icon" src={value.img_url} alt={value.name} onError={(e)=>{e.target.src = no_img}}/></th>
-  		<th><a href={null} rel={tooltipCreator(value)}>{cutName25(value.name)}</a></th>
+  		<th><a href={null} rel={tooltipCreator(value)}>{cutName(value.name, 20)}</a></th>
   		<th><a href={null}><img className="close" alt='deleteBtn' src={close}
 	  		onClick={(e)=>{
 	  			e.preventDefault();

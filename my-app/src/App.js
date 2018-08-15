@@ -42,6 +42,13 @@ if(!('indexedDB' in window)){
 });*/
 
 var db = new Dexie('items-jsons');
+// db.version(4).stores({
+//     US_servers: 'name',
+//     EU_servers: 'name',
+//     lastSearch: 'id',
+//     auctions: 'id, server',
+//     stringData: 'all'
+// });
 db.version(4).stores({
     US_servers: 'name',
     EU_servers: 'name',
@@ -49,6 +56,10 @@ db.version(4).stores({
     auctions: 'id, server',
     stringData: 'all'
 });
+db.version(5).stores({
+  lastSearch: 'id',
+  items: null,
+})
 
 
 class App extends Component {
@@ -104,11 +115,12 @@ class App extends Component {
       //console.log('user login now')
 
       let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
+      //update last login time
+      this.storeLogin(storedName, storedPw);
 
       axios.post('https://ahtool.com/grape/get-user-cookie/', logIn)
       .then(response => {
-        //console.log(response);
-
+        //console.log(response.data.items);
         this.setState({
           itemList: response.data.items,
           region: response.data.region[0],
@@ -119,6 +131,7 @@ class App extends Component {
           psw: storedPw,
         })
         //console.log('list : ', this.state.itemList.length);
+        // console.log(this.state.itemList);
         return response;
       })
       .then((response)=>{
@@ -129,9 +142,25 @@ class App extends Component {
         }
 
       })
-      .catch(function () {
+      .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie/');
         document.querySelector('.API_error').classList.add('API_error_open');
+        //load last list from db
+        db.lastSearch.get(1)
+        .then(item=>{
+          console.log(item.items);
+          this.setState({
+            itemList: item.items,
+            region: item.region,
+            server: item.server,
+            serverSlug: item.serverSlug,
+            login: storedName,
+            psw: storedPw
+          })
+          this.udpateEmptyList();
+          document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
+        })
+
       });
     }
 
@@ -424,7 +453,11 @@ class App extends Component {
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
-      if(json[2].error_msg.length>0 && !sessionStorage.getItem('error')){
+      // console.log(this.state.error_msg.length);
+      if(this.state.error_msg.length === 0){
+        document.querySelector('.API_error').classList.remove('API_error_open');
+      }
+      if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
         console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
@@ -469,6 +502,7 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
+      document.querySelector('.loading').style.display = 'none';
 
 
       let arr = [];
@@ -604,8 +638,8 @@ class App extends Component {
   logIn (e){
     e.preventDefault();
     let modal = document.querySelector('.modal-content');
-    let login = document.getElementById('email').value; //admin
-    let pass  = document.getElementById('psw').value; //'optsem63';
+    let login = document.getElementById('email').value;
+    let pass  = document.getElementById('psw').value;
     let msg   = document.querySelector('.error');
     let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
 
@@ -665,7 +699,7 @@ class App extends Component {
 
   storeLogin(log, pass){
     let time_now  = (new Date()).getTime();
-    //console.log('saving login to localStorage')
+    // console.log('saving login to localStorage')
     localStorage.setItem('log', log);
     localStorage.setItem('pw', pass);
     localStorage.setItem('time', time_now);
@@ -792,6 +826,15 @@ class App extends Component {
     //trying one string save method
     db.stringData.put({all:1, data:data})
 
+    //save last list of items
+    db.lastSearch.put({
+      id:1, items:this.state.itemList,
+      region:this.state.region,
+      server:this.state.server,
+      serverSlug:this.state.serverSlug,
+      login:this.state.login
+    });
+
     // .then((all)=>{
     //   return  db.stringData.get(all);
     // })
@@ -803,7 +846,7 @@ class App extends Component {
   }
 
   addData(data, name){
-    console.log('adding data func')
+    // console.log('adding data func')
     // dbPromise.then(function(db) {
     //     let tx = db.transaction(name, 'readwrite');
     //     let store = tx.objectStore(name);

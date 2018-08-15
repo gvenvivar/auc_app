@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {transformPrice, cutAvg} from '../functions';
 import no_img from '../img/no_img.jpg';
 import gold from '../img/gold.png'
+import {cutName} from '../functions';
 
 
 class resultListRowExpanded extends Component {
@@ -15,7 +16,7 @@ class resultListRowExpanded extends Component {
 		    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name}  onError={(e)=>{e.target.src = no_img}}/>
 		    		</div>
 		    		<div className='cell flex-grow-3'>
-		    			<a href={null} rel={'item=' + this.props.item.id}>{this.props.item.name}</a>
+		    			<a href={null} rel={'item=' + this.props.item.id}>{cutName(this.props.item.name, 20)}</a>
 		    		</div>
 	    		</div>
 	    		<div className="group group-right-body">
