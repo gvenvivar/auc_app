@@ -107,7 +107,7 @@ class App extends Component {
     let time = localStorage.getItem('time');
     let nowTime = new Date().getTime();
 
-    if((nowTime - time) > 1000 * 60 * 60 * 14){
+    if((nowTime - time) > 1000 * 60 * 60 * 24 * 14){
       localStorage.clear();
     }
 
@@ -400,7 +400,7 @@ class App extends Component {
     sessionStorage.setItem('error', 'close');
   }
 
-  clickSearch(){
+  clickSearch(i){
     // console.log('click');
     // console.log(this.state.list);
     // console.log(this.state.servers);
@@ -409,7 +409,9 @@ class App extends Component {
 
     this.updateEmptySearch();
 
-    var mq = window.matchMedia( "(max-width: 1024px)" );
+    const mq = window.matchMedia( "(max-width: 1024px)" );
+    const loadingIcon = i.currentTarget.children[0];
+
     if(mq.matches){
       //console.log('media');
       let scrollTo = document.querySelector('.col-right');
@@ -419,7 +421,8 @@ class App extends Component {
           duration: 500
       });
     }
-    document.querySelector('.loading').style.display = 'block';
+    //console.log(i.currentTarget.children);
+    loadingIcon.style.display = 'block';
 
     //take value from select region
     let strRegion = this.state.region;
@@ -461,7 +464,7 @@ class App extends Component {
         console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
-      document.querySelector('.loading').style.display = 'none';
+      loadingIcon.style.display = 'none';
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;
@@ -502,7 +505,7 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
-      document.querySelector('.loading').style.display = 'none';
+      loadingIcon.style.display = 'none';
 
 
       let arr = [];
@@ -642,12 +645,17 @@ class App extends Component {
     let pass  = document.getElementById('psw').value;
     let msg   = document.querySelector('.error');
     let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
+    let loadingIcon = e.currentTarget.children[0];
+
+    loadingIcon.style.display = 'block';
 
     if(login === ''){
       msg.innerHTML = 'Please enter email';
+      loadingIcon.style.display = 'none';
     } else{
     axios.post('https://ahtool.com/grape/get-user/', logIn)
     .then(response => {
+
       //console.log(response);
       let data = response.data;
       let token = data.auth_token;
@@ -655,6 +663,7 @@ class App extends Component {
       if (typeof data === "string"){
         //console.log(data);
         msg.innerHTML = data;
+        loadingIcon.style.display = 'none';
       }
 
       this.setState({
@@ -672,6 +681,7 @@ class App extends Component {
       this.storeLogin(login, token);
       //console.log(this.state.login)
       //console.log(this.state.psw)
+      loadingIcon.style.display = 'none';
       return response;
 
     })
@@ -715,6 +725,7 @@ class App extends Component {
     let realm = this.state.server;
     let realmSlug = this.state.serverSlug;
     let msg = document.querySelector('.error');
+    let loadingIcon = e.currentTarget.children[0];
 
 
     let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
@@ -727,30 +738,34 @@ class App extends Component {
       return false;
     });
 
+    loadingIcon.style.display = 'block';
 
-      if(pass === passR && login !=='' && pass !== ''){
-        axios.post('https://ahtool.com/grape/add-user/', data)
-        .then(response => {
-          let data = response.data;
+    if(pass === passR && login !=='' && pass !== ''){
+      axios.post('https://ahtool.com/grape/add-user/', data)
+      .then(response => {
+        let data = response.data;
 
-          if (data !== "Error - user already exists"){
-            //console.log(data);
-          // open login modal
-          this.updateSwitchModal();
-          document.querySelector('.error').style.color = 'green';
-          document.querySelector('.error').innerHTML = 'Thanks for registration. Please log in';
+        if (data !== "Error - user already exists"){
+          //console.log(data);
+        // open login modal
+        this.updateSwitchModal();
+        document.querySelector('.error').style.color = 'green';
+        document.querySelector('.error').innerHTML = 'Thanks for registration. Please log in';
         } else{
           msg.style.color = 'red';
           msg.innerHTML = data;
         }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      }
-      if(login === '' || pass === ''){
-        msg.innerHTML = 'Please fill all fields';
-      }
+        loadingIcon.style.display = 'none';
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    if(login === '' || pass === ''){
+      msg.innerHTML = 'Please fill all fields';
+      loadingIcon.style.display = 'none';
+    }
   }
 
   updateUser(){

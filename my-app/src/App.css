@@ -249,7 +249,7 @@ select option {
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.85);
 }
-.modal img{
+.modal .closePop img{
   width: 100%;
 }
 .switchers{

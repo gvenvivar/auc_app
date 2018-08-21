@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import loading from '../img/loading2.gif';
 
 class SignUp extends Component {
 
@@ -36,7 +37,7 @@ class SignUp extends Component {
         </label>
         <div className='error'></div>
         <div className='btn-wrap'>
-          <button className='btn' id='login' onClick={this.props.signUp.bind(this)}>Sign Up</button>
+          <button className='btn' id='login' onClick={this.props.signUp.bind(this)}>Sign Up<img className='loading' src={loading} alt='loading'/></button>
         </div>
       </form>
     );
