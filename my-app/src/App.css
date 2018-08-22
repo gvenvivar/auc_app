@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah');
+/* @import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah'); */
 html{
   height: 100%;
   width: 100%;
@@ -669,6 +669,12 @@ footer p{
   margin: 0;
   font-size: 12px;
   line-height: 1.5;
+}
+.feedback{
+  position: absolute;
+  right: 20px;
+  top: 30px;
+  font-size: 12px;
 }
 
 footer {

@@ -20,8 +20,8 @@ class resultListRowExpanded extends Component {
 		    		</div>
 	    		</div>
 	    		<div className="group group-right-body">
-		    		<div className='cell center'><span>{transformPrice(this.props.item.price)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
-		    		<div className='cell right'>x{cutAvg(this.props.item.amount)}</div>
+						<div className='cell center'>x{cutAvg(this.props.item.amount)}</div>
+		    		<div className='cell right'><span>{transformPrice(this.props.item.price)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 		    		<div className='cell'><span>{transformPrice(this.props.item.price * this.props.item.amount)}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
 		    	</div>
 	    	</div>

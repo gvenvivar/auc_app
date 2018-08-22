@@ -465,6 +465,12 @@ class App extends Component {
         document.querySelector('.API_error').classList.add('API_error_open');
       }
       loadingIcon.style.display = 'none';
+      let scrollTo = document.querySelector('.col-right');
+      scrollToComponent(scrollTo, {
+          offset: 0,
+          align: 'top',
+          duration: 300
+      });
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;
