@@ -427,6 +427,10 @@ class App extends Component {
     if(loadingIcon){
       loadingIcon.style.display = 'block';
     }
+    else{
+      console.log(refresh);
+      refresh.classList.add('refresh-rotate');
+    }
 
     //take value from select region
     let strRegion = this.state.region;
@@ -476,6 +480,8 @@ class App extends Component {
             align: 'top',
             duration: 300
         });
+      } else{
+        refresh.classList.remove('refresh-rotate');
       }
 
 
@@ -521,6 +527,10 @@ class App extends Component {
       document.querySelector('.API_error').classList.add('API_error_open');
       if(loadingIcon){
         loadingIcon.style.display = 'none';
+      }
+      else{
+        console.log(refresh);
+        refresh.classList.remove('refresh-rotate');
       }
 
       let arr = [];
