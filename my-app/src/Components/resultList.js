@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ResultListRow from './resultListRow';
+import refresh from '../img/refresh.png'
 //import {orderBy} from 'lodash';
 
 class resultList extends Component {
@@ -54,7 +55,7 @@ class resultList extends Component {
 		    		<div className="group group-right">
 			    		<div className="cell center">Qty</div>
 			    		<div className="cell right avg">Regional Avg</div>
-			    		<div className="cell">Price</div>
+			    		<div className="cell"><img className='refresh' src={refresh} alt='refresh' onClick={this.props.refresh}/>Price</div>
 			    	</div>
 		    	</div>
 

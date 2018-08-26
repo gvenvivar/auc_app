@@ -13,6 +13,7 @@ import {arrayMove} from 'react-sortable-hoc';
 import 'babel-polyfill';
 import Dexie from 'dexie';
 import sword from './img/sword.png';
+import envelope from './img/envelop.png'
 
 
 //indexedDB
@@ -411,6 +412,7 @@ class App extends Component {
 
     const mq = window.matchMedia( "(max-width: 1024px)" );
     const loadingIcon = i.currentTarget.children[0];
+    const refresh = document.querySelector('.refresh');
 
     if(mq.matches){
       //console.log('media');
@@ -422,7 +424,9 @@ class App extends Component {
       });
     }
     //console.log(i.currentTarget.children);
-    loadingIcon.style.display = 'block';
+    if(loadingIcon){
+      loadingIcon.style.display = 'block';
+    }
 
     //take value from select region
     let strRegion = this.state.region;
@@ -464,13 +468,17 @@ class App extends Component {
         console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
-      loadingIcon.style.display = 'none';
-      let scrollTo = document.querySelector('.col-right');
-      scrollToComponent(scrollTo, {
-          offset: 0,
-          align: 'top',
-          duration: 300
-      });
+      if(loadingIcon){
+        loadingIcon.style.display = 'none';
+        let scrollTo = document.querySelector('.col-right');
+        scrollToComponent(scrollTo, {
+            offset: 0,
+            align: 'top',
+            duration: 300
+        });
+      }
+
+
       //save auctions to indexedDB
       let list = this.state.list;
       let server = this.state.server;
@@ -511,8 +519,9 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
-      loadingIcon.style.display = 'none';
-
+      if(loadingIcon){
+        loadingIcon.style.display = 'none';
+      }
 
       let arr = [];
         console.log('open');
@@ -972,6 +981,7 @@ class App extends Component {
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
+              refresh={this.clickSearch.bind(this)}
                 />
             </div>
           </div>
@@ -980,6 +990,7 @@ class App extends Component {
       <footer>
         <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
         <p>A web app for quick World of Warcraft auction house monitoring, with multiple item search.</p>
+        <a className='feedback_wrap' href='mailto:your.emperor@gmail.com'><img className="feedback" src={envelope} alt='contact us' /></a>
       </footer>
       </div>
       </div>

@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah'); */
+@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Roboto|Roboto+Slab');
 html{
   height: 100%;
   width: 100%;
@@ -671,10 +671,10 @@ footer p{
   line-height: 1.5;
 }
 .feedback{
+  width: 20px;
   position: absolute;
-  right: 20px;
-  top: 30px;
-  font-size: 12px;
+  top: 35px;
+  right: 25px;
 }
 
 footer {
@@ -775,7 +775,13 @@ footer p{
   border-top: 1px solid #95989a;
 }
 }
-
+.refresh{
+  height: 16px;
+  margin-right: 10px;
+  vertical-align: bottom;
+  cursor: pointer;
+  transition: 0.6s;
+}
 /*end flexbox tables*/
 
 
@@ -987,6 +993,11 @@ footer p{
   .group-left{
     flex-grow: 1.5;
   }
+  .feedback{
+    position: relative;
+    top: 5px;
+    right: 0;
+  }
 }
 @media (max-width: 500px){
   .header {
@@ -1052,6 +1063,9 @@ footer p{
   }
   .row-head{
     padding: 10px 10px;
+  }
+  .refresh{
+    display: none;
   }
 
 }
