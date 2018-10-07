@@ -998,7 +998,7 @@ class App extends Component {
         </div>
       </div>
       <footer>
-        <p>Art by <a href='http://chillalord.deviantart.com/art/Frostmourne-336402574'>Chillalord</a></p>
+        <p>Art by <a rel="noopener noreferrer" href='http://chillalord.deviantart.com/art/Frostmourne-336402574' target="_blank">Chillalord</a></p>
         <p>A web app for quick World of Warcraft auction house monitoring, with multiple item search.</p>
         <a className='feedback_wrap' href='mailto:your.emperor@gmail.com'><img className="feedback" src={envelope} alt='contact us' /></a>
       </footer>

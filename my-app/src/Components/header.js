@@ -9,6 +9,7 @@ import tips_arrow_up from '../img/watch_list_arrow.png';
 import tips_line from '../img/login_line.png';
 import tips_line_search from '../img/search_arrow.png';
 import close_tips from '../img/close.png';
+import help from '../img/help.png';
 
 let styles = {
   item: {
@@ -221,6 +222,7 @@ class header extends Component {
 					</div>
 	      </div>
 	      <div className="header-right">
+          <span onClick={this.openTips.bind(this)}><img className='help_icon' src={help} alt='open help'/></span>
 	        <a href="#login" id='login' onClick={this.openModal.bind(this)}>Log in</a>
           <div className='time'></div>
 	      </div>
