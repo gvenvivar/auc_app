@@ -3,7 +3,6 @@ import Autocomplete from 'react-autocomplete';
 import Modal from './modal';
 import Serverselect from './serverselect';
 import no_img from '../img/no_img.jpg';
-import tips_icon from '../img/tips.png';
 import tips_arrow from '../img/arrow_left.png';
 import tips_arrow_up from '../img/watch_list_arrow.png';
 import tips_line from '../img/login_line.png';
@@ -134,10 +133,6 @@ class header extends Component {
 
 
           <div className='tips'>
-            <div className='tips_b' onClick={this.openTips.bind(this)}>
-            <span><img src={tips_icon} alt='open tips'/></span>
-            Need help?
-            </div>
             <div className='tips_overlay' onClick={this.closeTips.bind(this)}>
               <img className='closeTips' src={close_tips} alt='close tips'/>
               <div className='tips_container'>
