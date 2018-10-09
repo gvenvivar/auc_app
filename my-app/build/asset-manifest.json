@@ -1,11 +1,10 @@
 {
-  "main.css": "static/css/main.e0e892cd.css",
-  "main.css.map": "static/css/main.e0e892cd.css.map",
-  "main.js": "static/js/main.cfaf2a7d.js",
-  "main.js.map": "static/js/main.cfaf2a7d.js.map",
+  "main.css": "static/css/main.d0251b75.css",
+  "main.css.map": "static/css/main.d0251b75.css.map",
+  "main.js": "static/js/main.f04abaee.js",
+  "main.js.map": "static/js/main.f04abaee.js.map",
   "static\\media\\cerrar2.png": "static/media/cerrar2.ed737898.png",
   "static\\media\\close.png": "static/media/close.ae7ab87e.png",
   "static\\media\\frostmourne_by_chillalord-d5ka9vy_dark.jpg": "static/media/frostmourne_by_chillalord-d5ka9vy_dark.830ac1e3.jpg",
-  "static\\media\\loading2.gif": "static/media/loading2.7d5c2bec.gif",
-  "static\\media\\tips.png": "static/media/tips.8b337b42.png"
+  "static\\media\\loading2.gif": "static/media/loading2.7d5c2bec.gif"
 }

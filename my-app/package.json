@@ -1,13 +1,13 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage" : "http://gvenvivar.github.io",
+  "homepage": "http://gvenvivar.github.io",
   "private": true,
   "devDependencies": {
     "axios": "^0.16.1",
     "idb": "^2.0.3",
     "prop-types": "^15.5.8",
-    "react-autocomplete": "^1.4.1",
+    "react-autocomplete": "^1.7.3",
     "react-scripts": "1.0.7",
     "react-scroll-to-component": "^1.0.1"
   },
@@ -16,7 +16,6 @@
     "dexie": "^1.5.1",
     "lodash": "^4.17.4",
     "react": "^15.4.2",
-    "react-autocomplete": "^1.4.1",
     "react-dom": "^15.4.2",
     "react-drag-list": "^1.0.2",
     "react-drag-sortable": "^1.0.4",
