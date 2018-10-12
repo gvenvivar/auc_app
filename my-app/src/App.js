@@ -446,7 +446,6 @@ class App extends Component {
     let lists =
     {
       'list1': idList,
-      'list2': [33, 44, 55]
     }
     let activeList = 'list1';
     let objdataf =
