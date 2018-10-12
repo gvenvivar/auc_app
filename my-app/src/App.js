@@ -440,25 +440,46 @@ class App extends Component {
     //console.log(strServer);
 
     //creat ID list
-    let idList = '';
-    idList += '&items[]=' + strRegion + strServer;
+    // let idList = '';
+    // idList += '&items[]=' + strRegion + strServer;
+    let idList = [];
+    let lists =
+    {
+      'list1': idList,
+      'list2': [33, 44, 55]
+    }
+    let activeList = 'list1';
+    let objdataf =
+    { 'region' :  strRegion,
+      'server' :  this.state.serverSlug,
+      'itemLists'  : lists
+    }
+    // lists.map(i=>{
+    //   // objdataf.itemLists = new Object();
+    //   // objdataf.itemList[i] = [];
+    // })
 
     this.state.itemList.map((item) => {
-      idList += '&items[]=' + item.id;
+      // idList += '&items[]=' + item.id;
+      idList.push(item.id);
       return false;
     });
-    // console.log(idList);
+     console.log(JSON.stringify(objdataf));
+     console.log(Object.keys(objdataf.itemLists).length);
+     console.log(objdataf.itemLists.list1)
 
-    fetch('https://ahtool.com/grape', {
+    fetch('https://ahtool.com/grape/test/', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    	body: idList
+      //"Accept":"appliactions/json"
+      // headers: {"Content-Type": "application/json"},
+    	body: JSON.stringify(objdataf)
     })
     .then(response =>{
       return response.json()
     })
     .then(json => {
-      //console.log(json);
+      console.log(json);
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time,
