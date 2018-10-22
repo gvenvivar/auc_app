@@ -115,13 +115,15 @@ class App extends Component {
     if(storedName !== null){
       //console.log('user login now')
 
-      let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
+      // let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
+      let logIn = {'login':storedName, 'pwhash': storedPw}
       //update last login time
+      console.log(logIn);
       this.storeLogin(storedName, storedPw);
 
-      axios.post('https://ahtool.com/grape/get-user-cookie/', logIn)
+      axios.post('https://ahtool.com/grape/get-user-cookie-new/', logIn)
       .then(response => {
-        //console.log(response.data.items);
+        console.log(response.data.itemLists.list1);
         this.setState({
           itemList: response.data.items,
           region: response.data.region[0],
@@ -144,7 +146,7 @@ class App extends Component {
 
       })
       .catch(() => {
-        console.log('cant load https://ahtool.com/grape/get-user-cookie/');
+        console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
         document.querySelector('.API_error').classList.add('API_error_open');
         //load last list from db
         db.lastSearch.get(1)
@@ -446,6 +448,7 @@ class App extends Component {
     let lists =
     {
       'list1': idList,
+      'list2': [18672, 8838]
     }
     let activeList = 'list1';
     let objdataf =
@@ -467,7 +470,7 @@ class App extends Component {
      console.log(Object.keys(objdataf.itemLists).length);
      console.log(objdataf.itemLists.list1)
 
-    fetch('https://ahtool.com/grape/test/', {
+    fetch('https://ahtool.com/grape/multi-list/', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
       //"Accept":"appliactions/json"
@@ -480,7 +483,7 @@ class App extends Component {
     .then(json => {
       console.log(json);
       this.setState({
-        list: json[1].items,
+        list: json[1].itemLists.list1,
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
@@ -689,7 +692,8 @@ class App extends Component {
     let login = document.getElementById('email').value;
     let pass  = document.getElementById('psw').value;
     let msg   = document.querySelector('.error');
-    let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
+    // let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
+    let logIn = {"login": login, "pwhash": pass}
     let loadingIcon = e.currentTarget.children[0];
 
     loadingIcon.style.display = 'block';
@@ -698,7 +702,7 @@ class App extends Component {
       msg.innerHTML = 'Please enter email';
       loadingIcon.style.display = 'none';
     } else{
-    axios.post('https://ahtool.com/grape/get-user/', logIn)
+    axios.post('https://ahtool.com/grape/get-user-new/', logIn)
     .then(response => {
 
       //console.log(response);
@@ -772,21 +776,30 @@ class App extends Component {
     let msg = document.querySelector('.error');
     let loadingIcon = e.currentTarget.children[0];
 
+    let idList = [];
+    let lists =
+    {
+      'list1': idList,
+      'list2': [18672, 8838]
+    }
 
-    let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
-    + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+
+    // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
+    // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+    let data = {'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
     //console.log(data);
 
     //create item list ID
     this.state.itemList.map((item) => {
-      data += '&userdata[]=' + item.id;
+      // data += '&userdata[]=' + item.id;
+      idList.push(item.id);
       return false;
     });
 
     loadingIcon.style.display = 'block';
 
     if(pass === passR && login !=='' && pass !== ''){
-      axios.post('https://ahtool.com/grape/add-user/', data)
+      axios.post('https://ahtool.com/grape/add-user-new/', data)
       .then(response => {
         let data = response.data;
 
@@ -819,20 +832,29 @@ class App extends Component {
     let region = this.state.region;
     let realm = this.state.server;
     let realmSlug = this.state.serverSlug;
+    let idList = [];
+    let lists =
+    {
+      'list1': idList,
+      'list2': [18672, 8838]
+    }
 
-    let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
-    + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+    // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
+    // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
+    let data = {'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
+    // console.log(data);
 
     //console.log(this.state.itemList);
     this.state.itemList.map((item) => {
-      data += '&userdata[]=' + item.id;
+      // data += '&userdata[]=' + item.id;
+      idList.push(item.id);
       return false;
     });
-    //console.log(data);
+    console.log(data);
 
 
     //post
-    axios.post('https://ahtool.com/grape/update-user/',  data)
+    axios.post('https://ahtool.com/grape/update-user-new/',  data)
     // .then(response => {
     //   let data = response.data;
     //   //console.log(data);
