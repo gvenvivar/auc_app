@@ -1,0 +1,50 @@
+.tabs{
+  max-width: 994px;
+  min-height: 40px;
+  background: #000;
+  opacity: 0.85;
+  margin: 30px auto;
+}
+.tab{
+  display: inline-block;
+  width: calc(24.8% - 20px);
+  border: 1px solid #4E5357;
+  border-radius: 5px 5px 0 0;
+  height: 38px;
+  position: relative;
+  padding-left: 20px;
+}
+.tab.active{
+  border-color: #fff;
+  padding-left: 0;
+  width: 24.8%;
+}
+.tab.active .rename{
+  display: inline-block;
+}
+.rename{
+  display: none;
+  width: 25px;
+  height: 25px;
+  margin: 5px 8px;
+}
+.tabs_name{
+  background: transparent;
+  border: 0;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 10px 0;
+  max-width: 175px;
+  cursor: default;
+}
+.close_tab{
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  right: 7px;
+  top: 6px;
+}
