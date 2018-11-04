@@ -118,7 +118,7 @@ class App extends Component {
       // let logIn =  '&userdata[]=' + storedName +'&userdata[]=' +storedPw;
       let logIn = {'login':storedName, 'pwhash': storedPw}
       //update last login time
-      console.log(logIn);
+      // console.log(logIn);
       this.storeLogin(storedName, storedPw);
 
       axios.post('https://ahtool.com/grape/get-user-cookie-new/', logIn)
@@ -850,7 +850,7 @@ class App extends Component {
       idList.push(item.id);
       return false;
     });
-    console.log(data);
+    // console.log(data);
 
 
     //post
