@@ -4,20 +4,26 @@
   background: #000;
   opacity: 0.85;
   margin: 30px auto;
+  position: relative;
 }
 .tab{
   display: inline-block;
-  width: calc(24.8% - 20px);
+  width: 24.8%;
   border: 1px solid #4E5357;
   border-radius: 5px 5px 0 0;
   height: 38px;
   position: relative;
+}
+.tabInner{
   padding-left: 20px;
 }
 .tab.active{
   border-color: #fff;
-  padding-left: 0;
   width: 24.8%;
+  transition: all 1s ease-in-out;
+}
+.tab.active .tabInner{
+  padding-left: 0;
 }
 .tab.active .rename{
   display: inline-block;
@@ -48,4 +54,18 @@
   position: absolute;
   right: 7px;
   top: 6px;
+  cursor: pointer;
+}
+.add_tab{
+  width: 25px;
+  height: 25px;
+  transform: rotate(45deg);
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: -25px;
+
+}
+.addTab{
+  display: inline-block;
 }

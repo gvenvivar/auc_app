@@ -459,7 +459,7 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
-      //console.log(json);
+      console.log(json);
       this.setState({
         list: json[1].items,
         updatedTime: json[0].time,
