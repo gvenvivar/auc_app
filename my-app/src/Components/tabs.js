@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import pencil from '../img/pencil.png';
 import cerrar from '../img/cerrar_white.png';
 import '../tabs.css';
+import {SetCaretAtEnd} from '../functions';
 
 let dataJson = {
   'Shopping List #1': [
@@ -61,18 +62,18 @@ class Tabs extends Component {
   }
 
   componentDidMount(){
-    const {dataJson} = this.state;
-    let tabListArr = []
-    Object.keys(dataJson).map(list => {
-      tabListArr.push(list);
-    })
-    this.setState({tabs: tabListArr})
+    // const {dataJson} = this.state;
+    // let tabListArr = []
+    // Object.keys(dataJson).map(list => {
+    //   tabListArr.push(list);
+    // })
+    // this.setState({tabs: tabListArr})
   }
 
   refocusForEdit(){
     let activeTabText = document.querySelector('.tab.active .tabs_name');
     activeTabText.readOnly = false;
-    activeTabText.focus();
+    SetCaretAtEnd(activeTabText);
   }
 
   pressEnterInput(event){
@@ -80,7 +81,6 @@ class Tabs extends Component {
     if (event.key === 'Enter' && !activeTabText.readOnly) {
       activeTabText.blur();
       activeTabText.readOnly = true;
-      console.log(this.state.tabs[this.state.active]);
     }
   }
   blurTabs(){
@@ -143,7 +143,16 @@ class Tabs extends Component {
 
     //obj logic
     let len = Object.keys(dataJson).length;
-    let newTabName = `Shopping List #${len+1}`;
+    let countNumTab = len+1;
+    let newTabName = `Shopping List #${countNumTab}`;
+    //Need check for same naming Tab
+    Object.keys(dataJson).map(name => {
+      console.log(name)
+      if(name===newTabName){
+        countNumTab++;
+        newTabName = `Shopping List #${countNumTab}`;
+      }
+    })
     dataJson[newTabName] = [];
     this.setState({dataJson});
     console.log(dataJson);
