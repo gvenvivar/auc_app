@@ -8,9 +8,9 @@
 }
 .tab{
   display: inline-block;
-  width: 24.8%;
+  width: 24.7%;
   border: 1px solid #4E5357;
-  border-radius: 5px 5px 0 0;
+  border-radius: 0;
   height: 38px;
   position: relative;
 }
@@ -19,8 +19,8 @@
 }
 .tab.active{
   border-color: #fff;
-  width: 24.8%;
-  transition: all 1s ease-in-out;
+  width: 24.7%;
+
 }
 .tab.active .tabInner{
   padding-left: 0;
