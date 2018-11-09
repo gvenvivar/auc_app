@@ -121,20 +121,44 @@ class App extends Component {
       // console.log(logIn);
       this.storeLogin(storedName, storedPw);
 
-      axios.post('https://ahtool.com/grape/get-user-cookie-new/', logIn)
+      // fetch('https://ahtool.com/grape/get-user-cookie-new/', {
+      // 	method: 'post',
+      //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      //   //"Accept":"appliactions/json"
+      //   // headers: {"Content-Type": "application/json"},
+      // 	body: JSON.stringify(logIn)
+      // })
+      // .then(response =>{
+      //   return response.json()
+      // })
+      // .then(data=>{
+      //   console.log(data);
+      // })
+
+      //axios Post request
+      // axios.post('https://ahtool.com/grape/get-user-cookie-new/', logIn)
+      fetch('https://ahtool.com/grape/get-user-cookie-new/', {
+      	method: 'post',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      	body: JSON.stringify(logIn)
+      })
+      .then(response =>{
+        return response.json()
+      })
       .then(response => {
-        console.log(response.data.itemLists.list1);
+        console.log(response);
+        console.log(response.itemLists.list1);
         this.setState({
-          itemList: response.data.items,
-          region: response.data.region[0],
-          server: response.data.region[1],
-          serverSlug:  response.data.region[2],
+          itemList: response.itemLists.list1, //[id, id, id] old [{name:value, id:value}, {name:value, id:value}]
+          region: response.region[0],
+          server: response.region[1],
+          serverSlug:  response.region[2],
           list : [],
           login: storedName,
           psw: storedPw,
         })
         //console.log('list : ', this.state.itemList.length);
-        // console.log(this.state.itemList);
+        console.log(this.state.itemList);
         return response;
       })
       .then((response)=>{
@@ -151,7 +175,7 @@ class App extends Component {
         //load last list from db
         db.lastSearch.get(1)
         .then(item=>{
-          console.log(item.items);
+          // console.log(item.items);
           this.setState({
             itemList: item.items,
             region: item.region,
@@ -161,10 +185,11 @@ class App extends Component {
             psw: storedPw
           })
           this.udpateEmptyList();
+
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         })
-
       });
+
     }
 
     //fetch database json
@@ -702,11 +727,21 @@ class App extends Component {
       msg.innerHTML = 'Please enter email';
       loadingIcon.style.display = 'none';
     } else{
-    axios.post('https://ahtool.com/grape/get-user-new/', logIn)
+    //axios post request
+    //axios.post('https://ahtool.com/grape/get-user-new/', logIn)
+
+    fetch('https://ahtool.com/grape/get-user-new/', {
+      method: 'post',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: JSON.stringify(logIn)
+    })
+    .then(response =>{
+      return response.json()
+    })
     .then(response => {
 
-      //console.log(response);
-      let data = response.data;
+      console.log(response);
+      let data = response;
       let token = data.auth_token;
 
       if (typeof data === "string"){
@@ -716,15 +751,15 @@ class App extends Component {
       }
 
       this.setState({
-        itemList: response.data.items,
-        region: response.data.region[0],
-        server: response.data.region[1],
-        serverSlug:  response.data.region[2],
+        itemList: response.itemLists.list1, // change to new structure!!!
+        region: response.region[0],
+        server: response.region[1],
+        serverSlug:  response.region[2],
         list : [],
         login: login,
         psw: token,
       })
-      //console.log(this.state.itemList);
+      console.log(this.state.itemList);
 
       //console.log('save login to localstore');
       this.storeLogin(login, token);
@@ -799,9 +834,18 @@ class App extends Component {
     loadingIcon.style.display = 'block';
 
     if(pass === passR && login !=='' && pass !== ''){
-      axios.post('https://ahtool.com/grape/add-user-new/', data)
+      // axios logic
+      // axios.post('https://ahtool.com/grape/add-user-new/', data)
+      fetch('https://ahtool.com/grape/add-user-new/', {
+      	method: 'post',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      	body: JSON.stringify(data)
+      })
+      .then(response =>{
+        return response.json()
+      })
       .then(response => {
-        let data = response.data;
+        let data = response;
 
         if (data !== "Error - user already exists"){
           //console.log(data);
@@ -853,12 +897,21 @@ class App extends Component {
     // console.log(data);
 
 
-    //post
-    axios.post('https://ahtool.com/grape/update-user-new/',  data)
+    //post axios
+    // axios.post('https://ahtool.com/grape/update-user-new/',  data)
     // .then(response => {
     //   let data = response.data;
     //   //console.log(data);
     // })
+    fetch('https://ahtool.com/grape/update-user-new/', {
+      method: 'post',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+    })
     .catch(function (error) {
       console.log(error);
     });
