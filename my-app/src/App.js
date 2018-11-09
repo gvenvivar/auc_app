@@ -13,7 +13,8 @@ import {arrayMove} from 'react-sortable-hoc';
 import 'babel-polyfill';
 import Dexie from 'dexie';
 import sword from './img/sword.png';
-import envelope from './img/envelop.png'
+import envelope from './img/envelop.png';
+import Tabs from './Components/tabs'
 
 
 //indexedDB
@@ -1019,6 +1020,7 @@ class App extends Component {
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
             />
+            <Tabs />
             <div className="main clearfix">
               <SearchList
                 items={this.state.data}
