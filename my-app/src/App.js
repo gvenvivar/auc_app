@@ -146,10 +146,21 @@ class App extends Component {
         return response.json()
       })
       .then(response => {
-        console.log(response);
-        console.log(response.itemLists.list1);
+        let arrIdList = response.itemLists.list1;
+        console.log(arrIdList);
+        console.log(typeof arrIdList[0]);
+        let resultList = [];
+
+        this.state.data.map(item => {
+          let ids = item.id;
+          if(arrIdList.includes(ids)){
+            resultList.push({'name': item.name, 'id': item.id})
+          }
+        })
+        console.log(resultList);
+
         this.setState({
-          itemList: response.itemLists.list1, //[id, id, id] old [{name:value, id:value}, {name:value, id:value}]
+          itemList: resultList,
           region: response.region[0],
           server: response.region[1],
           serverSlug:  response.region[2],
@@ -158,7 +169,7 @@ class App extends Component {
           psw: storedPw,
         })
         //console.log('list : ', this.state.itemList.length);
-        console.log(this.state.itemList);
+        // console.log(this.state.itemList);
         return response;
       })
       .then((response)=>{
@@ -739,8 +750,17 @@ class App extends Component {
       return response.json()
     })
     .then(response => {
+      let arrIdList = response.itemLists.list1;
+      let resultList = [];
 
-      console.log(response);
+      this.state.data.map(item => {
+        let id = item.id;
+        if(arrIdList.includes(id)){
+          resultList.push({'name': item.name, 'id': item.id})
+        }
+      })
+
+      console.log(resultList);
       let data = response;
       let token = data.auth_token;
 
@@ -751,7 +771,7 @@ class App extends Component {
       }
 
       this.setState({
-        itemList: response.itemLists.list1, // change to new structure!!!
+        itemList: resultList, // change to new structure!!!
         region: response.region[0],
         server: response.region[1],
         serverSlug:  response.region[2],
