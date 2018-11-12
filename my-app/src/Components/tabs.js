@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import pencil from '../img/pencil.png';
-import cerrar from '../img/cerrar_white.png';
+import cerrar from '../img/close_tab.png';
 import '../tabs.css';
 import {SetCaretAtEnd} from '../functions';
 
@@ -47,10 +47,12 @@ class Tabs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabs: [],
-      active: 0,
-      dataJson: dataJson
+      // tabs: [],
+      // active: 0,
+      // dataJson: dataJson
+      activeTabName: '',
     };
+
 
     this.refocusForEdit = this.refocusForEdit.bind(this);
     this.pressEnterInput = this.pressEnterInput.bind(this);
@@ -59,6 +61,7 @@ class Tabs extends Component {
     this.blurTabs = this.blurTabs.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.addTab = this.addTab.bind(this);
+    this.renameObjKey = this.renameObjKey.bind(this);
   }
 
   componentDidMount(){
@@ -68,6 +71,7 @@ class Tabs extends Component {
     //   tabListArr.push(list);
     // })
     // this.setState({tabs: tabListArr})
+    this.setState({activeTabName: Object.keys(this.props.dataJson)[this.props.active]});
   }
 
   refocusForEdit(){
@@ -85,52 +89,80 @@ class Tabs extends Component {
   }
   blurTabs(){
     let activeTabText = document.querySelector('.tab.active .tabs_name');
-    activeTabText.blur();
-    activeTabText.readOnly = true;
+    let {dataJson, active, changetabsJsonsState} = this.props;
+    let {activeTabName} = this.state;
+    let sameName = `${activeTabName}_1`;
+    //check if tab name is not same;
+    if(dataJson[activeTabName] && Object.keys(dataJson)[active]!==activeTabName){
+      activeTabText.blur();
+      activeTabText.readOnly = true;
+      let result = this.renameObjKey(dataJson, Object.keys(dataJson)[active], sameName);
+      changetabsJsonsState(result);
+      this.setState({activeTabName: sameName})
+      console.log('change tab name');
+      console.log(result);
+    }
+    else{
+      activeTabText.blur();
+      activeTabText.readOnly = true;
+      let result = this.renameObjKey(dataJson, Object.keys(dataJson)[active], activeTabName);
+      changetabsJsonsState(result);
+      console.log('finished edit');
+      console.log(result);
+    }
   }
 
+  renameObjKey(oldObj, oldKey, newKey) {
+    const keys = Object.keys(oldObj);
+    const newObj = keys.reduce((acc, val)=>{
+      if(val === oldKey){
+          acc[newKey] = oldObj[oldKey];
+      }
+      else {
+          acc[val] = oldObj[val];
+      }
+      return acc;
+    }, {});
+
+    return newObj;
+  };
+
   editTab(item){
-    let {dataJson, tabs, active} = this.state;
+    let {dataJson, active, changetabsJsonsState} = this.props;
     let renameTab = item.target.value;
     let nameTab = Object.keys(dataJson)[active];
 
     // tabs[active] = item.target.value;
 
-    const renameObjKey = (oldObj, oldKey, newKey) => {
-      const keys = Object.keys(oldObj);
-      const newObj = keys.reduce((acc, val)=>{
-        if(val === oldKey){
-            acc[newKey] = oldObj[oldKey];
-        }
-        else {
-            acc[val] = oldObj[val];
-        }
-        return acc;
-      }, {});
-
-      return newObj;
-    };
-    let result = renameObjKey(dataJson, nameTab, renameTab)
+    // let result = this.renameObjKey(dataJson, nameTab, renameTab)
+    // changetabsJsonsState(result);
+    // this.setState({
+    //   dataJson: result,
+    //   // tabs,
+    // })
 
     this.setState({
-      dataJson: result,
-      // tabs,
+      activeTabName: renameTab,
     })
-    console.log(dataJson);
+    // console.log(result);
 
   }
 
   makeActive(currentTab){
-    let {dataJson, tabs} = this.state;
-    let name = Object.values(dataJson)[currentTab];
-    this.setState({
-      active: currentTab,
-    })
-    console.log(name);
+    // let {dataJson} = this.state;
+    // let name = Object.values(dataJson)[currentTab];
+    // this.setState({
+    //   active: currentTab,
+    // })
+    let {dataJson} = this.props;
+    let curTabName = Object.keys(dataJson)[currentTab]
+    this.props.changeActiveTab(currentTab);
+    this.setState({activeTabName: curTabName})
   }
 
   addTab(){
-    let {tabs, dataJson} = this.state;
+    let {dataJson, createTab} = this.props;
+    // let {tabs, dataJson} = this.state;
     //arr logic
     // let newTabPos = tabs.length + 1
     // let name = 'Shopping List #'
@@ -147,45 +179,44 @@ class Tabs extends Component {
     let newTabName = `Shopping List #${countNumTab}`;
     //Need check for same naming Tab
     Object.keys(dataJson).map(name => {
-      console.log(name)
       if(name===newTabName){
         countNumTab++;
         newTabName = `Shopping List #${countNumTab}`;
       }
     })
-    dataJson[newTabName] = [];
-    this.setState({dataJson});
-    console.log(dataJson);
-
-
-    //// TEMP:
-      console.log('test');
+    createTab(newTabName);
   }
 
   deleteTab(order){
-    let {tabs, active, dataJson} = this.state;
+    // let {tabs, active, dataJson} = this.state;
+    let {active, dataJson, deleteTab, changeActiveTab, createTab} = this.props;
     //obj logic
     let newTab = 'Shopping List #1';
     let tabToDel = Object.keys(dataJson)[order];
-    delete dataJson[tabToDel];
-    this.setState({
-      dataJson,
-    })
+    // delete dataJson[tabToDel];
+    // this.setState({
+    //   dataJson,
+    // })
+    deleteTab(tabToDel);
     if(order<active){
-      this.setState({
-        active: active-1,
-      })
+      // this.setState({
+      //   active: active-1,
+      // })
+      let nowActive = active-1;
+      changeActiveTab(nowActive);
     }
     if(order===active){
-      this.setState({
-        active: 0,
-      })
+      changeActiveTab(0)
+      // this.setState({
+      //   active: 0,
+      // })
     }
     if(Object.keys(dataJson).length==0){
-      dataJson[newTab] = [];
-      this.setState({
-        dataJson,
-      })
+      // dataJson[newTab] = [];
+      // this.setState({
+      //   dataJson,
+      // })
+      createTab(newTab);
     }
 
     console.log(dataJson);
@@ -221,8 +252,9 @@ class Tabs extends Component {
     <div>
       <div className='tabs'>
         <TabList
-          tabs={this.state.dataJson}
-          active={this.state.active}
+          tabs={this.props.dataJson}
+          active={this.props.active}
+          activeTabName={this.state.activeTabName}
           refocusForEdit={this.refocusForEdit}
           editTab={this.editTab}
           blurTabs={this.blurTabs}
@@ -241,7 +273,7 @@ class Tabs extends Component {
 
 export default Tabs;
 
-const TabList = ({tabs, active, refocusForEdit, editTab, blurTabs, pressEnterInput, deleteTab, makeActive}) => {
+const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs, pressEnterInput, deleteTab, makeActive}) => {
   let tabList = [];
   Object.keys(tabs).map((tab, key) => {
     if(key===active){
@@ -249,7 +281,7 @@ const TabList = ({tabs, active, refocusForEdit, editTab, blurTabs, pressEnterInp
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
             <img className='rename' src={pencil} onClick={refocusForEdit}/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={tab} readOnly></textarea>
+            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly></textarea>
           </div>
           <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)}/>
         </div>

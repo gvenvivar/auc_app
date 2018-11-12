@@ -14,7 +14,46 @@ import 'babel-polyfill';
 import Dexie from 'dexie';
 import sword from './img/sword.png';
 import envelope from './img/envelop.png';
-import Tabs from './Components/tabs'
+import Tabs from './Components/tabs';
+
+
+let dataJson = {
+  'Shopping List #1': [
+    {
+      average: 5000000000,
+      id: 18672,
+      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_orb_05.jpg",
+      name: "Elemental Ember",
+      order: 1,
+      price: 0,
+      quantity: 0,
+      server: "en_US_Sargeras",
+    },
+    {
+      average: 91967.54065392342,
+      id: 8838,
+      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_herb_18.jpg",
+      name: "Sungrass",
+      order: 2,
+      price: 57809.52380952381,
+      quantity: 96,
+      server: "en_US_Sargeras",
+    }
+  ],
+  'Shopping List #2': [
+    {
+      average: 294959.61094097054,
+      id: 2776,
+      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_ore_gold_01.jpg",
+      name: "Gold Ore",
+      order: 1,
+      price: 1726266.7826086956,
+      quantity: 143,
+      server: "en_US_Sargeras",
+    }
+  ],
+  'List' : []
+}
 
 
 //indexedDB
@@ -71,6 +110,10 @@ class App extends Component {
     super(props);
 
     this.state = {
+        //new
+        tabsJson: dataJson,
+        activeTab : 0,
+        //old
         itemList: [],
         idList: [],
         data : [],
@@ -87,6 +130,12 @@ class App extends Component {
         psw: false,
         error_msg: 'Sorry, no connection. Offline mode',
     };
+
+
+    this.changetabsJsonsState = this.changetabsJsonsState.bind(this);
+    this.changeActiveTab = this.changeActiveTab.bind(this);
+    this.deleteTab = this.deleteTab.bind(this);
+    this.createTab = this.createTab.bind(this);
 
 
 
@@ -148,7 +197,7 @@ class App extends Component {
       })
       .then(response => {
         let arrIdList = response.itemLists.list1;
-        console.log(arrIdList);
+        console.log(response.itemLists);
         console.log(typeof arrIdList[0]);
         let resultList = [];
 
@@ -179,7 +228,6 @@ class App extends Component {
           this.udpateEmptyList();
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         }
-
       })
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
@@ -201,6 +249,7 @@ class App extends Component {
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         })
       });
+
 
     }
 
@@ -505,7 +554,7 @@ class App extends Component {
     });
      console.log(JSON.stringify(objdataf));
      console.log(Object.keys(objdataf.itemLists).length);
-     console.log(objdataf.itemLists.list1)
+     console.log(objdataf)
 
     fetch('https://ahtool.com/grape/multi-list/', {
     	method: 'post',
@@ -1052,10 +1101,28 @@ class App extends Component {
     });
   };
 
-  searchOnEnter(){
-    if (document.hasFocus()) {
-      console.log('have focus');
-    }
+  // tabs functions
+  changetabsJsonsState(value){
+    this.setState({
+      tabsJson: value,
+    })
+  }
+
+  changeActiveTab(value){
+    this.setState({
+      activeTab: value,
+    })
+  }
+
+  deleteTab(name){
+    let{tabsJson, active} =this.state;
+    delete tabsJson[name];
+    this.setState({tabsJson});
+  }
+  createTab(name){
+    let{tabsJson} =this.state;
+    tabsJson[name] = [];
+    this.setState({tabsJson});
   }
 
 
@@ -1093,7 +1160,14 @@ class App extends Component {
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
             />
-            <Tabs />
+            <Tabs
+              dataJson={this.state.tabsJson}
+              active={this.state.activeTab}
+              changetabsJsonsState = {this.changetabsJsonsState}
+              changeActiveTab = {this.changeActiveTab}
+              deleteTab = {this.deleteTab}
+              createTab = {this.createTab}
+            />
             <div className="main clearfix">
               <SearchList
                 items={this.state.data}
