@@ -119,7 +119,7 @@ class App extends Component {
         data : [],
         usServers: [],
         euServers: [],
-        servers:[],
+        // servers:[],
         list: [],
         region: 'en_US',
         server: 'Sargeras',
@@ -239,8 +239,8 @@ class App extends Component {
           'server' :  this.state.serverSlug,
           'itemLists'  : response.itemLists
         }
-        // console.log(multiData);
-        return fetch('https://ahtool.com/grape/multi-list/', {
+         // console.log(multiData);
+        return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
         	method: 'post',
           headers: {'Content-Type':'application/x-www-form-urlencoded'},
           //"Accept":"appliactions/json"
@@ -255,6 +255,7 @@ class App extends Component {
         let tabList = response_multi[1].itemLists;
         this.setState({tabsJson: tabList})
         console.log('finished fetch multi-list')
+        console.log(this.state.tabsJson);
       })
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
@@ -579,7 +580,6 @@ class App extends Component {
     let lists =
     {
       'Shopping List #1': idList,
-      'list2': [18672, 8838]
     }
     let activeList = 'list1';
     let objdataf =
@@ -594,14 +594,14 @@ class App extends Component {
 
     this.state.itemList.map((item) => {
       // idList += '&items[]=' + item.id;
-      idList.push(item.id);
+      idList.push({'id':item.id});
       return false;
     });
      console.log(JSON.stringify(objdataf));
      console.log(Object.keys(objdataf.itemLists).length);
      console.log(objdataf)
 
-    fetch('https://ahtool.com/grape/multi-list/', {
+    fetch('https://ahtool.com/grape/multi-list-test/', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
       //"Accept":"appliactions/json"
@@ -934,13 +934,12 @@ class App extends Component {
     let lists =
     {
       'Shopping List #1': idList,
-      'list2': [18672, 8838]
     }
 
 
     // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
+    let data = {'active_list': this.state.activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
     //console.log(data);
 
     //create item list ID
@@ -999,21 +998,20 @@ class App extends Component {
     let lists =
     {
       'Shopping List #1': idList,
-      'list2': [18672, 8838]
     }
 
     // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
+    let data = {'active_list': this.state.activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
     // console.log(data);
 
     //console.log(this.state.itemList);
     this.state.itemList.map((item) => {
       // data += '&userdata[]=' + item.id;
-      idList.push(item.id);
+      idList.push({id:item.id});
       return false;
     });
-    // console.log(data);
+    console.log(lists);
 
 
     //post axios
