@@ -188,7 +188,8 @@ class header extends Component {
                 tooltip[0].style.visibility = 'hidden';
                 tooltip[0].firstChild.style.visibility = 'hidden';
               }
-
+              //Add to tab
+              // this.props.addItemidToTab(item.id, item.name);
             }
 
             }

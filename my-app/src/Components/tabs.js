@@ -75,6 +75,7 @@ class Tabs extends Component {
   }
 
   refocusForEdit(){
+    console.log('refocus')
     let activeTabText = document.querySelector('.tab.active .tabs_name');
     activeTabText.readOnly = false;
     SetCaretAtEnd(activeTabText);
@@ -91,7 +92,7 @@ class Tabs extends Component {
     let activeTabText = document.querySelector('.tab.active .tabs_name');
     let {dataJson, active, changetabsJsonsState} = this.props;
     let {activeTabName} = this.state;
-    let sameName = `${activeTabName}_1`;
+    let sameName = `${activeTabName}_new`;
     //check if tab name is not same;
     if(dataJson[activeTabName] && Object.keys(dataJson)[active]!==activeTabName){
       activeTabText.blur();
@@ -154,10 +155,14 @@ class Tabs extends Component {
     // this.setState({
     //   active: currentTab,
     // })
-    let {dataJson} = this.props;
+    let {dataJson, updateItemListOnClickTab, udpateEmptyList} = this.props;
     let curTabName = Object.keys(dataJson)[currentTab]
     this.props.changeActiveTab(currentTab);
     this.setState({activeTabName: curTabName})
+
+    //Show tabItems on click
+    updateItemListOnClickTab(dataJson[curTabName]);
+    udpateEmptyList(dataJson[curTabName])
   }
 
   addTab(){

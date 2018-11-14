@@ -111,11 +111,11 @@ class App extends Component {
 
     this.state = {
         //new
-        tabsJson: dataJson,
+        tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
         //old
         itemList: [],
-        idList: [],
+        // idList: [],
         data : [],
         usServers: [],
         euServers: [],
@@ -136,6 +136,8 @@ class App extends Component {
     this.changeActiveTab = this.changeActiveTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.createTab = this.createTab.bind(this);
+    this.addItemidToTab = this.addItemidToTab.bind(this);
+    this.udpateEmptyList = this.udpateEmptyList.bind(this);
 
 
 
@@ -157,6 +159,7 @@ class App extends Component {
     let storedPw = localStorage.getItem('pw');
     let time = localStorage.getItem('time');
     let nowTime = new Date().getTime();
+    let {tabsJson, activeTab} = this.state;
 
     if((nowTime - time) > 1000 * 60 * 60 * 24 * 14){
       localStorage.clear();
@@ -196,8 +199,8 @@ class App extends Component {
         return response.json()
       })
       .then(response => {
-        let arrIdList = response.itemLists.list1;
-        console.log(response.itemLists);
+        let arrIdList = response.itemLists['Shopping List #1'];
+        console.log(response);
         console.log(typeof arrIdList[0]);
         let resultList = [];
 
@@ -223,11 +226,35 @@ class App extends Component {
         return response;
       })
       .then((response)=>{
-        //console.log(response);
+        // console.log(response.itemLists);
         if(response.data !== 'Error - email or password'){
-          this.udpateEmptyList();
+          this.udpateEmptyList(this.state.itemList);
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         }
+        console.log('finished first fetch')
+
+        //Starting second Fetch
+        let multiData =
+        { 'region' :  this.state.region,
+          'server' :  this.state.serverSlug,
+          'itemLists'  : response.itemLists
+        }
+        // console.log(multiData);
+        return fetch('https://ahtool.com/grape/multi-list/', {
+        	method: 'post',
+          headers: {'Content-Type':'application/x-www-form-urlencoded'},
+          //"Accept":"appliactions/json"
+          // headers: {"Content-Type": "application/json"},
+        	body: JSON.stringify(multiData)
+        })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(response_multi => {
+        let tabList = response_multi[1].itemLists;
+        this.setState({tabsJson: tabList})
+        console.log('finished fetch multi-list')
       })
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
@@ -244,7 +271,7 @@ class App extends Component {
             login: storedName,
             psw: storedPw
           })
-          this.udpateEmptyList();
+          this.udpateEmptyList(this.state.itemList);
 
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         })
@@ -334,6 +361,10 @@ class App extends Component {
 
       })
 
+    //Update itemList state for active tabs
+    let updateItemList = tabsJson[Object.keys(tabsJson)[activeTab]];
+    this.setState({itemList: updateItemList})
+
 
     // load wowhed tooltip scripts
 
@@ -360,7 +391,7 @@ class App extends Component {
       loadTooltipScript();
     }
 
-    this.udpateEmptyList();
+    this.udpateEmptyList(this.state.itemList);
   }
 
   addToAuto(name, id){
@@ -368,13 +399,13 @@ class App extends Component {
     if(id && index === -1){
       this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
-      this.udpateEmptyList();
+      this.udpateEmptyList(this.state.itemList);
       //console.log(this.state.itemList);
     }
   }
-  dragList(drag){
-    this.setState({ itemList: drag });
-    console.log(this.state.itemList);
+  updateItemListState(newState){
+    this.setState({ itemList: newState });
+    // console.log(this.state.itemList);
   }
 
   addSlug(item){
@@ -459,9 +490,8 @@ class App extends Component {
   }
 
 
-  udpateEmptyList() {
-
-    if(this.state.itemList.length > 0){
+  udpateEmptyList(arr) {
+    if(arr.length > 0){
       document.querySelector('.no-items-wrap').style.display ='none';
     } else{
       document.querySelector('.no-items-wrap').style.display ='block';
@@ -501,6 +531,7 @@ class App extends Component {
     const mq = window.matchMedia( "(max-width: 1024px)" );
     const loadingIcon = i.currentTarget.children[0];
     const refresh = document.querySelector('.refresh');
+    const{tabsJson, activeTab} =this.state;
 
     if(mq.matches){
       //console.log('media');
@@ -527,13 +558,27 @@ class App extends Component {
     let strServer = '&items[]=' + this.state.serverSlug;
     //console.log(strServer);
 
+
+    let modifydata = tabsJson;
+    console.log(modifydata);
+
+    Object.keys(tabsJson).map(item =>{
+      let idArr = [];
+      tabsJson[item].map(i => {
+        idArr.push(i.id);
+      })
+      modifydata[item] = idArr;
+    })
+
+    console.log(modifydata);
+
     //creat ID list
     // let idList = '';
     // idList += '&items[]=' + strRegion + strServer;
     let idList = [];
     let lists =
     {
-      'list1': idList,
+      'Shopping List #1': idList,
       'list2': [18672, 8838]
     }
     let activeList = 'list1';
@@ -568,8 +613,10 @@ class App extends Component {
     })
     .then(json => {
       console.log(json);
+      // console.log(json[1].itemLists);
       this.setState({
-        list: json[1].itemLists.list1,
+        tabsJson: json[1].itemLists, // updating all tabs
+        list: json[1].itemLists['Shopping List #1'],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
@@ -800,8 +847,10 @@ class App extends Component {
       return response.json()
     })
     .then(response => {
-      let arrIdList = response.itemLists.list1;
+      let activeTab = Object.keys(response.itemLists)[this.state.activeTab];
+      let arrIdList = response.itemLists[activeTab];
       let resultList = [];
+
 
       this.state.data.map(item => {
         let id = item.id;
@@ -842,7 +891,7 @@ class App extends Component {
     .then((response)=>{
       //console.log(response);
       if(response.data !== 'Error - email or password'){
-        this.udpateEmptyList();
+        this.udpateEmptyList(this.state.itemList);
         document.querySelector('.modal').style.visibility = 'hidden';
         modal.classList.remove("open-modal");
         document.getElementById('email').value = '';
@@ -884,7 +933,7 @@ class App extends Component {
     let idList = [];
     let lists =
     {
-      'list1': idList,
+      'Shopping List #1': idList,
       'list2': [18672, 8838]
     }
 
@@ -949,7 +998,7 @@ class App extends Component {
     let idList = [];
     let lists =
     {
-      'list1': idList,
+      'Shopping List #1': idList,
       'list2': [18672, 8838]
     }
 
@@ -1125,6 +1174,22 @@ class App extends Component {
     this.setState({tabsJson});
   }
 
+  addItemidToTab(id, name){
+    let {tabsJson, activeTab} = this.state;
+    let currentTabItems = Object.keys(tabsJson)[activeTab];
+    // let update = tabsJson[currentTabItems].push({'id':id});
+    console.log(id);
+    let update = tabsJson;
+    update[currentTabItems].push({id, name});
+    // update.push({'id': id});
+    this.setState({tabsJson: update});
+
+    console.log(tabsJson);
+  }
+  updateItemListOnClickTab(data){
+    this.setState({itemList: data})
+  }
+
 
 
   render() {
@@ -1159,6 +1224,7 @@ class App extends Component {
               signUp={this.signUp.bind(this)}
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
+              // addItemidToTab={this.addItemidToTab}
             />
             <Tabs
               dataJson={this.state.tabsJson}
@@ -1167,6 +1233,8 @@ class App extends Component {
               changeActiveTab = {this.changeActiveTab}
               deleteTab = {this.deleteTab}
               createTab = {this.createTab}
+              updateItemListOnClickTab = {this.updateItemListState.bind(this)}
+              udpateEmptyList = {this.udpateEmptyList.bind(this)}
             />
             <div className="main clearfix">
               <SearchList
@@ -1176,7 +1244,7 @@ class App extends Component {
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
-                dragList={this.dragList.bind(this)}
+                dragList={this.updateItemListState.bind(this)}
                 onSortEnd={this.onSortEnd.bind(this)}
                 list={this.state.items}
               />
