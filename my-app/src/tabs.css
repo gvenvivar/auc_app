@@ -40,6 +40,7 @@
   cursor: pointer;
 }
 .tabs_name{
+  font-family: "Roboto", sans-serif;
   background: transparent;
   border: 0;
   resize: none;

@@ -17,45 +17,6 @@ import envelope from './img/envelop.png';
 import Tabs from './Components/tabs';
 
 
-let dataJson = {
-  'Shopping List #1': [
-    {
-      average: 5000000000,
-      id: 18672,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_orb_05.jpg",
-      name: "Elemental Ember",
-      order: 1,
-      price: 0,
-      quantity: 0,
-      server: "en_US_Sargeras",
-    },
-    {
-      average: 91967.54065392342,
-      id: 8838,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_herb_18.jpg",
-      name: "Sungrass",
-      order: 2,
-      price: 57809.52380952381,
-      quantity: 96,
-      server: "en_US_Sargeras",
-    }
-  ],
-  'Shopping List #2': [
-    {
-      average: 294959.61094097054,
-      id: 2776,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_ore_gold_01.jpg",
-      name: "Gold Ore",
-      order: 1,
-      price: 1726266.7826086956,
-      quantity: 143,
-      server: "en_US_Sargeras",
-    }
-  ],
-  'List' : []
-}
-
-
 //indexedDB
 if(!('indexedDB' in window)){
     console.log('This browser does\'t support IndexDB');
@@ -136,8 +97,10 @@ class App extends Component {
     this.changeActiveTab = this.changeActiveTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.createTab = this.createTab.bind(this);
-    this.addItemidToTab = this.addItemidToTab.bind(this);
+    // this.addItemidToTab = this.addItemidToTab.bind(this);
     this.udpateEmptyList = this.udpateEmptyList.bind(this);
+    this.clickSearch = this.clickSearch.bind(this);
+    this.updateMultiList = this.updateMultiList.bind(this);
 
 
 
@@ -199,21 +162,22 @@ class App extends Component {
         return response.json()
       })
       .then(response => {
-        let arrIdList = response.itemLists['Shopping List #1'];
-        console.log(response);
-        console.log(typeof arrIdList[0]);
-        let resultList = [];
-
-        this.state.data.map(item => {
-          let ids = item.id;
-          if(arrIdList.includes(ids)){
-            resultList.push({'name': item.name, 'id': item.id})
-          }
-        })
-        console.log(resultList);
+        let activeTabName = Object.keys(response.itemLists)[response.active_list];
+        let arrIdList = response.itemLists[activeTabName];
+        // console.log(arrIdList);
+        // console.log(typeof arrIdList[0]);
+        // let resultList = [];
+        //
+        // this.state.data.map(item => {
+        //   let ids = item.id;
+        //   if(arrIdList.includes(ids)){
+        //     resultList.push({'name': item.name, 'id': item.id})
+        //   }
+        // })
+        // console.log(resultList);
 
         this.setState({
-          itemList: resultList,
+          itemList: arrIdList,
           region: response.region[0],
           server: response.region[1],
           serverSlug:  response.region[2],
@@ -401,9 +365,20 @@ class App extends Component {
       this.state.itemList.unshift({name: name.toLowerCase() , id:id});
       this.setState({ itemList: this.state.itemList });
       this.udpateEmptyList(this.state.itemList);
-      //console.log(this.state.itemList);
+      console.log(this.state.tabsJson);
+      console.log('adding new item')
     }
+
+    let {serverSlug, region, tabsJson} = this.state;
+    let sendData =
+    { 'region' :  region,
+      'server' :  serverSlug,
+      'itemLists'  : tabsJson,
+    }
+    this.updateEmptySearch();
+    this.updateMultiList(sendData);
   }
+
   updateItemListState(newState){
     this.setState({ itemList: newState });
     // console.log(this.state.itemList);
@@ -499,6 +474,7 @@ class App extends Component {
     }
   }
   updateEmptySearch(){
+    console.log(this.state.itemList);
     if(this.state.itemList.length > 0){
       document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
     } else {
@@ -531,6 +507,7 @@ class App extends Component {
 
     const mq = window.matchMedia( "(max-width: 1024px)" );
     const loadingIcon = i.currentTarget.children[0];
+    console.log(loadingIcon);
     const refresh = document.querySelector('.refresh');
     const{tabsJson, activeTab} =this.state;
 
@@ -560,46 +537,23 @@ class App extends Component {
     //console.log(strServer);
 
 
-    let modifydata = tabsJson;
-    console.log(modifydata);
 
-    Object.keys(tabsJson).map(item =>{
-      let idArr = [];
-      tabsJson[item].map(i => {
-        idArr.push(i.id);
-      })
-      modifydata[item] = idArr;
-    })
-
-    console.log(modifydata);
 
     //creat ID list
     // let idList = '';
     // idList += '&items[]=' + strRegion + strServer;
-    let idList = [];
-    let lists =
-    {
-      'Shopping List #1': idList,
-    }
-    let activeList = 'list1';
+
     let objdataf =
     { 'region' :  strRegion,
       'server' :  this.state.serverSlug,
-      'itemLists'  : lists
+      'itemLists'  : this.state.tabsJson,
     }
     // lists.map(i=>{
     //   // objdataf.itemLists = new Object();
     //   // objdataf.itemList[i] = [];
     // })
 
-    this.state.itemList.map((item) => {
-      // idList += '&items[]=' + item.id;
-      idList.push({'id':item.id});
-      return false;
-    });
-     console.log(JSON.stringify(objdataf));
-     console.log(Object.keys(objdataf.itemLists).length);
-     console.log(objdataf)
+     console.log(Object.keys(objdataf.itemLists));
 
     fetch('https://ahtool.com/grape/multi-list-test/', {
     	method: 'post',
@@ -612,14 +566,31 @@ class App extends Component {
       return response.json()
     })
     .then(json => {
-      console.log(json);
-      // console.log(json[1].itemLists);
+      //Saving order for tabs when respond returns
+      const {tabsJson, activeTab} = this.state;
+      let newData = json[1].itemLists;
+      let old = tabsJson;
+      console.log(newData);
+      console.log(old);
+      let res;
+      res = old;
+      Object.keys(old).map(i =>{
+        res[i] = newData[i];
+      })
+      //Saving order for tabs
+
+      // console.log(Object.keys(json[1].itemLists));
+      // console.log(json);
+      let activeTabName;
+      activeTabName = Object.keys(tabsJson)[activeTab];
+      // console.log(activeTabName);
       this.setState({
-        tabsJson: json[1].itemLists, // updating all tabs
-        list: json[1].itemLists['Shopping List #1'],
+        tabsJson: res,//json[1].itemLists, // updating all tabs
+        list: json[1].itemLists[activeTabName],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
+      // console.log(this.state.list)
       // console.log(this.state.error_msg.length);
       if(this.state.error_msg.length === 0){
         document.querySelector('.API_error').classList.remove('API_error_open');
@@ -1008,7 +979,7 @@ class App extends Component {
     //console.log(this.state.itemList);
     this.state.itemList.map((item) => {
       // data += '&userdata[]=' + item.id;
-      idList.push({id:item.id});
+      idList.push({id:item.id, name:item.name});
       return false;
     });
     console.log(lists);
@@ -1156,9 +1127,23 @@ class App extends Component {
   }
 
   changeActiveTab(value){
+
     this.setState({
       activeTab: value,
     })
+    // const{tabsJson} = this.state;
+    // let curNameTab = Object.keys(tabsJson)[value]
+    // console.log(tabsJson[curNameTab]);
+    // console.log(this.state.itemList);
+    let {list,serverSlug, region, tabsJson} = this.state;
+    let sendData =
+    { 'region' :  region,
+      'server' :  serverSlug,
+      'itemLists'  : tabsJson,
+    }
+    this.updateEmptySearch();
+    this.updateMultiList(sendData);
+
   }
 
   deleteTab(name){
@@ -1172,21 +1157,159 @@ class App extends Component {
     this.setState({tabsJson});
   }
 
-  addItemidToTab(id, name){
-    let {tabsJson, activeTab} = this.state;
-    let currentTabItems = Object.keys(tabsJson)[activeTab];
-    // let update = tabsJson[currentTabItems].push({'id':id});
-    console.log(id);
-    let update = tabsJson;
-    update[currentTabItems].push({id, name});
-    // update.push({'id': id});
-    this.setState({tabsJson: update});
-
-    console.log(tabsJson);
-  }
+  // addItemidToTab(id, name){
+  //   let {tabsJson, activeTab} = this.state;
+  //   let currentTabItems = Object.keys(tabsJson)[activeTab];
+  //   // let update = tabsJson[currentTabItems].push({'id':id});
+  //   console.log(id);
+  //   let update = tabsJson;
+  //   update[currentTabItems].push({id, name});
+  //   // update.push({'id': id});
+  //   this.setState({tabsJson: update});
+  //
+  //   console.log(tabsJson);
+  // }
   updateItemListOnClickTab(data){
     this.setState({itemList: data})
   }
+
+  updateMultiList(data){
+    let {list, server, serverSlug, region, tabsJson} = this.state;
+
+    fetch('https://ahtool.com/grape/multi-list-test/', {
+    	method: 'post',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    	body: JSON.stringify(data)
+    })
+    .then(response =>{
+      return response.json()
+    })
+    .then(json => {
+      //Saving order for tabs when respond returns
+      const {tabsJson, activeTab} = this.state;
+      // let newData = json[1].itemLists;
+      // let old = tabsJson;
+      // console.log(newData);
+      // console.log(old);
+      // let res;
+      // res = old;
+      // Object.keys(old).map(i =>{
+      //   res[i] = newData[i];
+      // })
+      //Saving order for tabs
+
+      console.log(json[1].itemLists);
+      // console.log(json);
+      let activeTabName;
+      activeTabName = Object.keys(tabsJson)[activeTab];
+      // console.log(activeTabName);
+      this.setState({
+        // tabsJson: res,//json[1].itemLists, // updating all tabs
+        list: json[1].itemLists[activeTabName],
+        updatedTime: json[0].time,
+        error_msg: json[2].error_msg,
+      });
+      // console.log(this.state.list)
+      // console.log(this.state.error_msg.length);
+      if(this.state.error_msg.length === 0){
+        document.querySelector('.API_error').classList.remove('API_error_open');
+      }
+      if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
+        console.log(json[2].error_msg);
+        document.querySelector('.API_error').classList.add('API_error_open');
+      }
+
+
+      //save auctions to indexedDB
+
+        db.open().then(function (db) {
+            // Database openeded successfully
+            list.map(item => {
+              //console.log('Adding item: ', item);
+              item.server = `${region}_${server}`;
+              db.auctions.put(item);
+              return false;
+            })
+        })
+        .then(() => console.log('All search saved to indexedDb'))
+        .catch((e) => console.log('Error adding item: ', e))
+
+
+    })
+    .then(() =>{
+      console.log("check for saving to idb");
+      this.saveToIndex();
+    })
+    .catch((e) => {
+      console.log(e);
+      //Show offline mode msg
+      document.querySelector('.API_error').classList.add('API_error_open');
+
+      let arr = [];
+        console.log('open');
+        let server = `${this.state.region}_${this.state.server}`;
+        //adding offline caption
+        let iDiv = document.querySelector('.time');
+        iDiv.innerHTML = 'Offline mode';
+        this.setState({
+          error_msg: 'Offline mode',
+        });
+
+        this.state.itemList.map((item) => {
+          console.log('map itemList');
+          // console.log(item);
+          let itemUndef = {
+            name: item.name,
+            id: item.id,
+            price: '',
+            quantity: 'offline',
+            average: '',
+            img_url: ''
+          };
+          db.auctions.get(item.id)
+          .then((obj) => {
+              if(obj === undefined){
+                // Old items db
+                // db.items.get(item.id).then((obj) =>{
+                //   itemUndef.img_url = obj.img_url;
+                //   itemUndef.name = obj.name;
+                // })
+
+                //New one string items db
+                db.stringData.get(1)
+                .then((item)=>{
+                    return item.data
+                })
+                .then((res)=>{
+                  return res.find(a => a.id===item.id);
+                })
+                .then((obj)=>{
+                    //console.log(itemUndef.name, item.name);
+                    itemUndef.img_url = obj.img_url;
+                    itemUndef.name = obj.name;
+                    //console.log(itemUndef.name, obj.name)
+                })
+                arr.push(itemUndef);
+                //console.log(arr);
+              }
+              if(obj && server !== obj.server){
+                itemUndef.img_url = obj.img_url;
+                itemUndef.name = obj.name;
+                arr.push(itemUndef);
+              }
+              if(obj && server === obj.server){
+                arr.push(obj)
+              }
+
+              this.setState({
+                list: arr
+              })
+              // console.log(this.state.list)
+          })
+          return false;
+        })
+      })
+}
 
 
 
@@ -1238,7 +1361,7 @@ class App extends Component {
               <SearchList
                 items={this.state.data}
                 additem={this.state.itemList}
-                clickSearch={this.clickSearch.bind(this)}
+                clickSearch={this.clickSearch}
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
@@ -1248,7 +1371,7 @@ class App extends Component {
               />
               <ResultList items={this.state.list}
               tooltipCreator={this.tooltipCreator.bind(this)}
-              refresh={this.clickSearch.bind(this)}
+              refresh={this.clickSearch}
                 />
             </div>
           </div>
