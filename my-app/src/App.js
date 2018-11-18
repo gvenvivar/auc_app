@@ -74,6 +74,7 @@ class App extends Component {
         //new
         tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
+        lastResposeTime: 0,
         //old
         itemList: [],
         // idList: [],
@@ -101,6 +102,7 @@ class App extends Component {
     this.udpateEmptyList = this.udpateEmptyList.bind(this);
     this.clickSearch = this.clickSearch.bind(this);
     this.updateMultiList = this.updateMultiList.bind(this);
+    this.checkDataAge = this.checkDataAge.bind(this);
 
 
 
@@ -1135,14 +1137,22 @@ class App extends Component {
     // let curNameTab = Object.keys(tabsJson)[value]
     // console.log(tabsJson[curNameTab]);
     // console.log(this.state.itemList);
-    let {list,serverSlug, region, tabsJson} = this.state;
-    let sendData =
-    { 'region' :  region,
-      'server' :  serverSlug,
-      'itemLists'  : tabsJson,
+
+    // this.updateEmptySearch();
+    console.log(this.checkDataAge());
+    if(this.checkDataAge()){
+      let {list,serverSlug, region, tabsJson} = this.state;
+      let sendData =
+      { 'region' :  region,
+        'server' :  serverSlug,
+        'itemLists'  : tabsJson,
+      }
+      this.updateMultiList(sendData);
     }
-    this.updateEmptySearch();
-    this.updateMultiList(sendData);
+    else{
+      console.log('Loading local data')
+    }
+
 
   }
 
@@ -1173,8 +1183,22 @@ class App extends Component {
     this.setState({itemList: data})
   }
 
+  checkDataAge(){
+    const {lastResposeTime, updatedTime} = this.state;
+    let time1 = (Date.now() - lastResposeTime)/1000;
+    let time2 = Date.now()/1000 - updatedTime;
+    console.log(time1, time2);
+    if(time1+time2>3600||this.state.itemList.length===0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   updateMultiList(data){
     let {list, server, serverSlug, region, tabsJson} = this.state;
+
 
     fetch('https://ahtool.com/grape/multi-list-test/', {
     	method: 'post',
@@ -1187,10 +1211,10 @@ class App extends Component {
     .then(json => {
       //Saving order for tabs when respond returns
       const {tabsJson, activeTab} = this.state;
-      // let newData = json[1].itemLists;
-      // let old = tabsJson;
-      // console.log(newData);
-      // console.log(old);
+      let newData = json[1].itemLists;
+      let old = tabsJson;
+      console.log(newData);
+      console.log(old);
       // let res;
       // res = old;
       // Object.keys(old).map(i =>{
@@ -1218,6 +1242,10 @@ class App extends Component {
         console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
+      //Set lastUpdate time
+      let lastResposeTime = Date.now();
+      this.setState({lastResposeTime});
+      // console.log('lastResposeTime: ' + lastResposeTime);
 
 
       //save auctions to indexedDB
