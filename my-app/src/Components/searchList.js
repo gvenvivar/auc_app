@@ -82,38 +82,41 @@ class searchList extends Component {
 
 
 		let addItem = this.props.additem;
-		//console.log(addItem);
-    addItem.map((i)=> {
-			//let del = this.props.delButton;
-			// let tooltipCreator = this.props.tooltipCreator;
-			//console.log(i.id);
-			//console.log(newdata[i.id])
+
+		if(addItem){
+			addItem.map((i)=> {
+				//let del = this.props.delButton;
+				// let tooltipCreator = this.props.tooltipCreator;
+				//console.log(i.id);
+				//console.log(newdata[i.id])
 
 
-    	this.props.items.map(function(item){
-    		if(i.id === item.id){
-    			fullList.push(item);
-	        //list.push(<SearchListRow item={item}  key={item.id} delButton={del} tooltipCreator={tooltipCreator}/>)
+	    	this.props.items.map(function(item){
+	    		if(i.id === item.id){
+	    			fullList.push(item);
+		        //list.push(<SearchListRow item={item}  key={item.id} delButton={del} tooltipCreator={tooltipCreator}/>)
 
-	        /*drag.push({content: (<div className='search_row'>
-	        	<div className='icon_c'><img className="icon" src={item.img_url} alt={item.name} id={item.id} /></div>
-	        	<div className='name_c'><a href='#' rel={tooltipCreator(item)}>{item.name}</a></div>
-	        	<a className='close_c' href="#"><img className="close" alt='deleteBtn' src={close} onClick={(e) => {
-	        		e.preventDefault();
-	        		let id = item.id;
-	        		del(id);
-	        	}} /></a>
-	        </div>)});
-					count++;
-					item.order=count;*/
+		        /*drag.push({content: (<div className='search_row'>
+		        	<div className='icon_c'><img className="icon" src={item.img_url} alt={item.name} id={item.id} /></div>
+		        	<div className='name_c'><a href='#' rel={tooltipCreator(item)}>{item.name}</a></div>
+		        	<a className='close_c' href="#"><img className="close" alt='deleteBtn' src={close} onClick={(e) => {
+		        		e.preventDefault();
+		        		let id = item.id;
+		        		del(id);
+		        	}} /></a>
+		        </div>)});
+						count++;
+						item.order=count;*/
 
-    		}
+	    		}
+					return false;
+	    	});
+
+
 				return false;
-    	});
+	    });
+		}
 
-
-			return false;
-    });
 		//sort order
 		//console.log(fullList);
 

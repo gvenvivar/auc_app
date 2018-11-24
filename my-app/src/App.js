@@ -6,7 +6,7 @@ import ResultList from './Components/resultList';
 import 'whatwg-fetch';
 import axios from 'axios';
 //import idb from 'idb';
-import {capitalizeFirstLetter, cutEmail} from './functions';
+import {capitalizeFirstLetter, cutEmail, reverseObject} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
@@ -75,13 +75,12 @@ class App extends Component {
         tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
         lastResposeTime: 0,
+        activeTabName: '',
         //old
         itemList: [],
-        // idList: [],
         data : [],
         usServers: [],
         euServers: [],
-        // servers:[],
         list: [],
         region: 'en_US',
         server: 'Sargeras',
@@ -98,13 +97,11 @@ class App extends Component {
     this.changeActiveTab = this.changeActiveTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.createTab = this.createTab.bind(this);
-    // this.addItemidToTab = this.addItemidToTab.bind(this);
     this.udpateEmptyList = this.udpateEmptyList.bind(this);
     this.clickSearch = this.clickSearch.bind(this);
     this.updateMultiList = this.updateMultiList.bind(this);
-    this.checkDataAge = this.checkDataAge.bind(this);
-
-
+    this.changeActiveTabName = this.changeActiveTabName.bind(this);
+    this.updateUser = this.updateUser.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -164,9 +161,15 @@ class App extends Component {
         return response.json()
       })
       .then(response => {
-        let activeTabName = Object.keys(response.itemLists)[response.active_list];
+        // let activeTabName = Object.keys(response.itemLists)[response.active_list];
+        let activeTabOrder = response.active_list;
+        //check if active tab more than count tabs;
+        if(activeTabOrder >= Object.keys(response.itemLists).length){
+          activeTabOrder = 0;
+        }
+        let activeTabName = Object.keys(reverseObject(response.itemLists))[activeTabOrder];
         let arrIdList = response.itemLists[activeTabName];
-        // console.log(arrIdList);
+
         // console.log(typeof arrIdList[0]);
         // let resultList = [];
         //
@@ -178,6 +181,7 @@ class App extends Component {
         // })
         // console.log(resultList);
 
+
         this.setState({
           itemList: arrIdList,
           region: response.region[0],
@@ -186,9 +190,12 @@ class App extends Component {
           list : [],
           login: storedName,
           psw: storedPw,
+          activeTab: activeTabOrder,
         })
         //console.log('list : ', this.state.itemList.length);
         // console.log(this.state.itemList);
+        this.changeActiveTabName(activeTabName);
+
         return response;
       })
       .then((response)=>{
@@ -203,7 +210,7 @@ class App extends Component {
         let multiData =
         { 'region' :  this.state.region,
           'server' :  this.state.serverSlug,
-          'itemLists'  : response.itemLists
+          'itemLists'  : response.itemLists,
         }
          // console.log(multiData);
         return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
@@ -218,10 +225,19 @@ class App extends Component {
         return response.json();
       })
       .then(response_multi => {
-        let tabList = response_multi[1].itemLists;
-        this.setState({tabsJson: tabList})
-        console.log('finished fetch multi-list')
+        let {activeTabName} = this.state;
+        let tabList = reverseObject(response_multi[1].itemLists);
+        let lastResposeTime = Date.now();
+        this.setState({
+          tabsJson: tabList,
+          list: response_multi[1].itemLists[activeTabName],
+          updatedTime: response_multi[0].time,
+          error_msg: response_multi[2].error_msg,
+          lastResposeTime,
+        })
+        console.log('finished fetch multi-list');
         console.log(this.state.tabsJson);
+        this.updateEmptySearch();
       })
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
@@ -363,22 +379,34 @@ class App extends Component {
 
   addToAuto(name, id){
     let index = this.state.itemList.findIndex(i => i.id === id);
+    let {serverSlug, region, tabsJson, itemList, activeTab} = this.state;
+    let activeTabName = Object.keys(tabsJson)[activeTab];
     if(id && index === -1){
-      this.state.itemList.unshift({name: name.toLowerCase() , id:id});
-      this.setState({ itemList: this.state.itemList });
-      this.udpateEmptyList(this.state.itemList);
-      console.log(this.state.tabsJson);
+      let updateitemList = itemList;
+      let updateTabsJson = tabsJson;
+      updateitemList.unshift({name: name.toLowerCase() , id:id});
+      updateTabsJson[activeTabName] = updateitemList;
+
+      this.setState({
+        itemList: updateitemList,
+        tabsJson: updateTabsJson,
+       });
+
+      this.udpateEmptyList(itemList);
+      console.log(tabsJson);
       console.log('adding new item')
+
+      let sendData =
+      { 'region' :  region,
+        'server' :  serverSlug,
+        'itemLists'  : tabsJson,
+      }
+      this.updateEmptySearch();
+
+      this.updateMultiList(sendData);
     }
 
-    let {serverSlug, region, tabsJson} = this.state;
-    let sendData =
-    { 'region' :  region,
-      'server' :  serverSlug,
-      'itemLists'  : tabsJson,
-    }
-    this.updateEmptySearch();
-    this.updateMultiList(sendData);
+    console.log(tabsJson[activeTabName]);
   }
 
   updateItemListState(newState){
@@ -392,9 +420,11 @@ class App extends Component {
       serverSlug: item.slug,
       list: [],
     })
+
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     //console.log(this.state.slug)
   }
+
 
   tooltipCreator(item){
     let tooltip_url = 'item=' + item.id;
@@ -440,6 +470,7 @@ class App extends Component {
         list : []
       })
     }
+
     //Old chage realm default functionality
     // this.setState({
     //   region: event.target.value,
@@ -449,6 +480,8 @@ class App extends Component {
     // })
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
+
+
   updateSwitchModal(){
     if(this.state.switchModal){
       //console.log(this.state.switchModal);
@@ -484,6 +517,7 @@ class App extends Component {
     }
   }
 
+
   transformTime(time){
     let currentTime = new Date();
     let timeSeconds =currentTime.getTime()/1000;;
@@ -506,6 +540,7 @@ class App extends Component {
     //document.querySelector('.API_error').classList.add('API_error_open');
 
     this.updateEmptySearch();
+
 
     const mq = window.matchMedia( "(max-width: 1024px)" );
     const loadingIcon = i.currentTarget.children[0];
@@ -875,6 +910,7 @@ class App extends Component {
         document.getElementById('login').style.textDecoration = 'none';
         //document.getElementById('signup').style.display = 'none';
         this.updateEmptySearch();
+
       }
     })
     .catch(function (error) {
@@ -961,30 +997,36 @@ class App extends Component {
     }
   }
 
-  updateUser(){
-    let login = this.state.login;
-    let pass = this.state.psw;
-    let region = this.state.region;
-    let realm = this.state.server;
-    let realmSlug = this.state.serverSlug;
-    let idList = [];
-    let lists =
-    {
-      'Shopping List #1': idList,
-    }
+  updateUser(tabs){
+    let {login, psw, region, server, serverSlug, activeTab, tabsJson} = this.state;
+    // let login = this.state.login;
+    // let pass = this.state.psw;
+    // let region = this.state.region;
+    // let realm = this.state.server;
+    // let realmSlug = this.state.serverSlug;
+    // let idList = [];
+    // let lists =
+    // {
+    //   'Shopping List #1': idList,
+    // }
 
     // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'active_list': this.state.activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
-    // console.log(data);
+    let data = {'active_list': activeTab, 'login':login, 'pwhash':psw, 'region': region, 'server': server, 'slug': serverSlug, 'itemLists': tabsJson};
 
+
+    if(tabs){
+      data.itemLists = tabs;
+    }
+    console.log(data);
+    console.log(data.itemLists);
     //console.log(this.state.itemList);
-    this.state.itemList.map((item) => {
-      // data += '&userdata[]=' + item.id;
-      idList.push({id:item.id, name:item.name});
-      return false;
-    });
-    console.log(lists);
+    // this.state.itemList.map((item) => {
+    //   // data += '&userdata[]=' + item.id;
+    //   idList.push({id:item.id, name:item.name});
+    //   return false;
+    // });
+    // console.log(data);
 
 
     //post axios
@@ -1000,7 +1042,7 @@ class App extends Component {
     })
     .then(response => response.json())
     .then(response => {
-      console.log(response);
+      console.log('user data updated');
     })
     .catch(function (error) {
       console.log(error);
@@ -1020,17 +1062,28 @@ class App extends Component {
 
 
   deleteItem(itemToDel){
-    //console.log(itemToDel);
-
+    // console.log(itemToDel);
     const toDelete = new Set([itemToDel]);
     const newArray = this.state.itemList.filter(obj => !toDelete.has(obj.id));
+    //del from object
+    let {tabsJson, activeTab} = this.state;
+    let activeTabName = Object.keys(tabsJson)[activeTab];
+    console.log(activeTabName);
+    let updatetabsJson = tabsJson;
+    let updatedCurTabData = tabsJson[activeTabName].filter(item => !toDelete.has(item.id));
+    updatetabsJson[activeTabName] = updatedCurTabData;
+
     this.setState({
       itemList: newArray,
+      tabsJson: updatetabsJson,
     })
     if(newArray.length === 0){
       //console.log(newArray.length)
       document.querySelector('.no-items-wrap').style.display ='block';
     }
+
+    this.updateUser();
+
   }
 
   deleteAll(){
@@ -1123,6 +1176,7 @@ class App extends Component {
 
   // tabs functions
   changetabsJsonsState(value){
+    console.log(value)
     this.setState({
       tabsJson: value,
     })
@@ -1130,18 +1184,19 @@ class App extends Component {
 
   changeActiveTab(value){
 
+    let {list, serverSlug, region, tabsJson, itemList} = this.state;
+    let curNameTab = Object.keys(tabsJson)[value];
+    let curTabData = tabsJson[curNameTab];
+
     this.setState({
       activeTab: value,
+      itemList: curTabData,
     })
-    // const{tabsJson} = this.state;
-    // let curNameTab = Object.keys(tabsJson)[value]
-    // console.log(tabsJson[curNameTab]);
-    // console.log(this.state.itemList);
 
-    // this.updateEmptySearch();
-    console.log(this.checkDataAge());
-    if(this.checkDataAge()){
-      let {list,serverSlug, region, tabsJson} = this.state;
+    this.udpateEmptyList(curTabData);
+
+    // console.log(this.checkDataAge());
+    if(this.checkDataAge() && curTabData.length!==0){
       let sendData =
       { 'region' :  region,
         'server' :  serverSlug,
@@ -1150,9 +1205,9 @@ class App extends Component {
       this.updateMultiList(sendData);
     }
     else{
-      console.log('Loading local data')
+      console.log('Loading local data');
+      this.setState({list: curTabData});
     }
-
 
   }
 
@@ -1160,25 +1215,23 @@ class App extends Component {
     let{tabsJson, active} =this.state;
     delete tabsJson[name];
     this.setState({tabsJson});
+    this.updateUser();
   }
-  createTab(name){
+  createTab(name, activeTab){
     let{tabsJson} =this.state;
     tabsJson[name] = [];
-    this.setState({tabsJson});
+    this.setState({
+      tabsJson,
+      activeTab,
+      itemList: [],
+      list: [],
+      activeTabName: name,
+     });
+
+     document.querySelector('.no-items-wrap').style.display ='block';
+     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
   }
 
-  // addItemidToTab(id, name){
-  //   let {tabsJson, activeTab} = this.state;
-  //   let currentTabItems = Object.keys(tabsJson)[activeTab];
-  //   // let update = tabsJson[currentTabItems].push({'id':id});
-  //   console.log(id);
-  //   let update = tabsJson;
-  //   update[currentTabItems].push({id, name});
-  //   // update.push({'id': id});
-  //   this.setState({tabsJson: update});
-  //
-  //   console.log(tabsJson);
-  // }
   updateItemListOnClickTab(data){
     this.setState({itemList: data})
   }
@@ -1187,13 +1240,19 @@ class App extends Component {
     const {lastResposeTime, updatedTime} = this.state;
     let time1 = (Date.now() - lastResposeTime)/1000;
     let time2 = Date.now()/1000 - updatedTime;
-    console.log(time1, time2);
+    // console.log(time1, time2);
     if(time1+time2>3600||this.state.itemList.length===0){
       return true;
     }
     else{
       return false;
     }
+  }
+
+  changeActiveTabName(newName){
+    this.setState({
+      activeTabName: newName,
+    })
   }
 
   updateMultiList(data){
@@ -1213,28 +1272,29 @@ class App extends Component {
       const {tabsJson, activeTab} = this.state;
       let newData = json[1].itemLists;
       let old = tabsJson;
-      console.log(newData);
-      console.log(old);
-      // let res;
-      // res = old;
-      // Object.keys(old).map(i =>{
-      //   res[i] = newData[i];
-      // })
-      //Saving order for tabs
+      // console.log(newData);
+      // console.log(old);
+      let res;
+      res = old;
+      Object.keys(old).map(i =>{
+        res[i] = newData[i];
+      })
+      //end Saving order for tabs
 
-      console.log(json[1].itemLists);
+      // console.log(json[1].itemLists);
       // console.log(json);
       let activeTabName;
       activeTabName = Object.keys(tabsJson)[activeTab];
       // console.log(activeTabName);
       this.setState({
-        // tabsJson: res,//json[1].itemLists, // updating all tabs
+        tabsJson: res,//json[1].itemLists, // updating all tabs
         list: json[1].itemLists[activeTabName],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       });
       // console.log(this.state.list)
       // console.log(this.state.error_msg.length);
+      this.updateEmptySearch();
       if(this.state.error_msg.length === 0){
         document.querySelector('.API_error').classList.remove('API_error_open');
       }
@@ -1337,6 +1397,11 @@ class App extends Component {
           return false;
         })
       })
+
+      if(this.state.login && this.state.psw){
+        //console.log('updaate');
+        this.updateUser();
+      }
 }
 
 
@@ -1373,7 +1438,6 @@ class App extends Component {
               signUp={this.signUp.bind(this)}
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
-              // addItemidToTab={this.addItemidToTab}
             />
             <Tabs
               dataJson={this.state.tabsJson}
@@ -1384,6 +1448,9 @@ class App extends Component {
               createTab = {this.createTab}
               updateItemListOnClickTab = {this.updateItemListState.bind(this)}
               udpateEmptyList = {this.udpateEmptyList.bind(this)}
+              activeTabName = {this.state.activeTabName}
+              changeActiveTabName = {this.changeActiveTabName}
+              updateUser = {this.updateUser}
             />
             <div className="main clearfix">
               <SearchList

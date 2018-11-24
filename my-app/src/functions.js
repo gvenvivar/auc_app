@@ -56,3 +56,18 @@ export function SetCaretAtEnd(elem) {
         elem.focus();
     } // if
 } // SetCaretAtEnd()
+
+export function reverseObject(object) {
+    let newObject = {};
+    let keys = [];
+    for (let key in object) {
+        keys.push(key);
+    }
+    for (let i = keys.length - 1; i >= 0; i--) {
+
+      let value = object[keys[i]];
+      newObject[keys[i]]= value;
+    }
+
+    return newObject;
+}

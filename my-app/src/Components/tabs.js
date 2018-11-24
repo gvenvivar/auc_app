@@ -4,43 +4,43 @@ import cerrar from '../img/close_tab.png';
 import '../tabs.css';
 import {SetCaretAtEnd} from '../functions';
 
-let dataJson = {
-  'Shopping List #1': [
-    {
-      average: 5000000000,
-      id: 18672,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_orb_05.jpg",
-      name: "Elemental Ember",
-      order: 1,
-      price: 0,
-      quantity: 0,
-      server: "en_US_Sargeras",
-    },
-    {
-      average: 91967.54065392342,
-      id: 8838,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_herb_18.jpg",
-      name: "Sungrass",
-      order: 2,
-      price: 57809.52380952381,
-      quantity: 96,
-      server: "en_US_Sargeras",
-    }
-  ],
-  'Shopping List #2': [
-    {
-      average: 294959.61094097054,
-      id: 2776,
-      img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_ore_gold_01.jpg",
-      name: "Gold Ore",
-      order: 1,
-      price: 1726266.7826086956,
-      quantity: 143,
-      server: "en_US_Sargeras",
-    }
-  ],
-  'List' : []
-}
+// let dataJson = {
+//   'Shopping List #1': [
+//     {
+//       average: 5000000000,
+//       id: 18672,
+//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_orb_05.jpg",
+//       name: "Elemental Ember",
+//       order: 1,
+//       price: 0,
+//       quantity: 0,
+//       server: "en_US_Sargeras",
+//     },
+//     {
+//       average: 91967.54065392342,
+//       id: 8838,
+//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_herb_18.jpg",
+//       name: "Sungrass",
+//       order: 2,
+//       price: 57809.52380952381,
+//       quantity: 96,
+//       server: "en_US_Sargeras",
+//     }
+//   ],
+//   'Shopping List #2': [
+//     {
+//       average: 294959.61094097054,
+//       id: 2776,
+//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_ore_gold_01.jpg",
+//       name: "Gold Ore",
+//       order: 1,
+//       price: 1726266.7826086956,
+//       quantity: 143,
+//       server: "en_US_Sargeras",
+//     }
+//   ],
+//   'List' : []
+// }
 
 class Tabs extends Component {
 
@@ -50,7 +50,7 @@ class Tabs extends Component {
       // tabs: [],
       // active: 0,
       // dataJson: dataJson
-      activeTabName: '',
+      // activeTabName: '',
     };
 
 
@@ -71,7 +71,10 @@ class Tabs extends Component {
     //   tabListArr.push(list);
     // })
     // this.setState({tabs: tabListArr})
-    this.setState({activeTabName: Object.keys(this.props.dataJson)[this.props.active]});
+    console.log('tabs mount');
+    // this.setState({activeTabName: Object.keys(this.props.dataJson)[this.props.active]});
+    let {changeActiveTabName} = this.props;
+    changeActiveTabName(Object.keys(this.props.dataJson)[this.props.active])
   }
 
   refocusForEdit(){
@@ -90,8 +93,8 @@ class Tabs extends Component {
   }
   blurTabs(){
     let activeTabText = document.querySelector('.tab.active .tabs_name');
-    let {dataJson, active, changetabsJsonsState} = this.props;
-    let {activeTabName} = this.state;
+    let {dataJson, active, changetabsJsonsState, changeActiveTabName, updateUser} = this.props;
+    let {activeTabName} = this.props;
     let sameName = `${activeTabName}_new`;
     //check if tab name is not same;
     if(dataJson[activeTabName] && Object.keys(dataJson)[active]!==activeTabName){
@@ -99,17 +102,19 @@ class Tabs extends Component {
       activeTabText.readOnly = true;
       let result = this.renameObjKey(dataJson, Object.keys(dataJson)[active], sameName);
       changetabsJsonsState(result);
-      this.setState({activeTabName: sameName})
+      changeActiveTabName(sameName);
+      updateUser(result);
       console.log('change tab name');
-      console.log(result);
+      // console.log(result);
     }
     else{
       activeTabText.blur();
       activeTabText.readOnly = true;
       let result = this.renameObjKey(dataJson, Object.keys(dataJson)[active], activeTabName);
       changetabsJsonsState(result);
-      console.log('finished edit');
-      console.log(result);
+      updateUser(result);
+      console.log('finished edit and update user');
+      // console.log(result);
     }
   }
 
@@ -129,9 +134,10 @@ class Tabs extends Component {
   };
 
   editTab(item){
-    let {dataJson, active, changetabsJsonsState} = this.props;
+    // let {dataJson, active, changetabsJsonsState} = this.props;
+    let {changeActiveTabName} = this.props;
     let renameTab = item.target.value;
-    let nameTab = Object.keys(dataJson)[active];
+    // let nameTab = Object.keys(dataJson)[active];
 
     // tabs[active] = item.target.value;
 
@@ -142,9 +148,10 @@ class Tabs extends Component {
     //   // tabs,
     // })
 
-    this.setState({
-      activeTabName: renameTab,
-    })
+    // this.setState({
+    //   activeTabName: renameTab,
+    // })
+    changeActiveTabName(renameTab);
     // console.log(result);
 
   }
@@ -155,10 +162,11 @@ class Tabs extends Component {
     // this.setState({
     //   active: currentTab,
     // })
-    let {dataJson, updateItemListOnClickTab, udpateEmptyList} = this.props;
+    let {dataJson, updateItemListOnClickTab, udpateEmptyList, changeActiveTabName} = this.props;
     let curTabName = Object.keys(dataJson)[currentTab]
     this.props.changeActiveTab(currentTab);
-    this.setState({activeTabName: curTabName})
+    // this.setState({activeTabName: curTabName})
+    changeActiveTabName(curTabName);
 
     //Show tabItems on click
     updateItemListOnClickTab(dataJson[curTabName]);
@@ -166,7 +174,7 @@ class Tabs extends Component {
   }
 
   addTab(){
-    let {dataJson, createTab} = this.props;
+    let {dataJson, createTab, changeActiveTabName} = this.props;
     // let {tabs, dataJson} = this.state;
     //arr logic
     // let newTabPos = tabs.length + 1
@@ -182,19 +190,22 @@ class Tabs extends Component {
     let len = Object.keys(dataJson).length;
     let countNumTab = len+1;
     let newTabName = `Shopping List #${countNumTab}`;
+    // this.setState({activeTabName: newTabName});
+    changeActiveTabName(newTabName);
     //Need check for same naming Tab
     Object.keys(dataJson).map(name => {
       if(name===newTabName){
         countNumTab++;
         newTabName = `Shopping List #${countNumTab}`;
       }
+      return false;
     })
-    createTab(newTabName);
+    createTab(newTabName, len);
   }
 
   deleteTab(order){
     // let {tabs, active, dataJson} = this.state;
-    let {active, dataJson, deleteTab, changeActiveTab, createTab} = this.props;
+    let {active, dataJson, deleteTab, changeActiveTab, createTab, changeActiveTabName} = this.props;
     //obj logic
     let newTab = 'Shopping List #1';
     let tabToDel = Object.keys(dataJson)[order];
@@ -212,11 +223,15 @@ class Tabs extends Component {
     }
     if(order===active){
       changeActiveTab(0)
+      let curTabName = Object.keys(dataJson);
       // this.setState({
-      //   active: 0,
+      //   activeTabName: curTabName[0]
+      //   // active: 0,
       // })
+      changeActiveTabName(curTabName[0]);
+
     }
-    if(Object.keys(dataJson).length==0){
+    if(Object.keys(dataJson).length===0){
       // dataJson[newTab] = [];
       // this.setState({
       //   dataJson,
@@ -224,7 +239,8 @@ class Tabs extends Component {
       createTab(newTab);
     }
 
-    console.log(dataJson);
+
+
 
     // arr logic
     // let updateRes = tabs;
@@ -259,7 +275,7 @@ class Tabs extends Component {
         <TabList
           tabs={this.props.dataJson}
           active={this.props.active}
-          activeTabName={this.state.activeTabName}
+          activeTabName={this.props.activeTabName}
           refocusForEdit={this.refocusForEdit}
           editTab={this.editTab}
           blurTabs={this.blurTabs}
@@ -267,7 +283,7 @@ class Tabs extends Component {
           deleteTab={this.deleteTab}
           makeActive={this.makeActive}
         />
-        <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab}/></div>
+        <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
       </div>
     </div>
 
@@ -285,10 +301,10 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
       tabList.push(
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
-            <img className='rename' src={pencil} onClick={refocusForEdit}/>
+            <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
             <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly></textarea>
           </div>
-          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)}/>
+          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>
       )
     }
@@ -296,13 +312,14 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
       tabList.push(
         <div className='tab' id={tab} key={key} order={key}>
           <div className='tabInner' onClick={() => makeActive(key)}>
-            <img className='rename' src={pencil} onClick={refocusForEdit} />
+            <img className='rename' src={pencil} onClick={refocusForEdit} alt='rename_tab'/>
             <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly></textarea>
           </div>
-          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} />
+          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>
       )
     }
+    return false;
   })
   return tabList;
 }

@@ -30,12 +30,15 @@ class resultList extends Component {
  		let items = this.props.items;
 		let count = 0;
 		//console.log(items);
- 		items.map((item, index) => {
- 			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
-			count++;
-			item.order=count;
-			return false;
- 		})
+		if(items){
+			items.map((item, index) => {
+	 			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
+				count++;
+				item.order=count;
+				return false;
+	 		})
+		}
+
 		//console.log(list.map((item)=>item.props.item.name));
 
 		//sort order

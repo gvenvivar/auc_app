@@ -188,13 +188,11 @@ class header extends Component {
                 tooltip[0].style.visibility = 'hidden';
                 tooltip[0].firstChild.style.visibility = 'hidden';
               }
-              //Add to tab
-              // this.props.addItemidToTab(item.id, item.name);
             }
 
             }
 						renderItem={(item, isHighlighted) => (
-              <div style={isHighlighted ? styles.highlightedItem : styles.item}>
+              <div style={isHighlighted ? styles.highlightedItem : styles.item} key={`a_${item.id}`}>
                 <img className="icon" src={item.img_url} alt={item.name}  onError={(e)=>{e.target.src = no_img}}/>
 							  <a href='#name' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item.name}</a>
               </div>
