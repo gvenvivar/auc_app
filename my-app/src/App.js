@@ -162,6 +162,8 @@ class App extends Component {
       })
       .then(response => {
         // let activeTabName = Object.keys(response.itemLists)[response.active_list];
+        console.log(response.itemLists);
+        console.log(response.active_list);
         let activeTabOrder = response.active_list;
         //check if active tab more than count tabs;
         if(activeTabOrder >= Object.keys(response.itemLists).length){
@@ -193,7 +195,7 @@ class App extends Component {
           activeTab: activeTabOrder,
         })
         //console.log('list : ', this.state.itemList.length);
-        // console.log(this.state.itemList);
+        console.log(activeTabName);
         this.changeActiveTabName(activeTabName);
 
         return response;
@@ -226,7 +228,8 @@ class App extends Component {
       })
       .then(response_multi => {
         let {activeTabName} = this.state;
-        let tabList = reverseObject(response_multi[1].itemLists);
+        let tabList = response_multi[1].itemLists;
+        console.log(tabList);
         let lastResposeTime = Date.now();
         this.setState({
           tabsJson: tabList,

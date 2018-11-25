@@ -101,8 +101,8 @@ class header extends Component {
      if(this.props.updatedTime && time===1){
         document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
      }
-     if(this.props.updatedTime && time > 91){
-        document.querySelector('.time').innerHTML = `Last update 90+ minutes ago`
+     if(this.props.updatedTime && time > 121){
+        document.querySelector('.time').innerHTML = `Last update 120+ minutes ago`
      }
 
      // Choose serverList (US/EU)
