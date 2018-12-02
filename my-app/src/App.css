@@ -366,13 +366,14 @@ a {
 }
 
 .main {
-  margin: 30px auto;
+  margin: 0 auto 30px;
 }
 
 .col-left {
   max-width: 312px;
-  display: inline-block;
+  /* display: inline-block; */
   float: left;
+  display: none;
 }
 
 .items-table {
@@ -419,13 +420,13 @@ button {
 
 .col-right {
   width: 520px;
-  min-height: 300px;
+  min-height: 320px;
   border-radius: 5px;
   background: #fff;
   opacity: 0.85;
   /* border: 1px solid #000; */
   display: inline-block;
-  float: right;
+  /* float: right; */
   position: relative;
   /* overflow: hidden; */
 }
@@ -534,9 +535,9 @@ thead tr{
 }
 
 .icon {
-  width: 25px;
-  height: 25px;
-  border: 2px solid #fff;
+  width: 38px;
+  height: 38px;
+  /* border: 2px solid #fff; */
   border-radius: 3px;
   vertical-align: middle;
   margin-right: 7px;
@@ -604,7 +605,7 @@ th:last-child {
 }
 .no-items-wrap {
   text-align: center;
-  padding: 115px 0;
+  padding: 123px 0;
   font-weight: normal;
   border-radius: 5px;
 }
@@ -729,7 +730,8 @@ footer p{
   align-self: center;
 }
 .group-left .cell:first-child{
-  flex: 0 0 45px;
+  /* flex: 0 0 45px; */
+  flex: 0 0 60px;
 }
 .group-right .cell:last-child,
 .group-right-body .cell:last-child{
@@ -753,18 +755,18 @@ footer p{
 .row-head {
   font-size: 12px;
   background: #000;
-  opacity: 0.9;
+  /* opacity: 0.9; */
   color: #fff;
 }
 .table-container > div:nth-child(even){
   background: #dedede;
 }
 .row-body {
-  padding: 5px 10px 5px 10px;
+  padding: 1px 10px 1px 15px;
 }
 .row-head{
-  padding: 17px 10px 17px 10px;
-  border-radius: 5px 5px 0 0;
+  padding: 17px 10px 17px 20px;
+  /* border-radius: 5px 5px 0 0; */
 }
 .expand-open{
   margin-top: 1px;
@@ -773,6 +775,7 @@ footer p{
 }
 .expand-total{
   border-top: 1px solid #95989a;
+  line-height: 40px;
 }
 }
 .refresh{
@@ -955,7 +958,7 @@ footer p{
     padding: 60px 10px;
   }
   .col-left {
-    display: block;
+    /* display: block; */
     float: none;
     margin: 0 auto;
   }
@@ -981,7 +984,9 @@ footer p{
 }
 @media (min-width: 1024px){
   .col-right{
-    width: 640px;
+    /* width: 640px; */
+    width: 100%;
+    max-width: 1060px;
   }
 }
 
@@ -1005,7 +1010,8 @@ footer p{
   }
 }
 @media (max-width: 640px){
-  .avg{
+  .avg,
+  .remove-col{
     display: none;
   }
   .group-left{

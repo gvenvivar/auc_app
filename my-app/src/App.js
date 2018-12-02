@@ -122,6 +122,9 @@ class App extends Component {
     let time = localStorage.getItem('time');
     let nowTime = new Date().getTime();
     let {tabsJson, activeTab} = this.state;
+    const loading = document.querySelector('.load');
+
+    loading.style.display = 'block';
 
     if((nowTime - time) > 1000 * 60 * 60 * 24 * 14){
       localStorage.clear();
@@ -169,7 +172,7 @@ class App extends Component {
         if(activeTabOrder >= Object.keys(response.itemLists).length){
           activeTabOrder = 0;
         }
-        let activeTabName = Object.keys(reverseObject(response.itemLists))[activeTabOrder];
+        let activeTabName = Object.keys(response.itemLists)[activeTabOrder];
         let arrIdList = response.itemLists[activeTabName];
 
         // console.log(typeof arrIdList[0]);
@@ -238,6 +241,7 @@ class App extends Component {
           error_msg: response_multi[2].error_msg,
           lastResposeTime,
         })
+        loading.style.display = 'none';
         console.log('finished fetch multi-list');
         console.log(this.state.tabsJson);
         this.updateEmptySearch();
@@ -422,7 +426,18 @@ class App extends Component {
       server: item.name,
       serverSlug: item.slug,
       list: [],
+    }, ()=>{
+      let multiData =
+        { 'region' :  this.state.region,
+          'server' :  this.state.serverSlug,
+          'itemLists'  : this.state.tabsJson,
+        }
+        this.updateMultiList(multiData);
     })
+
+
+
+    console.log('change server')
 
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     //console.log(this.state.slug)
@@ -438,6 +453,12 @@ class App extends Component {
   }
 
   updateRegion(event){
+    let multiData =
+      { 'region' :  event.target.value,
+        'server' :  this.state.serverSlug,
+        'itemLists'  : this.state.tabsJson,
+      }
+
     let identicalRealm = false;
     console.log(this.state.server, this.state.region);
     if(this.state.region === 'en_US'){
@@ -463,7 +484,10 @@ class App extends Component {
       this.setState({
         region: event.target.value,
         list : []
+      }, ()=>{
+        this.updateMultiList(multiData);
       })
+      console.log(multiData);
     }
     else{
       this.setState({
@@ -471,8 +495,12 @@ class App extends Component {
         server: 'sargeras',
         serverSlug: 'sargeras',
         list : []
+      },()=> {
+        multiData.server = 'sargeras';
+        this.updateMultiList(multiData);
       })
     }
+
 
     //Old chage realm default functionality
     // this.setState({
@@ -1068,6 +1096,11 @@ class App extends Component {
     // console.log(itemToDel);
     const toDelete = new Set([itemToDel]);
     const newArray = this.state.itemList.filter(obj => !toDelete.has(obj.id));
+
+    //Delete from right Column
+    const rightColRes = this.state.list.filter(obj => !toDelete.has(obj.id));
+
+
     //del from object
     let {tabsJson, activeTab} = this.state;
     let activeTabName = Object.keys(tabsJson)[activeTab];
@@ -1079,6 +1112,7 @@ class App extends Component {
     this.setState({
       itemList: newArray,
       tabsJson: updatetabsJson,
+      list: rightColRes,
     })
     if(newArray.length === 0){
       //console.log(newArray.length)
@@ -1172,9 +1206,16 @@ class App extends Component {
   }
 
   onSortEnd = ({oldIndex, newIndex}) => {
+    let {tabsJson, activeTabName} =this.state;
+    let reorderArr = arrayMove(this.state.list, oldIndex, newIndex);
+    let obj = tabsJson;
+    obj[activeTabName] = reorderArr;
     this.setState({
       itemList: arrayMove(this.state.itemList, oldIndex, newIndex),
+      list: arrayMove(this.state.list, oldIndex, newIndex),
+      tabsJson: obj,
     });
+    this.updateUser();
   };
 
   // tabs functions
@@ -1190,26 +1231,38 @@ class App extends Component {
     let {list, serverSlug, region, tabsJson, itemList} = this.state;
     let curNameTab = Object.keys(tabsJson)[value];
     let curTabData = tabsJson[curNameTab];
+    let loading;
+
 
     this.setState({
       activeTab: value,
       itemList: curTabData,
+    },()=>{
+      // loading = document.querySelector('.load');
+      // loading.style.display = 'block';
     })
 
     this.udpateEmptyList(curTabData);
 
     // console.log(this.checkDataAge());
+    // If data old update from server
     if(this.checkDataAge() && curTabData.length!==0){
       let sendData =
       { 'region' :  region,
         'server' :  serverSlug,
         'itemLists'  : tabsJson,
       }
+      let loading = document.querySelector('.load');
+      // loading.style.display = 'block';
+      console.log('display block')
       this.updateMultiList(sendData);
+      // loading.style.display = 'none';
+      console.log('display none')
     }
     else{
       console.log('Loading local data');
       this.setState({list: curTabData});
+
     }
 
   }
@@ -1244,7 +1297,7 @@ class App extends Component {
     let time1 = (Date.now() - lastResposeTime)/1000;
     let time2 = Date.now()/1000 - updatedTime;
     // console.log(time1, time2);
-    if(time1+time2>3600||this.state.itemList.length===0){
+    if(time1+time2>1800||this.state.itemList.length===0){
       return true;
     }
     else{
@@ -1260,7 +1313,8 @@ class App extends Component {
 
   updateMultiList(data){
     let {list, server, serverSlug, region, tabsJson} = this.state;
-
+    const loading = document.querySelector('.load');
+    loading.style.display = 'block';
 
     fetch('https://ahtool.com/grape/multi-list-test/', {
     	method: 'post',
@@ -1308,6 +1362,7 @@ class App extends Component {
       //Set lastUpdate time
       let lastResposeTime = Date.now();
       this.setState({lastResposeTime});
+      loading.style.display = 'none';
       // console.log('lastResposeTime: ' + lastResposeTime);
 
 
@@ -1463,14 +1518,17 @@ class App extends Component {
                 delButton={this.deleteItem.bind(this)}
                 deleteAll={this.deleteAll.bind(this)}
                 tooltipCreator={this.tooltipCreator.bind(this)}
-                dragList={this.updateItemListState.bind(this)}
+                // dragList={this.updateItemListState.bind(this)}
                 onSortEnd={this.onSortEnd.bind(this)}
                 list={this.state.items}
               />
               <ResultList items={this.state.list}
-              tooltipCreator={this.tooltipCreator.bind(this)}
-              refresh={this.clickSearch}
-                />
+                tooltipCreator={this.tooltipCreator.bind(this)}
+                refresh={this.clickSearch}
+                delButton={this.deleteItem.bind(this)}
+                onSortEnd={this.onSortEnd.bind(this)}
+                tooltipCreator={this.tooltipCreator.bind(this)}
+              />
             </div>
           </div>
         </div>

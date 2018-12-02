@@ -1,9 +1,9 @@
 .tabs{
-  max-width: 994px;
+  max-width: 1060px;
   min-height: 40px;
   background: #000;
   opacity: 0.85;
-  margin: 50px auto 30px;
+  margin: 50px auto 0;
   position: relative;
 }
 .tab{
@@ -77,4 +77,35 @@
   position: absolute;
   left: 0;
   top: -32px;
+}
+.load{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 17px;
+  top: 9px;
+  display: none;
+  background-color: #000;
+}
+@media (max-width: 1024px){
+  .tabs{
+    /* width: 640px; */
+    width: 100%;
+    max-width: 640px;
+  }
+  .tab{
+    width: calc(50% - 2px);
+  }
+  .tab.active{
+    width: calc(50% - 2px);
+  }
+}
+
+@media (max-width: 500px){
+  .tab{
+    width: calc(100% - 2px);
+  }
+  .tab.active{
+    width: calc(100% - 2px);
+  }
 }

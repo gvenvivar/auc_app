@@ -66,7 +66,7 @@ class resultListRow extends Component {
 					<div className="attach_plus">
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
-		    	<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
+		    	<ResultListRowMarkup delButton={this.props.delButton} item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
 		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
 		    	{list}
 		    	<ResultListRowTotalCost price={price/1.5} text={text}/>
@@ -90,7 +90,7 @@ class resultListRow extends Component {
 					<div className="attach_plus">
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
-		    	<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
+		    	<ResultListRowMarkup delButton={this.props.delButton} item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
 		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
 		    	{list}
 		    	<ResultListRowTotalCost price={price} text={text}/>
@@ -99,7 +99,7 @@ class resultListRow extends Component {
 		)
 		}
     return (
-			<ResultListRowMarkup item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator}/>
+			<ResultListRowMarkup delButton={this.props.delButton} item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator}/>
     );
   }
 }

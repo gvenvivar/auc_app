@@ -3,6 +3,27 @@ import ResultListRow from './resultListRow';
 import refresh from '../img/refresh.png'
 //import {orderBy} from 'lodash';
 
+
+// import DragSortableList from 'react-drag-sortable';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+
+const SortableItem = SortableElement(({item, delButton, tooltipCreator}) =>{
+	return(
+		<ResultListRow item={item}  key={item.id} delButton={delButton} tooltipCreator={tooltipCreator}/>
+	)
+}
+);
+
+const SortableList = SortableContainer(({items, delButton, tooltipCreator}) => {
+  return (
+		<div>
+			{items.map((item, index) => (
+				<SortableItem item={item} index={index}  key={item.id} delButton={delButton} tooltipCreator={tooltipCreator}/>
+			))}
+		</div>
+  );
+});
+
 class resultList extends Component {
 
 	/*createResultList(){
@@ -32,7 +53,7 @@ class resultList extends Component {
 		//console.log(items);
 		if(items){
 			items.map((item, index) => {
-	 			list.push(<ResultListRow item={item}  key={item.id}   tooltipCreator={this.props.tooltipCreator}/>);
+	 			list.push(<ResultListRow item={item}  key={item.id} delButton={this.props.delButton} tooltipCreator={this.props.tooltipCreator}/>);
 				count++;
 				item.order=count;
 				return false;
@@ -56,14 +77,19 @@ class resultList extends Component {
 			    		<div className="cell flex-grow-3">Name</div>
 		    		</div>
 		    		<div className="group group-right">
+							<div className="cell center remove-col">Remove</div>
 			    		<div className="cell center">Qty</div>
 			    		<div className="cell right avg">Regional Avg</div>
 			    		<div className="cell"><img className='refresh' src={refresh} alt='refresh' onClick={this.props.refresh}/>Price</div>
 			    	</div>
 		    	</div>
 
-		    	{list}
-
+					{
+						list
+					}
+					{
+						// <SortableList items={this.props.items} onSortEnd={this.props.onSortEnd} delButton={this.props.delButton} tooltipCreator={this.props.tooltipCreator}/>
+					}
 
 		    	<div className='no-items-wrap'>
 						<div className='no-results'>Add items to your list and click search</div>

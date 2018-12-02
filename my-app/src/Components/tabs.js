@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import pencil from '../img/pencil.png';
 import cerrar from '../img/close_tab.png';
+import loading from '../img/loading.gif';
 import '../tabs.css';
 import {SetCaretAtEnd} from '../functions';
 
@@ -302,6 +303,7 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
+            <img className='load' src={loading} alt='loading data'/>
             <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly></textarea>
           </div>
           <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
