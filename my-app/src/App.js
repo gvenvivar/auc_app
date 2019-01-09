@@ -130,6 +130,7 @@ class App extends Component {
       localStorage.clear();
     }
 
+
     if(storedName !== null){
       //console.log('user login now')
 
@@ -268,6 +269,9 @@ class App extends Component {
       });
 
 
+    }
+    else{
+      loading.style.display = 'none';
     }
 
     //fetch database json
@@ -886,14 +890,30 @@ class App extends Component {
       return response.json()
     })
     .then(response => {
-      let activeTab = Object.keys(response.itemLists)[this.state.activeTab];
+      console.log(response);
+      let activeTabOrder = response.active_list;
+      let activeTab = Object.keys(response.itemLists)[activeTabOrder];
       let arrIdList = response.itemLists[activeTab];
       let resultList = [];
 
+      //check if active tab more than count tabs;
+      // console.log(activeTabOrder, Object.keys(response.itemLists).length);
+      if(activeTabOrder >= Object.keys(response.itemLists).length){
+        activeTabOrder = 0;
+        activeTab = Object.keys(response.itemLists)[0];
+        arrIdList = response.itemLists[activeTab];
+      }
+      // console.log(arrIdList);
+
+      let idArr = [];
+      arrIdList.map(item =>{
+        idArr.push(item.id);
+      });
+      // console.log(idArr);
 
       this.state.data.map(item => {
         let id = item.id;
-        if(arrIdList.includes(id)){
+        if(idArr.includes(id)){
           resultList.push({'name': item.name, 'id': item.id})
         }
       })
@@ -909,11 +929,14 @@ class App extends Component {
       }
 
       this.setState({
-        itemList: resultList, // change to new structure!!!
+        tabsJson: response.itemLists,
+        itemList: resultList,
+        activeTab: activeTabOrder,
+        activeTabName: activeTab,
+        list: arrIdList,
         region: response.region[0],
         server: response.region[1],
         serverSlug:  response.region[2],
-        list : [],
         login: login,
         psw: token,
       })
@@ -964,30 +987,28 @@ class App extends Component {
     let login = document.getElementById('email').value;
     let pass  = document.getElementById('psw').value;
     let passR = document.getElementById('pswR').value;
-    let region = this.state.region;
-    let realm = this.state.server;
-    let realmSlug = this.state.serverSlug;
+    let {region, server, serverSlug, tabsJson, activeTab} = this.state;
     let msg = document.querySelector('.error');
     let loadingIcon = e.currentTarget.children[0];
 
-    let idList = [];
-    let lists =
-    {
-      'Shopping List #1': idList,
-    }
+    // let idList = [];
+    // let lists =
+    // {
+    //   'Shopping List #1': idList,
+    // }
 
 
     // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'active_list': this.state.activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': realm, 'slug':realmSlug, 'itemLists': lists}
+    let data = {'active_list': activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': server, 'slug':serverSlug, 'itemLists': tabsJson}
     //console.log(data);
 
     //create item list ID
-    this.state.itemList.map((item) => {
-      // data += '&userdata[]=' + item.id;
-      idList.push(item.id);
-      return false;
-    });
+    // this.state.itemList.map((item) => {
+    //   // data += '&userdata[]=' + item.id;
+    //   idList.push(item.id);
+    //   return false;
+    // });
 
     loadingIcon.style.display = 'block';
 
@@ -1274,18 +1295,26 @@ class App extends Component {
     this.updateUser();
   }
   createTab(name, activeTab){
-    let{tabsJson} =this.state;
-    tabsJson[name] = [];
-    this.setState({
-      tabsJson,
-      activeTab,
-      itemList: [],
-      list: [],
-      activeTabName: name,
-     });
+    let{tabsJson, login} =this.state;
+    if(!login){
+      console.log('Can only add tabs when login');
+      let addTabError = document.querySelector('.addTabError');
+      addTabError.style.opacity = 1;
+      addTabError.style.visibility = 'visible';
+    }
+    if(login){
+      tabsJson[name] = [];
+      this.setState({
+        tabsJson,
+        activeTab,
+        itemList: [],
+        list: [],
+        activeTabName: name,
+       });
 
-     document.querySelector('.no-items-wrap').style.display ='block';
-     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+       document.querySelector('.no-items-wrap').style.display ='block';
+       document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+    }
   }
 
   updateItemListOnClickTab(data){
@@ -1509,6 +1538,7 @@ class App extends Component {
               activeTabName = {this.state.activeTabName}
               changeActiveTabName = {this.changeActiveTabName}
               updateUser = {this.updateUser}
+              login = {this.state.login}
             />
             <div className="main clearfix">
               <SearchList

@@ -193,7 +193,7 @@ class header extends Component {
             }
 						renderItem={(item, isHighlighted) => (
               <div style={isHighlighted ? styles.highlightedItem : styles.item} key={`a_${item.id}`}>
-                <img className="icon" src={item.img_url} alt={item.name}  onError={(e)=>{e.target.src = no_img}}/>
+                <img className="icon icon-small" src={item.img_url} alt={item.name}  onError={(e)=>{e.target.src = no_img}}/>
 							  <a href='#name' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item.name}</a>
               </div>
 						)}
