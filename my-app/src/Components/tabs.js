@@ -2,46 +2,10 @@ import React, { Component } from 'react';
 import pencil from '../img/pencil.png';
 import cerrar from '../img/close_tab.png';
 import loading from '../img/loading.gif';
+import addTabError from '../img/error.png'
 import '../tabs.css';
 import {SetCaretAtEnd} from '../functions';
 
-// let dataJson = {
-//   'Shopping List #1': [
-//     {
-//       average: 5000000000,
-//       id: 18672,
-//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_orb_05.jpg",
-//       name: "Elemental Ember",
-//       order: 1,
-//       price: 0,
-//       quantity: 0,
-//       server: "en_US_Sargeras",
-//     },
-//     {
-//       average: 91967.54065392342,
-//       id: 8838,
-//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_misc_herb_18.jpg",
-//       name: "Sungrass",
-//       order: 2,
-//       price: 57809.52380952381,
-//       quantity: 96,
-//       server: "en_US_Sargeras",
-//     }
-//   ],
-//   'Shopping List #2': [
-//     {
-//       average: 294959.61094097054,
-//       id: 2776,
-//       img_url: "https://wow.zamimg.com/images/wow/icons/large//inv_ore_gold_01.jpg",
-//       name: "Gold Ore",
-//       order: 1,
-//       price: 1726266.7826086956,
-//       quantity: 143,
-//       server: "en_US_Sargeras",
-//     }
-//   ],
-//   'List' : []
-// }
 
 class Tabs extends Component {
 
@@ -175,24 +139,16 @@ class Tabs extends Component {
   }
 
   addTab(){
-    let {dataJson, createTab, changeActiveTabName} = this.props;
-    // let {tabs, dataJson} = this.state;
-    //arr logic
-    // let newTabPos = tabs.length + 1
-    // let name = 'Shopping List #'
-    // let newTabName = name + newTabPos;
-    // let newList = tabs;
-    // //Need check for same naming Tab
-    // newList.push(newTabName);
-    // console.log(newList);
-    // this.setState({tabs: newList});
+    let {dataJson, createTab, changeActiveTabName, login} = this.props;
 
     //obj logic
     let len = Object.keys(dataJson).length;
     let countNumTab = len+1;
     let newTabName = `Shopping List #${countNumTab}`;
     // this.setState({activeTabName: newTabName});
-    changeActiveTabName(newTabName);
+    if(login){
+      changeActiveTabName(newTabName);
+    }
     //Need check for same naming Tab
     Object.keys(dataJson).map(name => {
       if(name===newTabName){
@@ -267,6 +223,13 @@ class Tabs extends Component {
     // }
   }
 
+  closeErorr(){
+    let addTabError = document.querySelector('.addTabError');
+    addTabError.style.opacity = 0;
+    addTabError.style.visibility = 'hidden';
+
+  }
+
 	 render() {
 
     return (
@@ -285,6 +248,7 @@ class Tabs extends Component {
           makeActive={this.makeActive}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
+        <div className='addTabError' onClick={this.closeErorr}><img src={addTabError} alt='addTabError'/> <span>Can only add tabs when login</span></div>
       </div>
     </div>
 

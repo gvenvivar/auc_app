@@ -3,6 +3,7 @@ import gold from '../img/gold.png';
 import no_img from '../img/no_img.jpg';
 import potion from '../img/plus.png';
 import {cutName} from '../functions';
+import {DragHandle} from './resultList';
 import remove from '../img/cerrar.png';
 
 
@@ -43,11 +44,9 @@ class resultListRowMarkup extends Component {
       <div>
       	<div className="row row-body">
       		<div className="group group-left">
-  	    		<div className="cell">
-  	    			<img className="icon" src={this.props.item.img_url} alt={this.props.item.name} onError={(e)=>{e.target.src = no_img}}/>
-  	    		</div>
+  	    		<DragHandle item={this.props.item} />
   	    		<div className='cell flex-grow-3'>
-  	    			<a href={null} rel={this.props.tooltipCreator(this.props.item)}>{cutName(this.props.item.name, 30)}</a>
+  	    			<a href={`http://www.wowhead.com/${this.props.tooltipCreator(this.props.item)}`} rel={this.props.tooltipCreator(this.props.item)} target="_blank">{cutName(this.props.item.name, 60)}</a>
   	    		</div>
             {this.props.showPotionInside===true &&
               <span className='potion inside_potion' onClick={this.props.handleClick}><img src={potion} alt='toogle'/></span>
@@ -55,11 +54,12 @@ class resultListRowMarkup extends Component {
       		</div>
       		<div className="group group-right-body">
             <div className='cell center remove-col'><img className="close" alt='deleteBtn' src={remove}
-      	  		onClick={(e)=>{
-      	  			e.preventDefault();
-      	  			this.props.delButton(this.props.item.id);
-                console.log(this.props.item.id)
-      	  		}}/></div>
+        				onClick={(e)=>{
+        					e.preventDefault();
+        					this.props.delButton(this.props.item.id);
+        					console.log(this.props.item.id)
+        				}}
+        			/></div>
   	    		<div className='cell center'>{this.props.item.quantity}</div>
   	    		<div className='cell right avg'><span>{this.props.avg}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>
   	    		<div className='cell'><span>{this.props.price}</span><span className="gold"><img src={gold} alt="gold_icon" /></span></div>

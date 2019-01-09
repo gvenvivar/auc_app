@@ -5,7 +5,9 @@ import ResultListRowMarkup from './resultListRowMarkup';
 import {transformPrice} from '../functions';
 import potion from '../img/plus.png';
 // import no_img from '../img/no_img.jpg';
-// import gold from '../img/gold.png'
+// import gold from '../img/gold.png';
+
+
 
 class resultListRow extends Component {
 	//Old potion icon
@@ -57,7 +59,7 @@ class resultListRow extends Component {
 				text = 'Rank 3' ;
 			}
 			this.props.item.components.map((items) => {
-				list.push(<ResultListRowExpanded item={items}  key={items.id} />)
+				list.push(<ResultListRowExpanded tooltipCreator={this.props.tooltipCreator} item={items}  key={items.id} />)
 				price +=items.amount * items.price;
 				return false;
 			})
@@ -67,9 +69,9 @@ class resultListRow extends Component {
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
 		    	<ResultListRowMarkup delButton={this.props.delButton} item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
-		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
-		    	{list}
-		    	<ResultListRowTotalCost price={price/1.5} text={text}/>
+		    	<div className={this.contentClass(this.state.isShow)}>
+			    	{list}
+			    	<ResultListRowTotalCost price={price/1.5} text={text}/>
 		    	</div>
 	    </div>
 
@@ -81,7 +83,7 @@ class resultListRow extends Component {
 				text = 'Rank 3' ;
 			}
 			this.props.item.components.map((items) => {
-				list.push(<ResultListRowExpanded item={items}  key={items.id} />)
+				list.push(<ResultListRowExpanded tooltipCreator={this.props.tooltipCreator} item={items}  key={items.id} />)
 				price +=items.amount * items.price;
 				return false;
 			})
@@ -91,9 +93,9 @@ class resultListRow extends Component {
 						<span className='potion' onClick={this.handleClick.bind(this)}><img src={potion} alt='toogle'/></span>
 					</div>
 		    	<ResultListRowMarkup delButton={this.props.delButton} item={this.props.item} price={modifiedPrice} avg={modifiedAverage} tooltipCreator={this.props.tooltipCreator} handleClick={this.handleClick.bind(this)} showPotionInside={true}/>
-		    	<div className={this.contentClass(this.state.isShow)} onClick={this.closePotion.bind(this)}>
-		    	{list}
-		    	<ResultListRowTotalCost price={price} text={text}/>
+		    	<div className={this.contentClass(this.state.isShow)}>
+			    	{list}
+			    	<ResultListRowTotalCost price={price} text={text}/>
 		    	</div>
 	    </div>
 		)
