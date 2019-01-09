@@ -1297,7 +1297,7 @@ class App extends Component {
     let time1 = (Date.now() - lastResposeTime)/1000;
     let time2 = Date.now()/1000 - updatedTime;
     // console.log(time1, time2);
-    if(time1+time2>1800||this.state.itemList.length===0){
+    if(time1+time2>3600||this.state.itemList.length===0){
       return true;
     }
     else{
