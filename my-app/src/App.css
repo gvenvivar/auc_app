@@ -51,6 +51,7 @@ input:-moz-placeholder { /* Firefox 18- */
 .contact-wrapper{
   max-width: 320px;
   margin: 0 auto;
+  cursor: default;
 }
 .logo{
   position: absolute;
@@ -153,7 +154,7 @@ h2::before{
 }
 
 .cont {
-  padding: 60px 15px 60px;
+  padding: 60px 30px 60px;
 }
 
 .server{
@@ -794,7 +795,7 @@ footer p{
 .expand-open{
   margin-top: 1px;
   border-top: 1px solid #95989a;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 .expand-total{
   border-top: 1px solid #95989a;
@@ -893,7 +894,7 @@ footer p{
 }
 .tips_container{
   margin: 20px auto 0;
-  max-width: 992px;
+  max-width: 960px;
   height: 100%;
   position: relative;
 }
@@ -921,10 +922,17 @@ footer p{
   right: 0;
   top: 60px;
 }
+.tips_addList{
+  position: absolute;
+  left: 40px;
+  top: 150px;
+  display: flex;
+  flex-direction: row;
+}
 .tips_watch_list{
   position: absolute;
-  left: 0px;
-  top: 210px;
+  left: 10px;
+  top: 280px;
   display: flex;
 }
 .tips_watch_list_text{
@@ -944,6 +952,17 @@ footer p{
 }
 .tips_search p{
   margin: 0;
+}
+.refresh_arrow{
+  position: absolute;
+  right: 35px;
+  top: 260px;
+}
+.tips_hard_refresh{
+  position: absolute;
+  right: 20px;
+  top: 300px;
+  text-align: right;
 }
 .closeTips{
   width: 30px;

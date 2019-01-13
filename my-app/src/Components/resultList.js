@@ -138,7 +138,7 @@ class resultList extends Component {
 					}
 
 		    	<div className='no-items-wrap'>
-						<div className='no-results'>Add items to your list and click search</div>
+						<div className='no-results'>Fill this list by using the search field above</div>
 					</div>
 	    	</div>
 	    </div>

@@ -90,6 +90,7 @@ class App extends Component {
         login: false,
         psw: false,
         error_msg: 'Sorry, no connection. Offline mode',
+        error_tabs: 'Log in to add and customize shopping lists',
     };
 
 
@@ -102,6 +103,7 @@ class App extends Component {
     this.updateMultiList = this.updateMultiList.bind(this);
     this.changeActiveTabName = this.changeActiveTabName.bind(this);
     this.updateUser = this.updateUser.bind(this);
+    this.changeTabErrorMsg = this.changeTabErrorMsg.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -398,13 +400,14 @@ class App extends Component {
       updateitemList.unshift({name: name.toLowerCase() , id:id});
       updateTabsJson[activeTabName] = updateitemList;
 
+
       this.setState({
         itemList: updateitemList,
         tabsJson: updateTabsJson,
-       });
+      });
 
       this.udpateEmptyList(itemList);
-      console.log(tabsJson);
+
       console.log('adding new item')
 
       let sendData =
@@ -413,10 +416,10 @@ class App extends Component {
         'itemLists'  : tabsJson,
       }
       this.updateEmptySearch();
-
+      console.log(sendData.itemLists[activeTabName])
       this.updateMultiList(sendData);
     }
-
+    console.log(tabsJson, activeTabName)
     console.log(tabsJson[activeTabName]);
   }
 
@@ -544,7 +547,7 @@ class App extends Component {
     }
   }
   updateEmptySearch(){
-    console.log(this.state.itemList);
+    // console.log(this.state.itemList);
     if(this.state.itemList.length > 0){
       document.getElementsByClassName('no-items-wrap')[1].style.display = 'none';
     } else {
@@ -1070,8 +1073,9 @@ class App extends Component {
     if(tabs){
       data.itemLists = tabs;
     }
-    console.log(data);
-    console.log(data.itemLists);
+    // console.log(data);
+    // console.log(data.itemLists['Test']);
+    // console.log(tabsJson);
     //console.log(this.state.itemList);
     // this.state.itemList.map((item) => {
     //   // data += '&userdata[]=' + item.id;
@@ -1258,46 +1262,57 @@ class App extends Component {
     this.setState({
       activeTab: value,
       itemList: curTabData,
-    },()=>{
-      // loading = document.querySelector('.load');
-      // loading.style.display = 'block';
+    }, ()=>{
+      this.udpateEmptyList(curTabData);
+
+      // console.log(this.checkDataAge());
+      // If data old update from server
+      if(this.checkDataAge() && curTabData.length!==0){
+        let sendData =
+        { 'region' :  region,
+          'server' :  serverSlug,
+          'itemLists'  : tabsJson,
+        }
+        let loading = document.querySelector('.load');
+        // loading.style.display = 'block';
+        console.log('display block')
+        this.updateMultiList(sendData);
+        // loading.style.display = 'none';
+        console.log('display none')
+      }
+      else{
+        console.log('Loading local data');
+        this.setState({list: curTabData});
+        this.updateUser();
+      }
     })
 
-    this.udpateEmptyList(curTabData);
 
-    // console.log(this.checkDataAge());
-    // If data old update from server
-    if(this.checkDataAge() && curTabData.length!==0){
-      let sendData =
-      { 'region' :  region,
-        'server' :  serverSlug,
-        'itemLists'  : tabsJson,
-      }
-      let loading = document.querySelector('.load');
-      // loading.style.display = 'block';
-      console.log('display block')
-      this.updateMultiList(sendData);
-      // loading.style.display = 'none';
-      console.log('display none')
-    }
-    else{
-      console.log('Loading local data');
-      this.setState({list: curTabData});
-
-    }
 
   }
 
   deleteTab(name){
-    let{tabsJson, active} =this.state;
-    delete tabsJson[name];
-    this.setState({tabsJson});
-    this.updateUser();
+    // console.log('delete tab');
+    let{tabsJson, active} = this.state;
+    let countTabs = Object.keys(tabsJson).length;
+    if(countTabs>1){
+      delete tabsJson[name];
+      this.setState({tabsJson});
+      this.updateUser();
+    }
+    if(countTabs===1){
+      console.log('cant"t delete last tab');
+      this.changeTabErrorMsg('You can not delete all shopping lists');
+      let addTabError = document.querySelector('.addTabError');
+      addTabError.style.opacity = 1;
+      addTabError.style.visibility = 'visible';
+    }
   }
   createTab(name, activeTab){
     let{tabsJson, login} =this.state;
     if(!login){
       console.log('Can only add tabs when login');
+      this.changeTabErrorMsg('Log in to add and customize shopping lists');
       let addTabError = document.querySelector('.addTabError');
       addTabError.style.opacity = 1;
       addTabError.style.visibility = 'visible';
@@ -1315,6 +1330,11 @@ class App extends Component {
        document.querySelector('.no-items-wrap').style.display ='block';
        document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     }
+  }
+  changeTabErrorMsg(msg){
+    this.setState({
+      error_tabs: msg,
+    })
   }
 
   updateItemListOnClickTab(data){
@@ -1341,7 +1361,7 @@ class App extends Component {
   }
 
   updateMultiList(data){
-    let {list, server, serverSlug, region, tabsJson} = this.state;
+    let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
 
@@ -1371,12 +1391,18 @@ class App extends Component {
       // console.log(json);
       let activeTabName;
       activeTabName = Object.keys(tabsJson)[activeTab];
-      // console.log(activeTabName);
+       console.log(res[activeTabName]);
       this.setState({
         tabsJson: res,//json[1].itemLists, // updating all tabs
         list: json[1].itemLists[activeTabName],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
+      }, ()=>{
+        console.log('need update here');
+        if(this.state.login && this.state.psw){
+          // console.log('updaate');
+          this.updateUser();
+        }
       });
       // console.log(this.state.list)
       // console.log(this.state.error_msg.length);
@@ -1485,10 +1511,7 @@ class App extends Component {
         })
       })
 
-      if(this.state.login && this.state.psw){
-        //console.log('updaate');
-        this.updateUser();
-      }
+
 }
 
 
@@ -1539,6 +1562,8 @@ class App extends Component {
               changeActiveTabName = {this.changeActiveTabName}
               updateUser = {this.updateUser}
               login = {this.state.login}
+              errorMsg={this.state.error_tabs}
+              changeTabErrorMsg = {this.changeTabErrorMsg}
             />
             <div className="main clearfix">
               <SearchList
@@ -1565,7 +1590,7 @@ class App extends Component {
       </div>
       <footer>
         <p>Art by <a rel="noopener noreferrer" href='http://chillalord.deviantart.com/art/Frostmourne-336402574' target="_blank">Chillalord</a></p>
-        <p>A web app for quick World of Warcraft auction house monitoring, with multiple item search.</p>
+        <p>A web app for easy World of Warcraft auction house monitoring, with custom shopping lists</p>
         <a className='feedback_wrap' href='mailto:your.emperor@gmail.com'><img className="feedback" src={envelope} alt='contact us' /></a>
       </footer>
       </div>

@@ -14,7 +14,7 @@ class LogIn extends Component {
       <form className='login'>
         <label>
           <span>Login or email</span>
-          <input type='text' name='email' placeholder='Login' id='email' required />
+          <input type='text' name='email' placeholder='Login' id='email' spellcheck="false" required />
         </label>
         <label>
           <span>Password</span>
