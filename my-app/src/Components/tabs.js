@@ -43,10 +43,20 @@ class Tabs extends Component {
   }
 
   refocusForEdit(){
-    console.log('refocus')
-    let activeTabText = document.querySelector('.tab.active .tabs_name');
-    activeTabText.readOnly = false;
-    SetCaretAtEnd(activeTabText);
+    let {login, changeTabErrorMsg} = this.props;
+    if(login){
+      console.log('refocus')
+      let activeTabText = document.querySelector('.tab.active .tabs_name');
+      activeTabText.readOnly = false;
+      SetCaretAtEnd(activeTabText);
+    }
+    else{
+      console.log('can\'t rename without login');
+      changeTabErrorMsg('Log in to add and customize shopping lists');
+      let addTabError = document.querySelector('.addTabError');
+      addTabError.style.opacity = 1;
+      addTabError.style.visibility = 'visible';
+    }
   }
 
   pressEnterInput(event){
@@ -248,7 +258,7 @@ class Tabs extends Component {
           makeActive={this.makeActive}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
-        <div className='addTabError' onClick={this.closeErorr}><img src={addTabError} alt='addTabError'/> <span>Can only add tabs when login</span></div>
+        <div className='addTabError' onClick={this.closeErorr}><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
       </div>
     </div>
 
@@ -268,7 +278,7 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
           <div className='tabInner'>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
             <img className='load' src={loading} alt='loading data'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly></textarea>
+            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellcheck="false"></textarea>
           </div>
           <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>
@@ -279,7 +289,7 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
         <div className='tab' id={tab} key={key} order={key}>
           <div className='tabInner' onClick={() => makeActive(key)}>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='rename_tab'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly></textarea>
+            <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly spellcheck="false"></textarea>
           </div>
           <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>

@@ -4,7 +4,7 @@ import Modal from './modal';
 import Serverselect from './serverselect';
 import no_img from '../img/no_img.jpg';
 import tips_arrow from '../img/arrow_left.png';
-import tips_arrow_up from '../img/watch_list_arrow.png';
+import tips_arrow_up from '../img/arrow_up.png';
 import tips_line from '../img/login_line.png';
 import tips_line_search from '../img/search_arrow.png';
 import close_tips from '../img/close.png';
@@ -136,17 +136,18 @@ class header extends Component {
             <div className='tips_overlay' onClick={this.closeTips.bind(this)}>
               <img className='closeTips' src={close_tips} alt='close tips'/>
               <div className='tips_container'>
-                <div className='tips_realm'><img src={tips_arrow} alt='arrow'/>Set your WoW Region and Realm</div>
-                <div className='tips_item_name'><img src={tips_arrow} alt='arrow'/><div className='tips_item_name_text'>Search for items to add <br/> to your watch list</div></div>
-                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Login to save<br/> your settings<br/> between devices</div>
+                <div className='tips_realm'><img src={tips_arrow} alt='arrow'/>Select your region and realm</div>
+                <div className='tips_item_name'><img src={tips_arrow} alt='arrow'/><div className='tips_item_name_text'>Search for and add items<br/> to populate your shopping lists</div></div>
+                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Logging in enables<br/> customizable shopping lists,<br/> shared between devices<br/> and sessions</div>
+                <div className='tips_addList'><img src={tips_arrow} alt='arrow'/><div className='tips_addList_text'>While logged in, this adds another shopping list</div></div>
                 <div className='tips_watch_list'>
-                  <img src={tips_arrow_up} alt='arrow'/>
                   <div className='tips_watch_list_text'>
-                    <h3>Your watch list</h3>
-                    <p>List of items you selected<br/> can be organized with<br/> drag & drop.</p>
+                    <p>Grab an "Icon"<br/> to drag&drop<br/></p>
+                    <p>Clicking an "Item Name"<br/> sends you to wowhead</p>
                   </div>
                 </div>
-                <div className='tips_search'><img src={tips_line_search} alt='tips_line_search'/><p>Fetch results</p></div>
+                <img className='refresh_arrow' src={tips_arrow_up} alt='arrow'/>
+                <div className='tips_hard_refresh'>Force a deliberate<br/> manual update</div>
               </div>
             </div>
           </div>
@@ -155,7 +156,7 @@ class header extends Component {
 					<form onSubmit={this.handleAuto.bind(this)}>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name"}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name", spellcheck:"false"}}
 						items={this.props.data}
 						getItemValue={(item) => item.name}
 						sortItems={function sort (a, b, value) {
