@@ -27,6 +27,7 @@ class Tabs extends Component {
     this.deleteTab = this.deleteTab.bind(this);
     this.addTab = this.addTab.bind(this);
     this.renameObjKey = this.renameObjKey.bind(this);
+    this.closeTabError =this.closeTabError.bind(this);
   }
 
   componentDidMount(){
@@ -40,6 +41,17 @@ class Tabs extends Component {
     // this.setState({activeTabName: Object.keys(this.props.dataJson)[this.props.active]});
     let {changeActiveTabName} = this.props;
     changeActiveTabName(Object.keys(this.props.dataJson)[this.props.active])
+
+    document.addEventListener("mousedown", this.closeTabError);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.closeTabError);
+  }
+
+  closeTabError(){
+    let addTabError = document.querySelector('.addTabError');
+    addTabError.style.opacity = 0;
+    addTabError.style.visibility = 'hidden';
   }
 
   refocusForEdit(){
@@ -233,13 +245,6 @@ class Tabs extends Component {
     // }
   }
 
-  closeErorr(){
-    let addTabError = document.querySelector('.addTabError');
-    addTabError.style.opacity = 0;
-    addTabError.style.visibility = 'hidden';
-
-  }
-
 	 render() {
 
     return (
@@ -258,7 +263,7 @@ class Tabs extends Component {
           makeActive={this.makeActive}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
-        <div className='addTabError' onClick={this.closeErorr}><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
+        <div className='addTabError'><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
       </div>
     </div>
 
@@ -278,9 +283,9 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
           <div className='tabInner'>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
             <img className='load' src={loading} alt='loading data'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellcheck="false"></textarea>
+            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
+            <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
-          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>
       )
     }
@@ -289,9 +294,9 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
         <div className='tab' id={tab} key={key} order={key}>
           <div className='tabInner' onClick={() => makeActive(key)}>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='rename_tab'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly spellcheck="false"></textarea>
+            <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly spellCheck="false"></textarea>
+            <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
-          <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
         </div>
       )
     }

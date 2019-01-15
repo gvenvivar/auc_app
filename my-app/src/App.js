@@ -865,13 +865,12 @@ class App extends Component {
 
   }
 
-  logIn (e){
+  logIn(e){
     e.preventDefault();
     let modal = document.querySelector('.modal-content');
     let login = document.getElementById('email').value;
     let pass  = document.getElementById('psw').value;
     let msg   = document.querySelector('.error');
-    // let logIn =  '&userdata[]=' + login +'&userdata[]=' +pass;
     let logIn = {"login": login, "pwhash": pass}
     let loadingIcon = e.currentTarget.children[0];
 
@@ -893,63 +892,64 @@ class App extends Component {
       return response.json()
     })
     .then(response => {
+      //Show error when can't login
       console.log(response);
+      if (typeof response === "string"){
+        console.log('string error');
+        msg.style.display = 'block';
+        msg.innerHTML = response;
+        loadingIcon.style.display = 'none';
+      }
+
       let activeTabOrder = response.active_list;
       let activeTab = Object.keys(response.itemLists)[activeTabOrder];
-      let arrIdList = response.itemLists[activeTab];
-      let resultList = [];
+      let token = response.auth_token;
+
+      // let arrIdList = response.itemLists[activeTab];
+      // let resultList = [];
 
       //check if active tab more than count tabs;
       // console.log(activeTabOrder, Object.keys(response.itemLists).length);
       if(activeTabOrder >= Object.keys(response.itemLists).length){
         activeTabOrder = 0;
         activeTab = Object.keys(response.itemLists)[0];
-        arrIdList = response.itemLists[activeTab];
+        // arrIdList = response.itemLists[activeTab];
       }
       // console.log(arrIdList);
 
-      let idArr = [];
-      arrIdList.map(item =>{
-        idArr.push(item.id);
-      });
+      // let idArr = [];
+      // arrIdList.map(item =>{
+      //   idArr.push(+item.id);
+      // });
       // console.log(idArr);
+      //
+      // this.state.data.map(item => {
+      //   let id = item.id;
+      //   if(idArr.includes(id)){
+      //     resultList.push({'name': item.name, 'id': item.id})
+      //   }
+      // })
 
-      this.state.data.map(item => {
-        let id = item.id;
-        if(idArr.includes(id)){
-          resultList.push({'name': item.name, 'id': item.id})
-        }
-      })
+      // console.log(resultList);
 
-      console.log(resultList);
-      let data = response;
-      let token = data.auth_token;
 
-      if (typeof data === "string"){
-        //console.log(data);
-        msg.innerHTML = data;
-        loadingIcon.style.display = 'none';
-      }
 
       this.setState({
-        tabsJson: response.itemLists,
-        itemList: resultList,
+        // itemList: resultList,
         activeTab: activeTabOrder,
         activeTabName: activeTab,
-        list: arrIdList,
         region: response.region[0],
         server: response.region[1],
         serverSlug:  response.region[2],
         login: login,
         psw: token,
       })
-      console.log(this.state.itemList);
+      //console.log(this.state.itemList);
 
       //console.log('save login to localstore');
       this.storeLogin(login, token);
       //console.log(this.state.login)
       //console.log(this.state.psw)
-      loadingIcon.style.display = 'none';
       return response;
 
     })
@@ -967,8 +967,44 @@ class App extends Component {
         document.getElementById('login').style.textDecoration = 'none';
         //document.getElementById('signup').style.display = 'none';
         this.updateEmptySearch();
-
       }
+      console.log('finished first fetch')
+
+      //Starting second Fetch
+      let multiData =
+      { 'region' :  this.state.region,
+        'server' :  this.state.serverSlug,
+        'itemLists'  : response.itemLists,
+      }
+      console.log(multiData);
+
+      return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
+        method: 'post',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        //"Accept":"appliactions/json"
+        // headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(multiData)
+      })
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(response =>{
+      let {activeTabName} = this.state;
+      console.log(response);
+      let lastResposeTime = Date.now();
+      this.setState({
+        tabsJson: response[1].itemLists,
+        list: response[1].itemLists[activeTabName],
+        itemList: response[1].itemLists[activeTabName],
+        updatedTime: response[0].time,
+        error_msg: response[2].error_msg,
+        lastResposeTime,
+      })
+      loadingIcon.style.display = 'none';
+      console.log('finished fetch multi-list');
+      console.log(this.state.tabsJson);
+      this.updateEmptySearch();
     })
     .catch(function (error) {
       console.log(error);
@@ -1264,6 +1300,7 @@ class App extends Component {
       itemList: curTabData,
     }, ()=>{
       this.udpateEmptyList(curTabData);
+      this.updateEmptySearch();
 
       // console.log(this.checkDataAge());
       // If data old update from server
@@ -1336,6 +1373,7 @@ class App extends Component {
       error_tabs: msg,
     })
   }
+
 
   updateItemListOnClickTab(data){
     this.setState({itemList: data})
