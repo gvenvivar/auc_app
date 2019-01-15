@@ -936,13 +936,16 @@ footer p{
   display: flex;
 }
 .tips_watch_list_text{
-  padding: 0 10px;
+  padding: 10px;
 }
 .tips_watch_list_text h3{
   font-size: 30px;
   font-family: 'Gloria Hallelujah', cursive;
-  padding: 30px 0;
+  padding: 15px 0 15px;
   text-align: left;
+}
+.tips_watch_list_text ul{
+  padding: 0 20px;
 }
 .tips_search{
   position: absolute;

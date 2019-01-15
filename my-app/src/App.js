@@ -1302,7 +1302,7 @@ class App extends Component {
     }
     if(countTabs===1){
       console.log('cant"t delete last tab');
-      this.changeTabErrorMsg('You can not delete all shopping lists');
+      this.changeTabErrorMsg('There must always be a shopping list');
       let addTabError = document.querySelector('.addTabError');
       addTabError.style.opacity = 1;
       addTabError.style.visibility = 'visible';

@@ -138,12 +138,15 @@ class header extends Component {
               <div className='tips_container'>
                 <div className='tips_realm'><img src={tips_arrow} alt='arrow'/>Select your region and realm</div>
                 <div className='tips_item_name'><img src={tips_arrow} alt='arrow'/><div className='tips_item_name_text'>Search for and add items<br/> to populate your shopping lists</div></div>
-                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Logging in enables<br/> customizable shopping lists,<br/> shared between devices<br/> and sessions</div>
-                <div className='tips_addList'><img src={tips_arrow} alt='arrow'/><div className='tips_addList_text'>While logged in, this adds another shopping list</div></div>
+                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Log in to customize<br/> and save shopping lists</div>
                 <div className='tips_watch_list'>
                   <div className='tips_watch_list_text'>
-                    <p>Grab an "Icon"<br/> to drag&drop<br/></p>
-                    <p>Clicking an "Item Name"<br/> sends you to wowhead</p>
+                    <h3>Additional features:</h3>
+                    <ul>
+                      <li>Drag items by their icons to order them around</li>
+                      <li>Clicking on an item name opens its wowhead page</li>
+                      <li>Logging in preserves your lists between sessions and devices</li>
+                    </ul>
                   </div>
                 </div>
                 <img className='refresh_arrow' src={tips_arrow_up} alt='arrow'/>
