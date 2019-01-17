@@ -255,16 +255,24 @@ class App extends Component {
         //load last list from db
         db.lastSearch.get(1)
         .then(item=>{
-          // console.log(item.items);
+          console.log(item.items[item.activeTabName]);
           this.setState({
-            itemList: item.items,
+            // itemList: item.items, //old logic
+            tabsJson: item.items,
+            itemList: item.items[item.activeTabName],
+            list: item.items[item.activeTabName],
+            activeTab: item.activeTab,
+            activeTabName: item.activeTabName,
             region: item.region,
             server: item.server,
             serverSlug: item.serverSlug,
             login: storedName,
             psw: storedPw
+          },()=>{
+            this.udpateEmptyList(this.state.itemList);
+            this.updateEmptySearch();
           })
-          this.udpateEmptyList(this.state.itemList);
+
 
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         })
@@ -664,6 +672,12 @@ class App extends Component {
         list: json[1].itemLists[activeTabName],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
+      }, ()=>{
+        console.log('need update here');
+        if(this.state.login && this.state.psw){
+          // console.log('updaate');
+          this.updateUser();
+        }
       });
       // console.log(this.state.list)
       // console.log(this.state.error_msg.length);
@@ -857,11 +871,6 @@ class App extends Component {
     })
 
 
-    //udate User data
-    if(this.state.login && this.state.psw){
-      //console.log('updaate');
-      this.updateUser();
-    }
 
   }
 
@@ -1089,7 +1098,7 @@ class App extends Component {
   }
 
   updateUser(tabs){
-    let {login, psw, region, server, serverSlug, activeTab, tabsJson} = this.state;
+    let {login, psw, region, server, serverSlug, activeTab, tabsJson, error_msg} = this.state;
     // let login = this.state.login;
     // let pass = this.state.psw;
     // let region = this.state.region;
@@ -1135,9 +1144,13 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       console.log('user data updated');
+      document.querySelector('.API_error').classList.remove('API_error_open');
     })
-    .catch(function (error) {
+    .catch((error) =>{
       console.log(error);
+      //show offline mode
+      this.setState({error_msg:'Sorry, no connection. Offline mode'})
+      document.querySelector('.API_error').classList.add('API_error_open');
     });
 
 
@@ -1150,8 +1163,6 @@ class App extends Component {
       server: ''
     })
   }
-
-
 
   deleteItem(itemToDel){
     // console.log(itemToDel);
@@ -1204,11 +1215,15 @@ class App extends Component {
 
     //save last list of items
     db.lastSearch.put({
-      id:1, items:this.state.itemList,
+      id:1,
+      //items:this.state.itemList, //old logic
+      items: this.state.tabsJson,
       region:this.state.region,
       server:this.state.server,
       serverSlug:this.state.serverSlug,
-      login:this.state.login
+      login:this.state.login,
+      activeTab: this.state.activeTab,
+      activeTabName: this.state.activeTabName,
     });
 
     // .then((all)=>{
@@ -1483,6 +1498,7 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
+      loading.style.display = 'block';
 
       let arr = [];
         console.log('open');
