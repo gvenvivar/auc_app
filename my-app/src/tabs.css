@@ -6,6 +6,7 @@
   opacity: 0.85;
   margin: 50px auto 0;
   position: relative;
+  border-radius: 5px 5px 0 0;
 }
 .tab{
   display: inline-block;
@@ -15,6 +16,7 @@
   height: 41px;
   position: relative;
   transition: 0.4s all ease-in-out;
+  border-radius: 3px 3px 0 0;
 }
 .tabInner{
   /* /padding-left: 20px; */
@@ -79,6 +81,7 @@
   position: absolute;
   left: 0;
   top: -32px;
+  border-radius: 3px 3px 0 0;
 }
 .addTabError{
   position: absolute;
