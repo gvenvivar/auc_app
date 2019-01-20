@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import gold from '../img/gold.png';
-import no_img from '../img/no_img.jpg';
+// import no_img from '../img/no_img.jpg';
 import potion from '../img/plus.png';
 import {cutName} from '../functions';
 import {DragHandle} from './resultList';
@@ -46,7 +46,7 @@ class resultListRowMarkup extends Component {
       		<div className="group group-left">
   	    		<DragHandle item={this.props.item} />
   	    		<div className='cell flex-grow-3'>
-  	    			<a href={`http://www.wowhead.com/${this.props.tooltipCreator(this.props.item)}`} rel={this.props.tooltipCreator(this.props.item)} target="_blank">{cutName(this.props.item.name, 60)}</a>
+  	    			<a href={`http://www.wowhead.com/${this.props.tooltipCreator(this.props.item)}`} rel={`${this.props.tooltipCreator(this.props.item)} nofollow noopener`} target="_blank">{cutName(this.props.item.name, 60)}</a>
   	    		</div>
             {this.props.showPotionInside===true &&
               <span className='potion inside_potion' onClick={this.props.handleClick}><img src={potion} alt='toogle'/></span>

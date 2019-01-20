@@ -3,12 +3,6 @@ import ResultListRow from './resultListRow';
 import refresh from '../img/refresh.png'
 //import {orderBy} from 'lodash';
 import no_img from '../img/no_img.jpg';
-import {transformPrice} from '../functions';
-import gold from '../img/gold.png';
-import potion from '../img/plus.png';
-import {cutName} from '../functions';
-
-
 
 
 // import DragSortableList from 'react-drag-sortable';

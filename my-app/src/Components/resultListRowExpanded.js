@@ -16,7 +16,7 @@ class resultListRowExpanded extends Component {
 		    			<img className="icon icon-large" src={this.props.item.img_url} alt={this.props.item.name}  onError={(e)=>{e.target.src = no_img}}/>
 		    		</div>
 		    		<div className='cell flex-grow-3'>
-		    			<a href={`http://www.wowhead.com/${this.props.tooltipCreator(this.props.item)}`} rel={'item=' + this.props.item.id} target="_blank">{cutName(this.props.item.name, 20)}</a>
+		    			<a href={`http://www.wowhead.com/${this.props.tooltipCreator(this.props.item)}`} rel={`item=${this.props.item.id} nofollow noopener`} target="_blank">{cutName(this.props.item.name, 20)}</a>
 		    		</div>
 	    		</div>
 	    		<div className="group group-right-body">

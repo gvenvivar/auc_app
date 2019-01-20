@@ -7,13 +7,19 @@ export function cutEmail(email) {
 }
 
 export function transformPrice(price) {
+  // console.log(price);
+  // console.log(typeof(price));
+  if(price === 'N/A'){
+    return price;
+  }
 	price /=  10000;
 	price = price.toFixed(2);
 	price = parseFloat(price);
 	if(price > 1000){
 		price = Math.round(price);
 	}
-	return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 export function cutName(name, len) {
@@ -49,7 +55,7 @@ export function SetCaretAtEnd(elem) {
         oSel.moveEnd('character', 0);
         oSel.select();
     }
-    else if (elem.selectionStart || elem.selectionStart == '0') {
+    else if (elem.selectionStart || elem.selectionStart === '0') {
         // Firefox/Chrome
         elem.selectionStart = elemLen;
         elem.selectionEnd = elemLen;

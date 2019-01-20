@@ -184,7 +184,7 @@ class Tabs extends Component {
 
   deleteTab(order){
     // let {tabs, active, dataJson} = this.state;
-    let {active, dataJson, deleteTab, changeActiveTab, createTab, changeActiveTabName} = this.props;
+    let {active, dataJson, deleteTab, changeActiveTab, createTab, changeActiveTabName, login} = this.props;
     //obj logic
     let newTab = 'Shopping List #1';
     let tabToDel = Object.keys(dataJson)[order];
@@ -200,7 +200,7 @@ class Tabs extends Component {
       let nowActive = active-1;
       changeActiveTab(nowActive);
     }
-    if(order===active){
+    if(order===active&&login){
       changeActiveTab(0)
       let curTabName = Object.keys(dataJson);
       // this.setState({

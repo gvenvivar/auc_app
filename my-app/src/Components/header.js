@@ -6,7 +6,7 @@ import no_img from '../img/no_img.jpg';
 import tips_arrow from '../img/arrow_left.png';
 import tips_arrow_up from '../img/arrow_up.png';
 import tips_line from '../img/login_line.png';
-import tips_line_search from '../img/search_arrow.png';
+// import tips_line_search from '../img/search_arrow.png';
 import close_tips from '../img/close.png';
 import help from '../img/help.png';
 

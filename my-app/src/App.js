@@ -4,9 +4,9 @@ import Header from './Components/header';
 import SearchList from './Components/searchList';
 import ResultList from './Components/resultList';
 import 'whatwg-fetch';
-import axios from 'axios';
+// import axios from 'axios';
 //import idb from 'idb';
-import {capitalizeFirstLetter, cutEmail, reverseObject} from './functions';
+import {capitalizeFirstLetter, cutEmail} from './functions';
 import scrollToComponent from 'react-scroll-to-component';
 import ReactGA from 'react-ga';
 import {arrayMove} from 'react-sortable-hoc';
@@ -14,6 +14,7 @@ import 'babel-polyfill';
 import Dexie from 'dexie';
 import sword from './img/sword.png';
 import envelope from './img/envelop.png';
+import no_img from './img/no_img.jpg';
 import Tabs from './Components/tabs';
 
 
@@ -61,7 +62,8 @@ db.version(4).stores({
 db.version(5).stores({
   lastSearch: 'id',
   items: null,
-})
+});
+
 
 
 class App extends Component {
@@ -243,6 +245,9 @@ class App extends Component {
           updatedTime: response_multi[0].time,
           error_msg: response_multi[2].error_msg,
           lastResposeTime,
+        }, ()=> {
+          this.saveToIndex();
+          console.log('saving last serach to db');
         })
         loading.style.display = 'none';
         console.log('finished fetch multi-list');
@@ -252,6 +257,7 @@ class App extends Component {
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
         document.querySelector('.API_error').classList.add('API_error_open');
+        loading.style.display = 'none';
         //load last list from db
         db.lastSearch.get(1)
         .then(item=>{
@@ -405,18 +411,20 @@ class App extends Component {
     if(id && index === -1){
       let updateitemList = itemList;
       let updateTabsJson = tabsJson;
-      updateitemList.unshift({name: name.toLowerCase() , id:id});
+      updateitemList.unshift({name: name, id:id, img_url: 'no_img', average:'N/A', price:'N/A', quantity:'N/A'});
       updateTabsJson[activeTabName] = updateitemList;
 
 
       this.setState({
         itemList: updateitemList,
         tabsJson: updateTabsJson,
+      }, ()=>{
+        this.saveToIndex();
       });
 
       this.udpateEmptyList(itemList);
 
-      console.log('adding new item')
+      console.log('adding new item');
 
       let sendData =
       { 'region' :  region,
@@ -524,7 +532,8 @@ class App extends Component {
     //   serverSlug: 'sargeras',
     //   list : []
     // })
-    document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+    // document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
+    this.updateEmptySearch();
   }
 
 
@@ -592,7 +601,7 @@ class App extends Component {
     const loadingIcon = i.currentTarget.children[0];
     console.log(loadingIcon);
     const refresh = document.querySelector('.refresh');
-    const{tabsJson, activeTab} =this.state;
+    // const{tabsJson, activeTab} =this.state;
 
     if(mq.matches){
       //console.log('media');
@@ -616,7 +625,7 @@ class App extends Component {
     let strRegion = this.state.region;
 
     // take region value
-    let strServer = '&items[]=' + this.state.serverSlug;
+    // let strServer = '&items[]=' + this.state.serverSlug;
     //console.log(strServer);
 
 
@@ -657,7 +666,7 @@ class App extends Component {
       console.log(old);
       let res;
       res = old;
-      Object.keys(old).map(i =>{
+      Object.keys(old).forEach(i =>{
         res[i] = newData[i];
       })
       //Saving order for tabs
@@ -702,9 +711,9 @@ class App extends Component {
 
 
       //save auctions to indexedDB
-      let list = this.state.list;
-      let server = this.state.server;
-      let region = this.state.region;
+      // let list = this.state.list;
+      // let server = this.state.server;
+      // let region = this.state.region;
       // dbPromise.then(function(db) {
       //     let tx = db.transaction('auctions', 'readwrite');
       //     let store = tx.objectStore('auctions');
@@ -719,17 +728,17 @@ class App extends Component {
       //   .then(() => console.log('All search saved to indexedDb'))
       //   .catch((e) => console.log('Error adding item: ', e))
 
-        db.open().then(function (db) {
-            // Database openeded successfully
-            list.map(item => {
-              //console.log('Adding item: ', item);
-              item.server = `${region}_${server}`;
-              db.auctions.put(item);
-              return false;
-            })
-        })
-        .then(() => console.log('All search saved to indexedDb'))
-        .catch((e) => console.log('Error adding item: ', e))
+        // db.open().then(function (db) {
+        //     // Database openeded successfully
+        //     list.map(item => {
+        //       //console.log('Adding item: ', item);
+        //       item.server = `${region}_${server}`;
+        //       db.auctions.put(item);
+        //       return false;
+        //     })
+        // })
+        // .then(() => console.log('All search saved to indexedDb'))
+        // .catch((e) => console.log('Error adding item: ', e))
 
 
     })
@@ -749,69 +758,92 @@ class App extends Component {
         refresh.classList.remove('refresh-rotate');
       }
 
-      let arr = [];
-        console.log('open');
-        let server = `${this.state.region}_${this.state.server}`;
-        //adding offline caption
-        let iDiv = document.querySelector('.time');
-        iDiv.innerHTML = 'Offline mode';
-        this.setState({
-          error_msg: 'Offline mode',
-        });
+      // let arr = [];
+      // console.log('open');
+      // let server = `${this.state.region}_${this.state.server}`;
+      //adding offline caption
+      let iDiv = document.querySelector('.time');
+      iDiv.innerHTML = 'Offline mode';
+      this.setState({
+        error_msg: 'Offline mode',
+      });
 
-        this.state.itemList.map((item) => {
-          console.log('map itemList');
-          // console.log(item);
-          let itemUndef = {
-            name: item.name,
-            id: item.id,
-            price: '',
-            quantity: 'offline',
-            average: '',
-            img_url: ''
-          };
-          db.auctions.get(item.id)
-          .then((obj) => {
-              if(obj === undefined){
-                // Old items db
-                // db.items.get(item.id).then((obj) =>{
-                //   itemUndef.img_url = obj.img_url;
-                //   itemUndef.name = obj.name;
-                // })
+      let {itemList} =this.state;
+      let listResult = [];
+      // console.log(itemList);
+      itemList.forEach((item) => {
+        let price = item.price === undefined ? 'N/A' : item.price ;
+        let quantity = item.quantity === undefined ? 'N/A' : item.quantity ;
+        let average = item.average === undefined ? 'N/A' : item.average ;
+        let img_url = item.img_url === undefined ? no_img : item.img_url ;
+        let itemObj = {
+          name: item.name,
+          id: item.id,
+          price,
+          average,
+          quantity,
+          img_url,
+        };
+        listResult.push(itemObj);
+      })
+      this.setState({
+        list: listResult,
+      })
 
-                //New one string items db
-                db.stringData.get(1)
-                .then((item)=>{
-                    return item.data
-                })
-                .then((res)=>{
-                  return res.find(a => a.id===item.id);
-                })
-                .then((obj)=>{
-                    //console.log(itemUndef.name, item.name);
-                    itemUndef.img_url = obj.img_url;
-                    itemUndef.name = obj.name;
-                    //console.log(itemUndef.name, obj.name)
-                })
-                arr.push(itemUndef);
-                //console.log(arr);
-              }
-              if(obj && server !== obj.server){
-                itemUndef.img_url = obj.img_url;
-                itemUndef.name = obj.name;
-                arr.push(itemUndef);
-              }
-              if(obj && server === obj.server){
-                arr.push(obj)
-              }
-
-              this.setState({
-                list: arr
-              })
-              // console.log(this.state.list)
-          })
-          return false;
-        })
+        //Old IDB logic
+        // this.state.itemList.map((item) => {
+        //   console.log('map itemList');
+        //   // console.log(item);
+        //   let itemUndef = {
+        //     name: item.name,
+        //     id: item.id,
+        //     price: '',
+        //     quantity: 'offline',
+        //     average: '',
+        //     img_url: ''
+        //   };
+        //   db.auctions.get(item.id)
+        //   .then((obj) => {
+        //       if(obj === undefined){
+        //         // Old items db
+        //         // db.items.get(item.id).then((obj) =>{
+        //         //   itemUndef.img_url = obj.img_url;
+        //         //   itemUndef.name = obj.name;
+        //         // })
+        //
+        //         //New one string items db
+        //         db.stringData.get(1)
+        //         .then((item)=>{
+        //             return item.data
+        //         })
+        //         .then((res)=>{
+        //           return res.find(a => a.id===item.id);
+        //         })
+        //         .then((obj)=>{
+        //             //console.log(itemUndef.name, item.name);
+        //             itemUndef.img_url = obj.img_url;
+        //             itemUndef.name = obj.name;
+        //             //console.log(itemUndef.name, obj.name)
+        //         })
+        //         arr.push(itemUndef);
+        //         //console.log(arr);
+        //       }
+        //       if(obj && server !== obj.server){
+        //         itemUndef.img_url = obj.img_url;
+        //         itemUndef.name = obj.name;
+        //         arr.push(itemUndef);
+        //       }
+        //       if(obj && server === obj.server){
+        //         arr.push(obj)
+        //       }
+        //
+        //       this.setState({
+        //         list: arr
+        //       })
+        //       // console.log(this.state.list)
+        //   })
+        //   return false;
+        // })
 
 
 
@@ -1014,6 +1046,7 @@ class App extends Component {
       console.log('finished fetch multi-list');
       console.log(this.state.tabsJson);
       this.updateEmptySearch();
+      this.saveToIndex();
     })
     .catch(function (error) {
       console.log(error);
@@ -1098,7 +1131,7 @@ class App extends Component {
   }
 
   updateUser(tabs){
-    let {login, psw, region, server, serverSlug, activeTab, tabsJson, error_msg} = this.state;
+    let {login, psw, region, server, serverSlug, activeTab, tabsJson} = this.state;
     // let login = this.state.login;
     // let pass = this.state.psw;
     // let region = this.state.region;
@@ -1186,6 +1219,7 @@ class App extends Component {
       tabsJson: updatetabsJson,
       list: rightColRes,
     })
+    this.saveToIndex();
     if(newArray.length === 0){
       //console.log(newArray.length)
       document.querySelector('.no-items-wrap').style.display ='block';
@@ -1304,16 +1338,15 @@ class App extends Component {
 
   changeActiveTab(value){
 
-    let {list, serverSlug, region, tabsJson, itemList} = this.state;
+    let {serverSlug, region, tabsJson} = this.state;
     let curNameTab = Object.keys(tabsJson)[value];
     let curTabData = tabsJson[curNameTab];
-    let loading;
-
 
     this.setState({
       activeTab: value,
       itemList: curTabData,
-    }, ()=>{
+    },
+    ()=>{
       this.udpateEmptyList(curTabData);
       this.updateEmptySearch();
 
@@ -1325,12 +1358,10 @@ class App extends Component {
           'server' :  serverSlug,
           'itemLists'  : tabsJson,
         }
-        let loading = document.querySelector('.load');
         // loading.style.display = 'block';
-        console.log('display block')
+        // console.log('display block')
         this.updateMultiList(sendData);
-        // loading.style.display = 'none';
-        console.log('display none')
+        // console.log('display none')
       }
       else{
         console.log('Loading local data');
@@ -1345,7 +1376,7 @@ class App extends Component {
 
   deleteTab(name){
     // console.log('delete tab');
-    let{tabsJson, active} = this.state;
+    let{tabsJson} = this.state;
     let countTabs = Object.keys(tabsJson).length;
     if(countTabs>1){
       delete tabsJson[name];
@@ -1353,7 +1384,7 @@ class App extends Component {
       this.updateUser();
     }
     if(countTabs===1){
-      console.log('cant"t delete last tab');
+      console.log('cant\'t delete last tab');
       this.changeTabErrorMsg('There must always be a shopping list');
       let addTabError = document.querySelector('.addTabError');
       addTabError.style.opacity = 1;
@@ -1414,7 +1445,8 @@ class App extends Component {
   }
 
   updateMultiList(data){
-    let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
+    console.log(data);
+    // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
 
@@ -1435,7 +1467,7 @@ class App extends Component {
       // console.log(old);
       let res;
       res = old;
-      Object.keys(old).map(i =>{
+      Object.keys(old).forEach(i =>{
         res[i] = newData[i];
       })
       //end Saving order for tabs
@@ -1473,20 +1505,29 @@ class App extends Component {
       loading.style.display = 'none';
       // console.log('lastResposeTime: ' + lastResposeTime);
 
+      //check if tooltip bug
+      let tooltip = document.querySelector('.wowhead-tooltip');
+      let tooltipIcon = document.querySelector('.wowhead-tooltip p');
+      if(tooltip.style.visibility==='visible'){
+        // console.log("NEED HIDE");
+        // tooltip.dataset.visible = no;
+        tooltip.style.visibility = 'hidden';
+        tooltipIcon.style.visibility = 'hidden';
+      }
 
-      //save auctions to indexedDB
-
-        db.open().then(function (db) {
-            // Database openeded successfully
-            list.map(item => {
-              //console.log('Adding item: ', item);
-              item.server = `${region}_${server}`;
-              db.auctions.put(item);
-              return false;
-            })
-        })
-        .then(() => console.log('All search saved to indexedDb'))
-        .catch((e) => console.log('Error adding item: ', e))
+      // //save auctions to indexedDB
+      //
+      //   db.open().then(function (db) {
+      //       // Database openeded successfully
+      //       list.map(item => {
+      //         //console.log('Adding item: ', item);
+      //         item.server = `${region}_${server}`;
+      //         db.auctions.put(item);
+      //         return false;
+      //       })
+      //   })
+      //   .then(() => console.log('All search saved to indexedDb'))
+      //   .catch((e) => console.log('Error adding item: ', e))
 
 
     })
@@ -1498,76 +1539,96 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
-      loading.style.display = 'block';
+      loading.style.display = 'none';
 
-      let arr = [];
-        console.log('open');
-        let server = `${this.state.region}_${this.state.server}`;
-        //adding offline caption
-        let iDiv = document.querySelector('.time');
-        iDiv.innerHTML = 'Offline mode';
-        this.setState({
-          error_msg: 'Offline mode',
-        });
-
-        this.state.itemList.map((item) => {
-          console.log('map itemList');
-          // console.log(item);
-          let itemUndef = {
-            name: item.name,
-            id: item.id,
-            price: '',
-            quantity: 'offline',
-            average: '',
-            img_url: ''
-          };
-          db.auctions.get(item.id)
-          .then((obj) => {
-              if(obj === undefined){
-                // Old items db
-                // db.items.get(item.id).then((obj) =>{
-                //   itemUndef.img_url = obj.img_url;
-                //   itemUndef.name = obj.name;
-                // })
-
-                //New one string items db
-                db.stringData.get(1)
-                .then((item)=>{
-                    return item.data
-                })
-                .then((res)=>{
-                  return res.find(a => a.id===item.id);
-                })
-                .then((obj)=>{
-                    //console.log(itemUndef.name, item.name);
-                    itemUndef.img_url = obj.img_url;
-                    itemUndef.name = obj.name;
-                    //console.log(itemUndef.name, obj.name)
-                })
-                arr.push(itemUndef);
-                //console.log(arr);
-              }
-              if(obj && server !== obj.server){
-                itemUndef.img_url = obj.img_url;
-                itemUndef.name = obj.name;
-                arr.push(itemUndef);
-              }
-              if(obj && server === obj.server){
-                arr.push(obj)
-              }
-
-              this.setState({
-                list: arr
-              })
-              // console.log(this.state.list)
-          })
-          return false;
-        })
+      // let arr = [];
+      // let server = `${this.state.region}_${this.state.server}`;
+      //adding offline caption
+      let iDiv = document.querySelector('.time');
+      iDiv.innerHTML = 'Offline mode';
+      this.setState({
+        error_msg: 'Offline mode. Loading last update data.',
+      });
+      let {itemList} =this.state;
+      let listResult = [];
+      // console.log(itemList);
+      itemList.forEach((item) => {
+        let price = item.price === undefined ? 'N/A' : item.price ;
+        let quantity = item.quantity === undefined ? 'N/A' : item.quantity ;
+        let average = item.average === undefined ? 'N/A' : item.average ;
+        let img_url = item.img_url === undefined ? no_img : item.img_url ;
+        let itemObj = {
+          name: item.name,
+          id: item.id,
+          price,
+          average,
+          quantity,
+          img_url,
+        };
+        listResult.push(itemObj);
+      })
+      this.setState({
+        list: listResult,
       })
 
 
-}
+        // Old IDB logic
+        // this.state.itemList.map((item) => {
+        //   console.log(item);
+        //   // console.log(item);
+        //   let itemUndef = {
+        //     name: item.name,
+        //     id: item.id,
+        //     price: '',
+        //     quantity: 'offline',
+        //     average: '',
+        //     img_url: ''
+        //   };
+        //   db.auctions.get(item.id)
+        //   .then((obj) => {
+        //       if(obj === undefined){
+        //         // Old items db
+        //         // db.items.get(item.id).then((obj) =>{
+        //         //   itemUndef.img_url = obj.img_url;
+        //         //   itemUndef.name = obj.name;
+        //         // })
+        //
+        //         //New one string items db
+        //         db.stringData.get(1)
+        //         .then((item)=>{
+        //             return item.data
+        //         })
+        //         .then((res)=>{
+        //           return res.find(a => a.id===item.id);
+        //         })
+        //         .then((obj)=>{
+        //             //console.log(itemUndef.name, item.name);
+        //             itemUndef.img_url = obj.img_url;
+        //             itemUndef.name = obj.name;
+        //             //console.log(itemUndef.name, obj.name)
+        //         })
+        //         arr.push(itemUndef);
+        //         //console.log(arr);
+        //       }
+        //       if(obj && server !== obj.server){
+        //         itemUndef.img_url = obj.img_url;
+        //         itemUndef.name = obj.name;
+        //         arr.push(itemUndef);
+        //       }
+        //       if(obj && server === obj.server){
+        //         arr.push(obj)
+        //       }
+        //
+        //       this.setState({
+        //         list: arr
+        //       })
+        //       // console.log(this.state.list)
+        //   })
+        //   return false;
+        // })
 
+      })
+}
 
 
   render() {
@@ -1636,7 +1697,6 @@ class App extends Component {
                 refresh={this.clickSearch}
                 delButton={this.deleteItem.bind(this)}
                 onSortEnd={this.onSortEnd.bind(this)}
-                tooltipCreator={this.tooltipCreator.bind(this)}
               />
             </div>
           </div>
