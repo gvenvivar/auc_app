@@ -170,8 +170,8 @@ class App extends Component {
       })
       .then(response => {
         // let activeTabName = Object.keys(response.itemLists)[response.active_list];
-        console.log(response.itemLists);
-        console.log(response.active_list);
+        // console.log(response.itemLists);
+        // console.log(response.active_list);
         let activeTabOrder = response.active_list;
         //check if active tab more than count tabs;
         if(activeTabOrder >= Object.keys(response.itemLists).length){
@@ -203,7 +203,7 @@ class App extends Component {
           activeTab: activeTabOrder,
         })
         //console.log('list : ', this.state.itemList.length);
-        console.log(activeTabName);
+        // console.log(activeTabName);
         this.changeActiveTabName(activeTabName);
 
         return response;
@@ -214,7 +214,7 @@ class App extends Component {
           this.udpateEmptyList(this.state.itemList);
           document.getElementById('login').innerHTML = capitalizeFirstLetter(cutEmail(storedName));
         }
-        console.log('finished first fetch')
+        // console.log('finished first fetch')
 
         //Starting second Fetch
         let multiData =
@@ -237,7 +237,7 @@ class App extends Component {
       .then(response_multi => {
         let {activeTabName} = this.state;
         let tabList = response_multi[1].itemLists;
-        console.log(tabList);
+        // console.log(tabList);
         let lastResposeTime = Date.now();
         this.setState({
           tabsJson: tabList,
@@ -250,8 +250,8 @@ class App extends Component {
           console.log('saving last serach to db');
         })
         loading.style.display = 'none';
-        console.log('finished fetch multi-list');
-        console.log(this.state.tabsJson);
+        // console.log('finished fetch multi-list');
+        // console.log(this.state.tabsJson);
         this.updateEmptySearch();
       })
       .catch(() => {
@@ -424,7 +424,7 @@ class App extends Component {
 
       this.udpateEmptyList(itemList);
 
-      console.log('adding new item');
+      // console.log('adding new item');
 
       let sendData =
       { 'region' :  region,
@@ -432,11 +432,11 @@ class App extends Component {
         'itemLists'  : tabsJson,
       }
       this.updateEmptySearch();
-      console.log(sendData.itemLists[activeTabName])
+      // console.log(sendData.itemLists[activeTabName])
       this.updateMultiList(sendData);
     }
-    console.log(tabsJson, activeTabName)
-    console.log(tabsJson[activeTabName]);
+    // console.log(tabsJson, activeTabName)
+    // console.log(tabsJson[activeTabName]);
   }
 
   updateItemListState(newState){
@@ -483,7 +483,7 @@ class App extends Component {
       }
 
     let identicalRealm = false;
-    console.log(this.state.server, this.state.region);
+    // console.log(this.state.server, this.state.region);
     if(this.state.region === 'en_US'){
       this.state.euServers.map(item =>{
           if(item.name === this.state.server){
@@ -491,7 +491,7 @@ class App extends Component {
           }
           return false;
         });
-        console.log(identicalRealm);
+        // console.log(identicalRealm);
     }
     if(this.state.region === 'en_GB'){
       this.state.usServers.map(item =>{
@@ -500,7 +500,7 @@ class App extends Component {
           }
           return false;
         });
-        console.log(identicalRealm);
+        // console.log(identicalRealm);
     }
 
     if(identicalRealm){
@@ -510,7 +510,7 @@ class App extends Component {
       }, ()=>{
         this.updateMultiList(multiData);
       })
-      console.log(multiData);
+      // console.log(multiData);
     }
     else{
       this.setState({
@@ -582,7 +582,7 @@ class App extends Component {
   close_error(){
     let error_msg = document.querySelector('.API_error');
     error_msg.classList.remove("API_error_open");
-    console.log('remove error msg');
+    // console.log('remove error msg');
     //Adding marker to sessionStorage
     sessionStorage.setItem('error', 'close');
   }
@@ -617,7 +617,7 @@ class App extends Component {
       loadingIcon.style.display = 'block';
     }
     else{
-      console.log(refresh);
+      // console.log(refresh);
       refresh.classList.add('refresh-rotate');
     }
 
@@ -645,7 +645,7 @@ class App extends Component {
     //   // objdataf.itemList[i] = [];
     // })
 
-     console.log(Object.keys(objdataf.itemLists));
+     // console.log(Object.keys(objdataf.itemLists));
 
     fetch('https://ahtool.com/grape/multi-list-test/', {
     	method: 'post',
@@ -662,8 +662,8 @@ class App extends Component {
       const {tabsJson, activeTab} = this.state;
       let newData = json[1].itemLists;
       let old = tabsJson;
-      console.log(newData);
-      console.log(old);
+      // console.log(newData);
+      // console.log(old);
       let res;
       res = old;
       Object.keys(old).forEach(i =>{
@@ -682,7 +682,7 @@ class App extends Component {
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       }, ()=>{
-        console.log('need update here');
+        // console.log('need update here');
         if(this.state.login && this.state.psw){
           // console.log('updaate');
           this.updateUser();
@@ -694,7 +694,7 @@ class App extends Component {
         document.querySelector('.API_error').classList.remove('API_error_open');
       }
       if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
-        console.log(json[2].error_msg);
+        // console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
       if(loadingIcon){
@@ -754,7 +754,7 @@ class App extends Component {
         loadingIcon.style.display = 'none';
       }
       else{
-        console.log(refresh);
+        // console.log(refresh);
         refresh.classList.remove('refresh-rotate');
       }
 
@@ -934,9 +934,9 @@ class App extends Component {
     })
     .then(response => {
       //Show error when can't login
-      console.log(response);
+      // console.log(response);
       if (typeof response === "string"){
-        console.log('string error');
+        // console.log('string error');
         msg.style.display = 'block';
         msg.innerHTML = response;
         loadingIcon.style.display = 'none';
@@ -1009,7 +1009,7 @@ class App extends Component {
         //document.getElementById('signup').style.display = 'none';
         this.updateEmptySearch();
       }
-      console.log('finished first fetch')
+      // console.log('finished first fetch')
 
       //Starting second Fetch
       let multiData =
@@ -1017,7 +1017,7 @@ class App extends Component {
         'server' :  this.state.serverSlug,
         'itemLists'  : response.itemLists,
       }
-      console.log(multiData);
+      // console.log(multiData);
 
       return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
         method: 'post',
@@ -1032,7 +1032,7 @@ class App extends Component {
     })
     .then(response =>{
       let {activeTabName} = this.state;
-      console.log(response);
+      // console.log(response);
       let lastResposeTime = Date.now();
       this.setState({
         tabsJson: response[1].itemLists,
@@ -1043,8 +1043,8 @@ class App extends Component {
         lastResposeTime,
       })
       loadingIcon.style.display = 'none';
-      console.log('finished fetch multi-list');
-      console.log(this.state.tabsJson);
+      // console.log('finished fetch multi-list');
+      // console.log(this.state.tabsJson);
       this.updateEmptySearch();
       this.saveToIndex();
     })
@@ -1176,7 +1176,7 @@ class App extends Component {
     })
     .then(response => response.json())
     .then(response => {
-      console.log('user data updated');
+      // console.log('user data updated');
       document.querySelector('.API_error').classList.remove('API_error_open');
     })
     .catch((error) =>{
@@ -1209,7 +1209,7 @@ class App extends Component {
     //del from object
     let {tabsJson, activeTab} = this.state;
     let activeTabName = Object.keys(tabsJson)[activeTab];
-    console.log(activeTabName);
+    // console.log(activeTabName);
     let updatetabsJson = tabsJson;
     let updatedCurTabData = tabsJson[activeTabName].filter(item => !toDelete.has(item.id));
     updatetabsJson[activeTabName] = updatedCurTabData;
@@ -1297,7 +1297,7 @@ class App extends Component {
           let dataCount = data.length;
           let count = name.count();
           count.then((count) => {
-            console.log(dataCount, count)
+            // console.log(dataCount, count)
             if(dataCount !== count){
               data.map((item) => {
                 //console.log('Adding item: ', item);
@@ -1330,7 +1330,7 @@ class App extends Component {
 
   // tabs functions
   changetabsJsonsState(value){
-    console.log(value)
+    // console.log(value)
     this.setState({
       tabsJson: value,
     })
@@ -1384,7 +1384,7 @@ class App extends Component {
       this.updateUser();
     }
     if(countTabs===1){
-      console.log('cant\'t delete last tab');
+      // console.log('cant\'t delete last tab');
       this.changeTabErrorMsg('There must always be a shopping list');
       let addTabError = document.querySelector('.addTabError');
       addTabError.style.opacity = 1;
@@ -1394,7 +1394,7 @@ class App extends Component {
   createTab(name, activeTab){
     let{tabsJson, login} =this.state;
     if(!login){
-      console.log('Can only add tabs when login');
+      // console.log('Can only add tabs when login');
       this.changeTabErrorMsg('Log in to add and customize shopping lists');
       let addTabError = document.querySelector('.addTabError');
       addTabError.style.opacity = 1;
@@ -1445,7 +1445,7 @@ class App extends Component {
   }
 
   updateMultiList(data){
-    console.log(data);
+    // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
@@ -1476,14 +1476,14 @@ class App extends Component {
       // console.log(json);
       let activeTabName;
       activeTabName = Object.keys(tabsJson)[activeTab];
-       console.log(res[activeTabName]);
+       // console.log(res[activeTabName]);
       this.setState({
         tabsJson: res,//json[1].itemLists, // updating all tabs
         list: json[1].itemLists[activeTabName],
         updatedTime: json[0].time,
         error_msg: json[2].error_msg,
       }, ()=>{
-        console.log('need update here');
+        // console.log('need update here');
         if(this.state.login && this.state.psw){
           // console.log('updaate');
           this.updateUser();
@@ -1496,7 +1496,7 @@ class App extends Component {
         document.querySelector('.API_error').classList.remove('API_error_open');
       }
       if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
-        console.log(json[2].error_msg);
+        // console.log(json[2].error_msg);
         document.querySelector('.API_error').classList.add('API_error_open');
       }
       //Set lastUpdate time
