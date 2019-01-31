@@ -106,6 +106,7 @@ class App extends Component {
     this.changeActiveTabName = this.changeActiveTabName.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.changeTabErrorMsg = this.changeTabErrorMsg.bind(this);
+    this.shortPolling = this.shortPolling.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -248,6 +249,8 @@ class App extends Component {
         }, ()=> {
           this.saveToIndex();
           console.log('saving last serach to db');
+          // setTimeout(this.shortPolling, 60000);
+          this.shortPolling();
         })
         loading.style.display = 'none';
         // console.log('finished fetch multi-list');
@@ -1528,8 +1531,6 @@ class App extends Component {
       //   })
       //   .then(() => console.log('All search saved to indexedDb'))
       //   .catch((e) => console.log('Error adding item: ', e))
-
-
     })
     .then(() =>{
       console.log("check for saving to idb");
@@ -1628,7 +1629,32 @@ class App extends Component {
         // })
 
       })
-}
+    }
+
+  shortPolling(){
+    const {lastResposeTime, updatedTime, region, serverSlug, tabsJson} = this.state;
+    let time1 = (Date.now() - lastResposeTime)/1000;
+    let time2 = Date.now()/1000 - updatedTime;
+    let totaltime = time1+time2;
+
+    let multiData =
+      { 'region' :  region,
+        'server' :  serverSlug,
+        'itemLists'  : tabsJson,
+      }
+    if(totaltime>1800){
+      console.log('shortPolling');
+      console.log(totaltime);
+      console.log(multiData);
+      // this.updateMultiList(multiData);
+      setTimeout(this.shortPolling, 60000)
+    }
+    else{
+      console.log(totaltime);
+      setTimeout(this.shortPolling, 60000)
+    }
+  }
+
 
 
   render() {
