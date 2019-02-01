@@ -150,7 +150,7 @@ class searchList extends Component {
 							<div className='no-items'>Your item list is empty</div>
 						</div>
 	        </div>
-	        <button onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search<img className='loading' src={loading} alt='loading'/></button>
+	        <button className='btn' onClick={this.props.clickSearch.bind(this)} tabIndex='2'>Search<img className='loading' src={loading} alt='loading'/></button>
 	      </div>
 	    );
 

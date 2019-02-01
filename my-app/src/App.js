@@ -16,6 +16,7 @@ import sword from './img/sword.png';
 import envelope from './img/envelop.png';
 import no_img from './img/no_img.jpg';
 import Tabs from './Components/tabs';
+import ReactJoyride, { STATUS } from 'react-joyride';
 
 
 //indexedDB
@@ -93,6 +94,23 @@ class App extends Component {
         psw: false,
         error_msg: 'Sorry, no connection. Offline mode',
         error_tabs: 'Log in to add and customize shopping lists',
+        //walkthrow tooltip
+        run: false,
+        steps: [
+          {
+            target: '.servers',
+            content: 'Select your region and realm',
+            disableBeacon: true,
+          },
+          {
+            target: '#login',
+            content: 'Log in to customize and save shopping lists',
+          },
+          {
+            target: '.search',
+            content: 'Search for and add items to populate your shopping lists',
+          },
+        ]
     };
 
 
@@ -107,6 +125,7 @@ class App extends Component {
     this.updateUser = this.updateUser.bind(this);
     this.changeTabErrorMsg = this.changeTabErrorMsg.bind(this);
     this.shortPolling = this.shortPolling.bind(this);
+    this.joyrideRunHandler = this.joyrideRunHandler.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -1655,6 +1674,25 @@ class App extends Component {
     }
   }
 
+  joyrideRunHandler(e){
+    e.preventDefault();
+    this.setState({
+      run: true,
+    })
+  }
+
+  handleJoyrideCallback = data => {
+   const { status, type } = data;
+
+   if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+     this.setState({ run: false });
+   }
+
+   console.groupCollapsed(type);
+   console.log(data); //eslint-disable-line no-console
+   console.groupEnd();
+ };
+
 
 
   render() {
@@ -1662,6 +1700,20 @@ class App extends Component {
 
     return (
       <div>
+      <ReactJoyride
+          callback={this.handleJoyrideCallback}
+          run={this.state.run}
+          disableBeacon
+          showProgress
+          showSkipButton
+          continuous
+          steps={this.state.steps}
+          styles={{
+            options: {
+              zIndex: 10000,
+            }
+          }}
+        />
       <div className='wrapper'>
       <div className="App flex">
         <div className='API_error' onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
@@ -1689,6 +1741,7 @@ class App extends Component {
               signUp={this.signUp.bind(this)}
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
+              joyrideRunHandler={this.joyrideRunHandler}
             />
             <Tabs
               dataJson={this.state.tabsJson}

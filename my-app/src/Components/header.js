@@ -113,6 +113,7 @@ class header extends Component {
        realmsList = this.props.euServers;
      }
 
+
     return (
       <div className="header">
 	      <div className="header-left">
@@ -220,7 +221,7 @@ class header extends Component {
 					</div>
 	      </div>
 	      <div className="header-right">
-          <span onClick={this.openTips.bind(this)}><img className='help_icon' src={help} alt='open help'/></span>
+          <span onClick={this.props.joyrideRunHandler}><img className='help_icon' src={help} alt='open help'/></span>
 	        <a href="#login" id='login' onClick={this.openModal.bind(this)}>Log in</a>
           <div className='time'></div>
 	      </div>

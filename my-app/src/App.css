@@ -386,7 +386,7 @@ a {
   /* border: 1px solid #000; */
   position: relative;
 }
-button {
+.btn {
   margin: 20px auto 40px;
   border-radius: 5px;
   border: none;
