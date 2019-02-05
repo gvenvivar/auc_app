@@ -88,7 +88,7 @@ class App extends Component {
         region: 'en_US',
         server: 'Sargeras',
         serverSlug: 'sargeras',
-        updatedTime: '',
+        updatedTime: 0,
         switchModal: true,
         login: false,
         psw: false,
@@ -154,6 +154,10 @@ class App extends Component {
       localStorage.clear();
     }
 
+    if(storedName === null){
+      console.log('no login');
+      this.shortPolling();
+    }
 
     if(storedName !== null){
       //console.log('user login now')
@@ -1466,7 +1470,7 @@ class App extends Component {
     })
   }
 
-  updateMultiList(data){
+  updateMultiList(data, updateUser){
     // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
@@ -1507,7 +1511,7 @@ class App extends Component {
       }, ()=>{
         // console.log('need update here');
         if(this.state.login && this.state.psw){
-          // console.log('updaate');
+          console.log(updateUser);
           this.updateUser();
         }
       });
@@ -1652,26 +1656,66 @@ class App extends Component {
 
   shortPolling(){
     const {lastResposeTime, updatedTime, region, serverSlug, tabsJson} = this.state;
-    let time1 = (Date.now() - lastResposeTime)/1000;
-    let time2 = Date.now()/1000 - updatedTime;
-    let totaltime = time1+time2;
+    let time1 = (Date.now() - lastResposeTime)/(1000*60);
+    let time2 = (Date.now()/1000 - updatedTime)/60;
+    let totaltime = time2;
+
+    console.log(lastResposeTime, updatedTime);
+    console.log(time1, time2);
 
     let multiData =
       { 'region' :  region,
         'server' :  serverSlug,
         'itemLists'  : tabsJson,
       }
-    if(totaltime>1800){
+    if(totaltime>30 && lastResposeTime!==0){
       console.log('shortPolling');
       console.log(totaltime);
       console.log(multiData);
-      // this.updateMultiList(multiData);
+      this.updateMultiList(multiData);
+      // this.setState({updatedTime});
       setTimeout(this.shortPolling, 60000)
     }
     else{
       console.log(totaltime);
+      this.setState({updatedTime});
       setTimeout(this.shortPolling, 60000)
     }
+  }
+
+  longPolling(){
+    // let data = {};
+    // let init = {
+    //   method: 'post',
+    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    // 	body: JSON.stringify(data)
+    // }
+    //
+    // fetch('/url', init)
+    //   .then(response => {
+    //     if(response.ok){
+    //       console.log(response.json())
+    //       this.longPolling();
+    //     }
+    //     if(response.error){
+    //       console.log('error');
+    //       setTimeout(this.longPolling, 5000)
+    //     }
+    //   })
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("GET", "/subscribe", true);
+    // xhr.onload = function(){
+    //     console.log(this.responseText)
+    //
+    //     longPolling();
+    // };
+    //
+    // xhr.onerror = xhr.onabort = function(){
+    //     setTimeout(longPolling, 500);
+    // };
+    //
+    // xhr.send('');
   }
 
   joyrideRunHandler(e){
