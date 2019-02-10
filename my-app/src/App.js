@@ -156,7 +156,8 @@ class App extends Component {
 
     if(storedName === null){
       console.log('no login');
-      this.shortPolling();
+      // this.shortPolling();
+      // this.longPolling();
     }
 
     if(storedName !== null){
@@ -273,7 +274,8 @@ class App extends Component {
           this.saveToIndex();
           console.log('saving last serach to db');
           // setTimeout(this.shortPolling, 60000);
-          this.shortPolling();
+          // this.shortPolling();
+          // this.longPolling();
         })
         loading.style.display = 'none';
         // console.log('finished fetch multi-list');
@@ -1684,24 +1686,36 @@ class App extends Component {
   }
 
   longPolling(){
-    // let data = {};
-    // let init = {
-    //   method: 'post',
-    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    // 	body: JSON.stringify(data)
-    // }
-    //
-    // fetch('/url', init)
-    //   .then(response => {
-    //     if(response.ok){
-    //       console.log(response.json())
-    //       this.longPolling();
-    //     }
-    //     if(response.error){
-    //       console.log('error');
-    //       setTimeout(this.longPolling, 5000)
-    //     }
-    //   })
+    console.log(' start long-polling');
+    let {region, serverSlug, tabsJson, updatedTime} = this.state;
+    let data =
+      { 'region' : region,
+        'server' :  serverSlug,
+        'itemLists'  : tabsJson,
+        'time': updatedTime,
+      };
+    console.log(data);
+    let init = {
+      method: 'post',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    	body: JSON.stringify(data)
+    }
+
+    fetch('https://ahtool.com/grape/long-poll/', init)
+      .then(response => {
+        if(response.ok){
+          // console.log(response.text())
+          response.json()
+            .then(data => {
+              console.log(data);
+              this.longPolling();
+            })
+        }
+        if(response.error){
+          console.log('error');
+          setTimeout(this.longPolling, 5000)
+        }
+      })
 
     // var xhr = new XMLHttpRequest();
     // xhr.open("GET", "/subscribe", true);
