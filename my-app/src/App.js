@@ -74,6 +74,10 @@ class App extends Component {
     super(props);
 
     this.state = {
+        //autoupdate
+        autoupdate: false,
+        forceUpdate: false,
+        updateUser: true,
         //new
         tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
@@ -126,6 +130,7 @@ class App extends Component {
     this.changeTabErrorMsg = this.changeTabErrorMsg.bind(this);
     this.shortPolling = this.shortPolling.bind(this);
     this.joyrideRunHandler = this.joyrideRunHandler.bind(this);
+    this.longPolling = this.longPolling.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -157,7 +162,6 @@ class App extends Component {
     if(storedName === null){
       console.log('no login');
       // this.shortPolling();
-      // this.longPolling();
     }
 
     if(storedName !== null){
@@ -263,13 +267,14 @@ class App extends Component {
         let {activeTabName} = this.state;
         let tabList = response_multi[1].itemLists;
         // console.log(tabList);
-        let lastResposeTime = Date.now();
+        // let lastResposeTime = Date.now();
         this.setState({
           tabsJson: tabList,
           list: response_multi[1].itemLists[activeTabName],
           updatedTime: response_multi[0].time,
           error_msg: response_multi[2].error_msg,
-          lastResposeTime,
+          // lastResposeTime,
+          autoupdate: true,
         }, ()=> {
           this.saveToIndex();
           console.log('saving last serach to db');
@@ -431,6 +436,13 @@ class App extends Component {
 
     this.udpateEmptyList(this.state.itemList);
   }
+  componentDidUpdate(prevProps, prevState){
+    const {autoupdate} = this.state;
+    if(autoupdate===true && prevState.autoupdate===false){
+      console.log('componentDidUpdate');
+      this.longPolling();
+    }
+  }
 
   addToAuto(name, id){
     let index = this.state.itemList.findIndex(i => i.id === id);
@@ -446,6 +458,8 @@ class App extends Component {
       this.setState({
         itemList: updateitemList,
         tabsJson: updateTabsJson,
+        autoupdate: true,
+        updateUser: true,
       }, ()=>{
         this.saveToIndex();
       });
@@ -461,7 +475,7 @@ class App extends Component {
       }
       this.updateEmptySearch();
       // console.log(sendData.itemLists[activeTabName])
-      this.updateMultiList(sendData);
+      this.updateMultiList(sendData, true);
     }
     // console.log(tabsJson, activeTabName)
     // console.log(tabsJson[activeTabName]);
@@ -477,6 +491,7 @@ class App extends Component {
       server: item.name,
       serverSlug: item.slug,
       list: [],
+      updateUser: true,
     }, ()=>{
       let multiData =
         { 'region' :  this.state.region,
@@ -488,7 +503,7 @@ class App extends Component {
 
 
 
-    console.log('change server')
+    console.log('change server');
 
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     //console.log(this.state.slug)
@@ -534,7 +549,8 @@ class App extends Component {
     if(identicalRealm){
       this.setState({
         region: event.target.value,
-        list : []
+        list : [],
+        updateUser: true,
       }, ()=>{
         this.updateMultiList(multiData);
       })
@@ -545,7 +561,8 @@ class App extends Component {
         region: event.target.value,
         server: 'sargeras',
         serverSlug: 'sargeras',
-        list : []
+        list : [],
+        updateUser: true,
       },()=> {
         multiData.server = 'sargeras';
         this.updateMultiList(multiData);
@@ -1061,14 +1078,15 @@ class App extends Component {
     .then(response =>{
       let {activeTabName} = this.state;
       // console.log(response);
-      let lastResposeTime = Date.now();
+      // let lastResposeTime = Date.now();
       this.setState({
         tabsJson: response[1].itemLists,
         list: response[1].itemLists[activeTabName],
         itemList: response[1].itemLists[activeTabName],
         updatedTime: response[0].time,
         error_msg: response[2].error_msg,
-        lastResposeTime,
+        // lastResposeTime,
+        autoupdate: true,
       })
       loadingIcon.style.display = 'none';
       // console.log('finished fetch multi-list');
@@ -1386,6 +1404,7 @@ class App extends Component {
           'server' :  serverSlug,
           'itemLists'  : tabsJson,
         }
+        this.setState({updateUser: true})
         // loading.style.display = 'block';
         // console.log('display block')
         this.updateMultiList(sendData);
@@ -1454,11 +1473,11 @@ class App extends Component {
   }
 
   checkDataAge(){
-    const {lastResposeTime, updatedTime} = this.state;
-    let time1 = (Date.now() - lastResposeTime)/1000;
-    let time2 = Date.now()/1000 - updatedTime;
-    // console.log(time1, time2);
-    if(time1+time2>3600||this.state.itemList.length===0){
+    const {updatedTime} = this.state;
+    // let time1 = (Date.now() - lastResposeTime)/1000;
+    let time2 = (Date.now()/1000 - updatedTime)/60;
+    console.log(time2);
+    if(time2>60||this.state.itemList.length===0){
       return true;
     }
     else{
@@ -1472,8 +1491,8 @@ class App extends Component {
     })
   }
 
-  updateMultiList(data, updateUser){
-    // console.log(data);
+  updateMultiList(data, tooltipfix){
+    // console.log(tooltipfix);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
@@ -1483,10 +1502,9 @@ class App extends Component {
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
     	body: JSON.stringify(data)
     })
-    .then(response =>{
-      return response.json()
-    })
+    .then(response => response.json())
     .then(json => {
+      console.log('multilist')
       //Saving order for tabs when respond returns
       const {tabsJson, activeTab} = this.state;
       let newData = json[1].itemLists;
@@ -1512,8 +1530,7 @@ class App extends Component {
         error_msg: json[2].error_msg,
       }, ()=>{
         // console.log('need update here');
-        if(this.state.login && this.state.psw){
-          console.log(updateUser);
+        if(this.state.login && this.state.psw && this.state.updateUser){
           this.updateUser();
         }
       });
@@ -1528,20 +1545,24 @@ class App extends Component {
         document.querySelector('.API_error').classList.add('API_error_open');
       }
       //Set lastUpdate time
-      let lastResposeTime = Date.now();
-      this.setState({lastResposeTime});
+      // let lastResposeTime = Date.now();
+      // this.setState({lastResposeTime});
       loading.style.display = 'none';
       // console.log('lastResposeTime: ' + lastResposeTime);
 
       //check if tooltip bug
-      let tooltip = document.querySelector('.wowhead-tooltip');
-      let tooltipIcon = document.querySelector('.wowhead-tooltip p');
-      if(tooltip.style.visibility==='visible'){
-        // console.log("NEED HIDE");
-        // tooltip.dataset.visible = no;
-        tooltip.style.visibility = 'hidden';
-        tooltipIcon.style.visibility = 'hidden';
+      if(tooltipfix){
+        let tooltip = document.querySelector('.wowhead-tooltip');
+        let tooltipIcon = document.querySelector('.wowhead-tooltip p');
+        if(tooltip.style.visibility==='visible'){
+          // console.log("NEED HIDE");
+          // tooltip.dataset.visible = no;
+          tooltip.style.visibility = 'hidden';
+          tooltipIcon.style.visibility = 'hidden';
+        }
       }
+
+
 
       // //save auctions to indexedDB
       //
@@ -1657,20 +1678,21 @@ class App extends Component {
     }
 
   shortPolling(){
-    const {lastResposeTime, updatedTime, region, serverSlug, tabsJson} = this.state;
-    let time1 = (Date.now() - lastResposeTime)/(1000*60);
+    const {updatedTime, region, serverSlug, tabsJson} = this.state;
+    // let time1 = (Date.now() - lastResposeTime)/(1000*60);
     let time2 = (Date.now()/1000 - updatedTime)/60;
     let totaltime = time2;
 
-    console.log(lastResposeTime, updatedTime);
-    console.log(time1, time2);
+    console.log(updatedTime);
+    console.log(time2);
 
     let multiData =
       { 'region' :  region,
         'server' :  serverSlug,
         'itemLists'  : tabsJson,
       }
-    if(totaltime>30 && lastResposeTime!==0){
+    // && lastResposeTime!==0
+    if(totaltime>30){
       console.log('shortPolling');
       console.log(totaltime);
       console.log(multiData);
@@ -1686,14 +1708,14 @@ class App extends Component {
   }
 
   longPolling(){
-    console.log(' start long-polling');
-    let {region, serverSlug, tabsJson, updatedTime} = this.state;
+    let {region, serverSlug, tabsJson, updatedTime, forceUpdate} = this.state;
     let data =
       { 'region' : region,
         'server' :  serverSlug,
-        'itemLists'  : tabsJson,
         'time': updatedTime,
+        'forceUpdate' : forceUpdate,
       };
+    console.log('start long-polling');
     console.log(data);
     let init = {
       method: 'post',
@@ -1701,21 +1723,52 @@ class App extends Component {
     	body: JSON.stringify(data)
     }
 
+
     fetch('https://ahtool.com/grape/long-poll/', init)
       .then(response => {
         if(response.ok){
-          // console.log(response.text())
           response.json()
-            .then(data => {
-              console.log(data);
-              this.longPolling();
-            })
+          .then(data => {
+            const {region, serverSlug} = this.state;
+            console.log(data);
+            // this.setState({
+            //   updatedTime: data[0].time,
+            // })
+
+            if(region === data[2].region && serverSlug === data[1].server){
+              let multiData =
+                { 'region' :  region,
+                  'server' :  serverSlug,
+                  'itemLists'  : tabsJson,
+                }
+              console.log(multiData);
+              console.log('before')
+              this.setState({updateUser: false})
+              this.updateMultiList(multiData);
+              console.log('after')
+            }
+            else{
+              console.log('not same region or realm')
+            }
+          })
+          .then(()=>{
+            this.setState({forceUpdate : false});
+            this.longPolling();
+          })
         }
-        if(response.error){
-          console.log('error');
-          setTimeout(this.longPolling, 5000)
+        else{
+          console.log(response.status);
+          console.log('else');
+          setTimeout(this.longPolling, 15000);
         }
       })
+      .catch(e => {
+        this.setState({forceUpdate : true});
+        console.log(`catch ${e}`);
+        setTimeout(this.longPolling, 15000);
+      })
+
+
 
     // var xhr = new XMLHttpRequest();
     // xhr.open("GET", "/subscribe", true);
