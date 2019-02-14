@@ -504,6 +504,7 @@ class App extends Component {
 
 
     console.log('change server');
+    this.longPolling();
 
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     //console.log(this.state.slug)
@@ -1735,7 +1736,7 @@ class App extends Component {
             //   updatedTime: data[0].time,
             // })
 
-            if(region === data[2].region && serverSlug === data[1].server){
+            if(region === data[2].region && serverSlug === data[1].server && data[3].msg!=='obsolete request terminated'){
               let multiData =
                 { 'region' :  region,
                   'server' :  serverSlug,
@@ -1750,16 +1751,19 @@ class App extends Component {
             else{
               console.log('not same region or realm')
             }
+            return data;
           })
-          .then(()=>{
-            this.setState({forceUpdate : false});
-            this.longPolling();
+          .then((data)=>{
+            if(data[3].msg!='obsolete request terminated'){
+              this.setState({forceUpdate : false});
+              this.longPolling();
+            }
           })
         }
         else{
           console.log(response.status);
           console.log('else');
-          setTimeout(this.longPolling, 15000);
+          // setTimeout(this.longPolling, 15000);
         }
       })
       .catch(e => {
