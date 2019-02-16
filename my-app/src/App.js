@@ -16,7 +16,7 @@ import sword from './img/sword.png';
 import envelope from './img/envelop.png';
 import no_img from './img/no_img.jpg';
 import Tabs from './Components/tabs';
-import ReactJoyride, { STATUS } from 'react-joyride';
+import ReactJoyride, { STATUS, ACTIONS, EVENTS } from 'react-joyride';
 
 
 //indexedDB
@@ -100,6 +100,7 @@ class App extends Component {
         error_tabs: 'Log in to add and customize shopping lists',
         //walkthrow tooltip
         run: false,
+        joyrideIndex: 0,
         steps: [
           {
             target: '.servers',
@@ -109,10 +110,12 @@ class App extends Component {
           {
             target: '#login',
             content: 'Log in to customize and save shopping lists',
+            disableBeacon: true,
           },
           {
             target: '.search',
             content: 'Search for and add items to populate your shopping lists',
+            disableBeacon: true,
           },
         ]
     };
@@ -131,6 +134,7 @@ class App extends Component {
     this.shortPolling = this.shortPolling.bind(this);
     this.joyrideRunHandler = this.joyrideRunHandler.bind(this);
     this.longPolling = this.longPolling.bind(this);
+    this.updateTimeEveryMinute = this.updateTimeEveryMinute.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -437,14 +441,16 @@ class App extends Component {
     this.udpateEmptyList(this.state.itemList);
   }
   componentDidUpdate(prevProps, prevState){
-    const {autoupdate} = this.state;
+    const {autoupdate, updatedTime} = this.state;
     if(autoupdate===true && prevState.autoupdate===false){
       console.log('componentDidUpdate');
       this.longPolling();
+      //autoupdate time every min
+      setInterval(this.updateTimeEveryMinute, 60000);
     }
   }
 
-  addToAuto(name, id){
+  addToList(name, id){
     let index = this.state.itemList.findIndex(i => i.id === id);
     let {serverSlug, region, tabsJson, itemList, activeTab} = this.state;
     let activeTabName = Object.keys(tabsJson)[activeTab];
@@ -486,7 +492,7 @@ class App extends Component {
     // console.log(this.state.itemList);
   }
 
-  addSlug(item){
+  changeServer(item){
     this.setState({
       server: item.name,
       serverSlug: item.slug,
@@ -499,12 +505,13 @@ class App extends Component {
           'itemLists'  : this.state.tabsJson,
         }
         this.updateMultiList(multiData);
+        setTimeout(this.longPolling, 5000);
     })
 
 
 
     console.log('change server');
-    this.longPolling();
+
 
     document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     //console.log(this.state.slug)
@@ -554,6 +561,7 @@ class App extends Component {
         updateUser: true,
       }, ()=>{
         this.updateMultiList(multiData);
+        setTimeout(this.longPolling, 5000);
       })
       // console.log(multiData);
     }
@@ -567,18 +575,10 @@ class App extends Component {
       },()=> {
         multiData.server = 'sargeras';
         this.updateMultiList(multiData);
+        setTimeout(this.longPolling, 5000);
       })
     }
 
-
-    //Old chage realm default functionality
-    // this.setState({
-    //   region: event.target.value,
-    //   server: 'sargeras',
-    //   serverSlug: 'sargeras',
-    //   list : []
-    // })
-    // document.getElementsByClassName('no-items-wrap')[1].style.display = 'block';
     this.updateEmptySearch();
   }
 
@@ -622,6 +622,7 @@ class App extends Component {
   transformTime(time){
     let currentTime = new Date();
     let timeSeconds =currentTime.getTime()/1000;;
+    // console.log(parseInt((timeSeconds - time)/60, 10));
     return parseInt((timeSeconds - time)/60, 10);
   }
 
@@ -1736,20 +1737,18 @@ class App extends Component {
             //   updatedTime: data[0].time,
             // })
 
-            if(region === data[2].region && serverSlug === data[1].server && data[3].msg!=='obsolete request terminated'){
+            if(region === data[2].region && serverSlug === data[1].server && data[3].msg!='obsolete request terminated'){
               let multiData =
                 { 'region' :  region,
                   'server' :  serverSlug,
                   'itemLists'  : tabsJson,
                 }
               console.log(multiData);
-              console.log('before')
               this.setState({updateUser: false})
               this.updateMultiList(multiData);
-              console.log('after')
             }
             else{
-              console.log('not same region or realm')
+              console.log('dont need update')
             }
             return data;
           })
@@ -1763,7 +1762,7 @@ class App extends Component {
         else{
           console.log(response.status);
           console.log('else');
-          // setTimeout(this.longPolling, 15000);
+          setTimeout(this.longPolling, 15000);
         }
       })
       .catch(e => {
@@ -1771,22 +1770,12 @@ class App extends Component {
         console.log(`catch ${e}`);
         setTimeout(this.longPolling, 15000);
       })
+  }
 
-
-
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("GET", "/subscribe", true);
-    // xhr.onload = function(){
-    //     console.log(this.responseText)
-    //
-    //     longPolling();
-    // };
-    //
-    // xhr.onerror = xhr.onabort = function(){
-    //     setTimeout(longPolling, 500);
-    // };
-    //
-    // xhr.send('');
+  updateTimeEveryMinute(){
+    console.log('updateTimeEveryMinute');
+    let {updatedTime} = this.state;
+    this.setState({updatedTime});
   }
 
   joyrideRunHandler(e){
@@ -1797,11 +1786,23 @@ class App extends Component {
   }
 
   handleJoyrideCallback = data => {
-   const { status, type } = data;
+   const {action, index, status, type} = data;
 
-   if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-     this.setState({ run: false });
+   if(action==='close'){
+     this.setState({ run: false, joyrideIndex: 0 });
    }
+   if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+      // Update state to advance the tour
+      this.setState({ joyrideIndex: index + (action === ACTIONS.PREV ? -1 : 1) }, ()=>{
+      });
+    }
+    else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      // Need to set our running state to false, so we can restart if we click start again.
+      this.setState({ run: false, joyrideIndex: 0 });
+    }
+
+
+
 
    console.groupCollapsed(type);
    console.log(data); //eslint-disable-line no-console
@@ -1810,19 +1811,22 @@ class App extends Component {
 
 
 
-  render() {
 
+
+  render() {
+    const { run, joyrideIndex, steps } = this.state;
 
     return (
       <div>
       <ReactJoyride
           callback={this.handleJoyrideCallback}
-          run={this.state.run}
+          run={run}
           disableBeacon
           showProgress
           showSkipButton
           continuous
-          steps={this.state.steps}
+          stepIndex={joyrideIndex}
+          steps={steps}
           styles={{
             options: {
               zIndex: 10000,
@@ -1844,8 +1848,8 @@ class App extends Component {
               usServers={this.state.usServers}
               euServers={this.state.euServers}
               server={this.state.server}
-              addToAuto={this.addToAuto.bind(this)}
-              addSlug={this.addSlug.bind(this)}
+              addToAuto={this.addToList.bind(this)}
+              addSlug={this.changeServer.bind(this)}
               data={this.state.data}
               region={this.state.region}
               updateRegion={this.updateRegion.bind(this)}
@@ -1906,5 +1910,7 @@ class App extends Component {
     );
   }
 }
+
+
 
 export default App;

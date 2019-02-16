@@ -87,9 +87,9 @@ class header extends Component {
   }
 
 
+
+
 	 render() {
-
-
      //generate server time
      //let addTimeBlock;
      let time = this.props.transformTime(this.props.updatedTime);
