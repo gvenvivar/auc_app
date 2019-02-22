@@ -17,6 +17,7 @@ import envelope from './img/envelop.png';
 import no_img from './img/no_img.jpg';
 import Tabs from './Components/tabs';
 import ReactJoyride, { STATUS, ACTIONS, EVENTS } from 'react-joyride';
+import nanoid from 'nanoid';
 
 
 //indexedDB
@@ -78,6 +79,7 @@ class App extends Component {
         autoupdate: false,
         forceUpdate: false,
         updateUser: true,
+        uniqid: '',
         //new
         tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
@@ -116,6 +118,26 @@ class App extends Component {
             target: '.search',
             content: 'Search for and add items to populate your shopping lists',
             disableBeacon: true,
+          },
+          {
+            target: '.refresh',
+            content: 'Force a deliberate manual update',
+            disableBeacon: true,
+          },
+          {
+            content: (
+              <React.Fragment>
+                <h3 style={{ marginTop: 0, fontSize: '28px', color: '#000' }}>Additional features:</h3>
+                <ul className='Joyride-list'>
+                  <li>Drag items by their icons to order them around</li>
+                  <li>Clicking on an item name opens its wowhead page</li>
+                  <li>Logging in preserves your lists between sessions and devices</li>
+                </ul>
+              </React.Fragment>
+            ),
+            target: '.col-right',
+            disableBeacon: true,
+            placement: 'center'
           },
         ]
     };
@@ -156,6 +178,8 @@ class App extends Component {
     let nowTime = new Date().getTime();
     let {tabsJson, activeTab} = this.state;
     const loading = document.querySelector('.load');
+
+    this.setState({uniqid: nanoid()});
 
     loading.style.display = 'block';
 
@@ -328,11 +352,17 @@ class App extends Component {
     }
 
     //fetch database json
-    const url = 'https://ahtool.com/item_db_img_sorted.json';
-    fetch(url)
+    // const url = 'https://ahtool.com/item_db_img_sorted.json';
+    const url = 'https://ahtool.com/grape/get-file'
+    const params = {
+      method: 'GET',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      mode: 'no-cors'
+    }
+    fetch(url, params)
       .then(response => response.json())
       .then(json => {
-        //console.log(json.items);
+        console.log(json.items);
         // console.log('data url fetched')
         this.setState({
           data: json.items,
@@ -1710,12 +1740,13 @@ class App extends Component {
   }
 
   longPolling(){
-    let {region, serverSlug, tabsJson, updatedTime, forceUpdate} = this.state;
+    let {region, serverSlug, tabsJson, updatedTime, forceUpdate, uniqid} = this.state;
     let data =
       { 'region' : region,
         'server' :  serverSlug,
         'time': updatedTime,
         'forceUpdate' : forceUpdate,
+        'uniqid': uniqid,
       };
     console.log('start long-polling');
     console.log(data);
@@ -1823,13 +1854,17 @@ class App extends Component {
           run={run}
           disableBeacon
           showProgress
-          showSkipButton
           continuous
           stepIndex={joyrideIndex}
           steps={steps}
           styles={{
             options: {
               zIndex: 10000,
+              backgroundColor: '#bfc5c7',
+              arrowColor: '#bfc5c7',
+              textColor: '#000',
+              primaryColor: '#CA0055',
+              overlayColor: 'rgba(0,0,0,0.9)'
             }
           }}
         />

@@ -675,6 +675,23 @@ th:last-child {
   top: 50px;
   left: calc(50% - (250px/2));
 }
+
+.Joyride-list{
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-family: "RobotoRegular", sans-serif;
+  margin: 40px 20px 0;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.Joyride-list li{
+  margin: 10px 0;
+}
+.__floater__body{
+  font-family: 'Roboto', sans-serif;
+}
+
 footer {
   background: #000;
   text-align: center;
