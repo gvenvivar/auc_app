@@ -80,6 +80,7 @@ class App extends Component {
         forceUpdate: false,
         updateUser: true,
         uniqid: '',
+        timeout: null,
         //new
         tabsJson: {'Shopping List #1':[]},
         activeTab : 0,
@@ -111,7 +112,7 @@ class App extends Component {
           },
           {
             target: '#login',
-            content: 'Log in to customize and save shopping lists',
+            content: 'Log in to customize and save shopping lists, preserves your lists between sessions and devices',
             disableBeacon: true,
           },
           {
@@ -120,25 +121,20 @@ class App extends Component {
             disableBeacon: true,
           },
           {
-            target: '.refresh',
-            content: 'Force a deliberate manual update',
+            target: '.icon-cell',
+            content: 'Drag items by their icons to order them around',
             disableBeacon: true,
           },
           {
-            content: (
-              <React.Fragment>
-                <h3 style={{ marginTop: 0, fontSize: '28px', color: '#000' }}>Additional features:</h3>
-                <ul className='Joyride-list'>
-                  <li>Drag items by their icons to order them around</li>
-                  <li>Clicking on an item name opens its wowhead page</li>
-                  <li>Logging in preserves your lists between sessions and devices</li>
-                </ul>
-              </React.Fragment>
-            ),
-            target: '.col-right',
+            target: '.name-cell',
+            content: 'Clicking on an item name opens its wowhead page',
             disableBeacon: true,
-            placement: 'center'
           },
+          {
+            target: '.refresh',
+            content: 'Force a deliberate manual update',
+            disableBeacon: true,
+          }
         ]
     };
 
@@ -153,7 +149,7 @@ class App extends Component {
     this.changeActiveTabName = this.changeActiveTabName.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.changeTabErrorMsg = this.changeTabErrorMsg.bind(this);
-    this.shortPolling = this.shortPolling.bind(this);
+    // this.shortPolling = this.shortPolling.bind(this);
     this.joyrideRunHandler = this.joyrideRunHandler.bind(this);
     this.longPolling = this.longPolling.bind(this);
     this.updateTimeEveryMinute = this.updateTimeEveryMinute.bind(this);
@@ -352,17 +348,16 @@ class App extends Component {
     }
 
     //fetch database json
-    // const url = 'https://ahtool.com/item_db_img_sorted.json';
-    const url = 'https://ahtool.com/grape/get-file'
-    const params = {
-      method: 'GET',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      mode: 'no-cors'
-    }
-    fetch(url, params)
+    const url = 'https://ahtool.com/item_db_img_sorted.json';
+    // const url = 'https://ahtool.com/grape/get-file'
+    // const params = {
+    //   method: 'GET',
+    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    //   mode: 'no-cors'
+    // }
+    fetch(url)
       .then(response => response.json())
       .then(json => {
-        console.log(json.items);
         // console.log('data url fetched')
         this.setState({
           data: json.items,
@@ -535,7 +530,14 @@ class App extends Component {
           'itemLists'  : this.state.tabsJson,
         }
         this.updateMultiList(multiData);
-        setTimeout(this.longPolling, 5000);
+
+        // Set long poll after 30s if user don't change server
+        if(this.state.timeout !== null){
+          clearInterval(this.state.timeout);
+          console.log('clear timeout')
+        }
+        this.setState({timeout : setTimeout(this.longPolling, 30000)});
+        console.log('set timeout')
     })
 
 
@@ -591,7 +593,15 @@ class App extends Component {
         updateUser: true,
       }, ()=>{
         this.updateMultiList(multiData);
-        setTimeout(this.longPolling, 5000);
+        // setTimeout(this.longPolling, 5000);
+
+        // Set long poll after 30s if user don't change region
+        if(this.state.timeout !== null){
+          clearInterval(this.state.timeout);
+          console.log('clear timeout')
+        }
+        this.setState({timeout : setTimeout(this.longPolling, 30000)});
+        console.log('set timeout')
       })
       // console.log(multiData);
     }
@@ -605,7 +615,14 @@ class App extends Component {
       },()=> {
         multiData.server = 'sargeras';
         this.updateMultiList(multiData);
-        setTimeout(this.longPolling, 5000);
+        // setTimeout(this.longPolling, 5000);
+        // Set long poll after 30s if user don't change region
+        if(this.state.timeout !== null){
+          clearInterval(this.state.timeout);
+          console.log('clear timeout')
+        }
+        this.setState({timeout : setTimeout(this.longPolling, 30000)});
+        console.log('set timeout')
       })
     }
 
@@ -1709,35 +1726,35 @@ class App extends Component {
       })
     }
 
-  shortPolling(){
-    const {updatedTime, region, serverSlug, tabsJson} = this.state;
-    // let time1 = (Date.now() - lastResposeTime)/(1000*60);
-    let time2 = (Date.now()/1000 - updatedTime)/60;
-    let totaltime = time2;
-
-    console.log(updatedTime);
-    console.log(time2);
-
-    let multiData =
-      { 'region' :  region,
-        'server' :  serverSlug,
-        'itemLists'  : tabsJson,
-      }
-    // && lastResposeTime!==0
-    if(totaltime>30){
-      console.log('shortPolling');
-      console.log(totaltime);
-      console.log(multiData);
-      this.updateMultiList(multiData);
-      // this.setState({updatedTime});
-      setTimeout(this.shortPolling, 60000)
-    }
-    else{
-      console.log(totaltime);
-      this.setState({updatedTime});
-      setTimeout(this.shortPolling, 60000)
-    }
-  }
+  // shortPolling(){
+  //   const {updatedTime, region, serverSlug, tabsJson} = this.state;
+  //   // let time1 = (Date.now() - lastResposeTime)/(1000*60);
+  //   let time2 = (Date.now()/1000 - updatedTime)/60;
+  //   let totaltime = time2;
+  //
+  //   console.log(updatedTime);
+  //   console.log(time2);
+  //
+  //   let multiData =
+  //     { 'region' :  region,
+  //       'server' :  serverSlug,
+  //       'itemLists'  : tabsJson,
+  //     }
+  //   // && lastResposeTime!==0
+  //   if(totaltime>30){
+  //     console.log('shortPolling');
+  //     console.log(totaltime);
+  //     console.log(multiData);
+  //     this.updateMultiList(multiData);
+  //     // this.setState({updatedTime});
+  //     setTimeout(this.shortPolling, 60000)
+  //   }
+  //   else{
+  //     console.log(totaltime);
+  //     this.setState({updatedTime});
+  //     setTimeout(this.shortPolling, 60000)
+  //   }
+  // }
 
   longPolling(){
     let {region, serverSlug, tabsJson, updatedTime, forceUpdate, uniqid} = this.state;
@@ -1786,7 +1803,8 @@ class App extends Component {
           .then((data)=>{
             if(data[3].msg!='obsolete request terminated'){
               this.setState({forceUpdate : false});
-              this.longPolling();
+              // this.longPolling();
+              setTimeout(this.longPolling, 1000)
             }
           })
         }

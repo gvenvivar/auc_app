@@ -114,7 +114,7 @@ class resultList extends Component {
 		    	<div className="row row-head">
 		    		<div className="group group-left">
 			    		<div className="cell icon-cell">Icon</div>
-			    		<div className="cell flex-grow-3">Name</div>
+			    		<div className="cell flex-grow-3 name-cell">Name</div>
 		    		</div>
 		    		<div className="group group-right">
 							<div className="cell center remove-col">Remove</div>
