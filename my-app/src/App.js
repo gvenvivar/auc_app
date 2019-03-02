@@ -75,6 +75,9 @@ class App extends Component {
     super(props);
 
     this.state = {
+        //localization
+        locale_language: 'en_US',
+        current_lang: 'en_US',
         //autoupdate
         autoupdate: false,
         forceUpdate: false,
@@ -153,6 +156,7 @@ class App extends Component {
     this.joyrideRunHandler = this.joyrideRunHandler.bind(this);
     this.longPolling = this.longPolling.bind(this);
     this.updateTimeEveryMinute = this.updateTimeEveryMinute.bind(this);
+    this.changeLanguage = this.changeLanguage.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -223,7 +227,7 @@ class App extends Component {
       })
       .then(response => {
         // let activeTabName = Object.keys(response.itemLists)[response.active_list];
-        // console.log(response.itemLists);
+        // console.log(response);
         // console.log(response.active_list);
         let activeTabOrder = response.active_list;
         //check if active tab more than count tabs;
@@ -274,6 +278,7 @@ class App extends Component {
         { 'region' :  this.state.region,
           'server' :  this.state.serverSlug,
           'itemLists'  : response.itemLists,
+          'lang' : this.state.current_lang,
         }
          // console.log(multiData);
         return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
@@ -348,7 +353,8 @@ class App extends Component {
     }
 
     //fetch database json
-    const url = 'https://ahtool.com/item_db_img_sorted.json';
+    // const url = 'https://ahtool.com/item_db_img_sorted.json';
+    const url = 'https://ahtool.com/item_db_locale.json';
     // const url = 'https://ahtool.com/grape/get-file'
     // const params = {
     //   method: 'GET',
@@ -358,7 +364,7 @@ class App extends Component {
     fetch(url)
       .then(response => response.json())
       .then(json => {
-        // console.log('data url fetched')
+        // console.log(json.realms.en_GB)
         this.setState({
           data: json.items,
           usServers :json.realms.en_US,
@@ -466,7 +472,7 @@ class App extends Component {
     this.udpateEmptyList(this.state.itemList);
   }
   componentDidUpdate(prevProps, prevState){
-    const {autoupdate, updatedTime} = this.state;
+    const {autoupdate} = this.state;
     if(autoupdate===true && prevState.autoupdate===false){
       console.log('componentDidUpdate');
       this.longPolling();
@@ -477,7 +483,7 @@ class App extends Component {
 
   addToList(name, id){
     let index = this.state.itemList.findIndex(i => i.id === id);
-    let {serverSlug, region, tabsJson, itemList, activeTab} = this.state;
+    let {serverSlug, region, tabsJson, itemList, activeTab, current_lang} = this.state;
     let activeTabName = Object.keys(tabsJson)[activeTab];
     if(id && index === -1){
       let updateitemList = itemList;
@@ -503,9 +509,10 @@ class App extends Component {
       { 'region' :  region,
         'server' :  serverSlug,
         'itemLists'  : tabsJson,
+        'lang' : current_lang,
       }
       this.updateEmptySearch();
-      // console.log(sendData.itemLists[activeTabName])
+      console.log(sendData)
       this.updateMultiList(sendData, true);
     }
     // console.log(tabsJson, activeTabName)
@@ -521,6 +528,8 @@ class App extends Component {
     this.setState({
       server: item.name,
       serverSlug: item.slug,
+      locale_language: item.locale,
+      current_lang: item.locale,
       list: [],
       updateUser: true,
     }, ()=>{
@@ -528,6 +537,7 @@ class App extends Component {
         { 'region' :  this.state.region,
           'server' :  this.state.serverSlug,
           'itemLists'  : this.state.tabsJson,
+          'lang' : this.state.current_lang,
         }
         this.updateMultiList(multiData);
 
@@ -549,6 +559,11 @@ class App extends Component {
     //console.log(this.state.slug)
   }
 
+  changeLanguage(lang){
+    console.log('changeLanguage');
+    this.setState({current_lang: lang})
+  }
+
 
   tooltipCreator(item){
     let tooltip_url = 'item=' + item.id;
@@ -563,6 +578,7 @@ class App extends Component {
       { 'region' :  event.target.value,
         'server' :  this.state.serverSlug,
         'itemLists'  : this.state.tabsJson,
+        'lang' : this.state.current_lang,
       }
 
     let identicalRealm = false;
@@ -1110,6 +1126,7 @@ class App extends Component {
       { 'region' :  this.state.region,
         'server' :  this.state.serverSlug,
         'itemLists'  : response.itemLists,
+        'lang' : this.state.current_lang,
       }
       // console.log(multiData);
 
@@ -1226,44 +1243,14 @@ class App extends Component {
   }
 
   updateUser(tabs){
-    let {login, psw, region, server, serverSlug, activeTab, tabsJson} = this.state;
-    // let login = this.state.login;
-    // let pass = this.state.psw;
-    // let region = this.state.region;
-    // let realm = this.state.server;
-    // let realmSlug = this.state.serverSlug;
-    // let idList = [];
-    // let lists =
-    // {
-    //   'Shopping List #1': idList,
-    // }
-
-    // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
-    // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'active_list': activeTab, 'login':login, 'pwhash':psw, 'region': region, 'server': server, 'slug': serverSlug, 'itemLists': tabsJson};
+    let {login, psw, region, server, serverSlug, activeTab, tabsJson, current_lang} = this.state;
+    let data = {'active_list': activeTab, 'login':login, 'pwhash':psw, 'region': region, 'server': server, 'slug': serverSlug, 'itemLists': tabsJson, 'lang': current_lang};
 
 
     if(tabs){
       data.itemLists = tabs;
     }
-    // console.log(data);
-    // console.log(data.itemLists['Test']);
-    // console.log(tabsJson);
-    //console.log(this.state.itemList);
-    // this.state.itemList.map((item) => {
-    //   // data += '&userdata[]=' + item.id;
-    //   idList.push({id:item.id, name:item.name});
-    //   return false;
-    // });
-    // console.log(data);
 
-
-    //post axios
-    // axios.post('https://ahtool.com/grape/update-user-new/',  data)
-    // .then(response => {
-    //   let data = response.data;
-    //   //console.log(data);
-    // })
     fetch('https://ahtool.com/grape/update-user-new/', {
       method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -1757,7 +1744,7 @@ class App extends Component {
   // }
 
   longPolling(){
-    let {region, serverSlug, tabsJson, updatedTime, forceUpdate, uniqid} = this.state;
+    let {region, serverSlug, tabsJson, updatedTime, forceUpdate, uniqid, current_lang} = this.state;
     let data =
       { 'region' : region,
         'server' :  serverSlug,
@@ -1790,6 +1777,7 @@ class App extends Component {
                 { 'region' :  region,
                   'server' :  serverSlug,
                   'itemLists'  : tabsJson,
+                  'lang' : current_lang,
                 }
               console.log(multiData);
               this.setState({updateUser: false})
@@ -1849,10 +1837,6 @@ class App extends Component {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ run: false, joyrideIndex: 0 });
     }
-
-
-
-
    console.groupCollapsed(type);
    console.log(data); //eslint-disable-line no-console
    console.groupEnd();
@@ -1914,6 +1898,9 @@ class App extends Component {
               switchModal={this.state.switchModal}
               tooltipCreator={this.tooltipCreator.bind(this)}
               joyrideRunHandler={this.joyrideRunHandler}
+              locale_language={this.state.locale_language}
+              current_lang={this.state.current_lang}
+              changeLanguage = {this.changeLanguage}
             />
             <Tabs
               dataJson={this.state.tabsJson}

@@ -34,8 +34,9 @@ class header extends Component {
     super(props);
     this.state = {
       autoComplite: "",
-    };
+    }
   }
+
 
 	handleAuto(e) {
 		e.preventDefault();
@@ -52,7 +53,6 @@ class header extends Component {
   submitServer(e){
     e.preventDefault();
     document.getElementById('server').blur();
-    console.log('submit')
   }
 
   openModal(){
@@ -86,6 +86,31 @@ class header extends Component {
     document.body.classList.remove("body_noScroll");
   }
 
+  changeLang() {
+    console.log('change flag');
+    if(this.refs.lang_checkbox.checked){
+      if(this.props.region === 'en_GB'){
+        this.props.changeLanguage('en_GB');
+      }
+      else{
+        this.props.changeLanguage('en_US');
+      }
+    }
+    else{
+      this.props.changeLanguage(this.props.locale_language);
+    }
+  }
+
+  renderFlag(){
+    const img_url = require(`../img/flags/${this.props.current_lang}.png`);
+    const {locale_language} =this.props;
+    let flag_img_render = (<img className='flagImg' src={img_url} />);
+    if(locale_language === "en_GB"|| locale_language === "en_US"){
+      flag_img_render = (<img style={{display: 'none'}} className='flagImg' src={img_url} />)
+    }
+    return flag_img_render;
+  }
+
 
 
 
@@ -112,6 +137,39 @@ class header extends Component {
      } else {
        realmsList = this.props.euServers;
      }
+
+     //Change language preferances
+     let language_name_props = '';
+     let placeholderText = 'Item name';
+     let {current_lang, locale_language} = this.props;
+     if(current_lang === "en_GB" || current_lang === "en_US"){
+       language_name_props = 'name';
+     }
+     if(current_lang === "ru_RU"){
+       language_name_props = 'ruRU';
+       placeholderText = 'Имя вещи';
+     }
+     if(current_lang === "de_DE"){
+       language_name_props = 'deDE';
+       placeholderText = 'Artikelname';
+     }
+     if(current_lang === "it_IT"){
+       language_name_props = 'itIT';
+       placeholderText = 'Nome dell\'elemento';
+     }
+     if(current_lang === "fr_FR"){
+       language_name_props = 'frFR';
+       placeholderText = 'Nom de l\'article';
+     }
+     if(current_lang === "pt_BR"){
+       language_name_props = 'ptBR';
+       placeholderText = 'Nome do item';
+     }
+     if(current_lang === "es_ES"){
+       language_name_props = 'esES';
+       placeholderText = 'Nombre del árticulo';
+     }
+
 
 
     return (
@@ -158,14 +216,15 @@ class header extends Component {
 
 					<div className='search'>
 					<form onSubmit={this.handleAuto.bind(this)}>
+          <input type='checkbox' ref='lang_checkbox' name='lang' id="lang" onChange={this.changeLang.bind(this)}/><label htmlFor="lang">{this.renderFlag()}</label>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder:"Item name", spellCheck:"false"}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder: placeholderText, spellCheck:"false"}}
 						items={this.props.data}
-						getItemValue={(item) => item.name}
+						getItemValue={(item) => item[language_name_props]}
 						sortItems={function sort (a, b, value) {
-							const aLower = a.name.toLowerCase();
-							const bLower = b.name.toLowerCase();
+							const aLower = a[language_name_props].toLowerCase();
+							const bLower = b[language_name_props].toLowerCase();
 							const valueLower = value.toLowerCase();
 							const queryPosA = aLower.indexOf(valueLower);
 							const queryPosB = bLower.indexOf(valueLower);
@@ -175,9 +234,9 @@ class header extends Component {
 							return aLower < bLower ? -1 : 1;
 						}}
 						shouldItemRender={function matchStateToTerm (item, value) {
-              if(value.length >3){
+              if(value.length >3 && item[language_name_props]){
                 return (
-  								item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+  								item[language_name_props].toLowerCase().indexOf(value.toLowerCase()) !== -1
   							)
               }
 						}}
@@ -185,7 +244,7 @@ class header extends Component {
               this.setState({ autoComplite })
             } }
 						onSelect={(autoComplite, item) =>{
-              this.props.addToAuto(item.name, item.id);
+              this.props.addToAuto(item[language_name_props], item.id);
               this.setState({autoComplite: '' });
               //fix wowhead tooltip
               let tooltip = document.getElementsByClassName('wowhead-tooltip');
@@ -199,7 +258,7 @@ class header extends Component {
 						renderItem={(item, isHighlighted) => (
               <div style={isHighlighted ? styles.highlightedItem : styles.item} key={`a_${item.id}`}>
                 <img className="icon icon-small" src={item.img_url} alt={item.name}  onError={(e)=>{e.target.src = no_img}}/>
-							  <a href='#name' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item.name}</a>
+							  <a href='#name' rel={this.props.tooltipCreator(item)} className='autoComplite'>{item[language_name_props]}</a>
               </div>
 						)}
 						menuStyle={{

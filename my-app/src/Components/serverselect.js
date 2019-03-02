@@ -7,9 +7,7 @@ class Serverselect extends Component {
 
 
 render() {
-  let currentRealm = { label:capitalizeFirstLetter(this.props.server)}
-
-
+  let currentRealm = { name:capitalizeFirstLetter(this.props.server)}
 
  return (
    <Select
@@ -19,8 +17,10 @@ render() {
       onChange={(val) => this.props.addSlug(val)}
       className='realm'
       placeholder='Realm'
-      valueKey='name'
+      valueKey='eng_name'
       clearable={false}
+      labelKey = 'name'
+      menuContainerStyle={{'zIndex': 999}}
     />
  );
 }
