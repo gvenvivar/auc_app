@@ -103,7 +103,7 @@ class header extends Component {
 
   renderFlag(){
     const img_url = require(`../img/flags/${this.props.current_lang}.png`);
-    const {locale_language} =this.props;
+    const {locale_language} = this.props;
     let flag_img_render = (<img className='flagImg' src={img_url} />);
     if(locale_language === "en_GB"|| locale_language === "en_US"){
       flag_img_render = (<img style={{display: 'none'}} className='flagImg' src={img_url} />)
@@ -147,7 +147,7 @@ class header extends Component {
      }
      if(current_lang === "ru_RU"){
        language_name_props = 'ruRU';
-       placeholderText = 'Имя вещи';
+       placeholderText = 'Имя предмета';
      }
      if(current_lang === "de_DE"){
        language_name_props = 'deDE';
@@ -165,7 +165,7 @@ class header extends Component {
        language_name_props = 'ptBR';
        placeholderText = 'Nome do item';
      }
-     if(current_lang === "es_ES"){
+     if(current_lang === "es_ES" || current_lang === "es_MX"){
        language_name_props = 'esES';
        placeholderText = 'Nombre del árticulo';
      }

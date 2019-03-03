@@ -364,7 +364,7 @@ class App extends Component {
     fetch(url)
       .then(response => response.json())
       .then(json => {
-        // console.log(json.realms.en_GB)
+        // console.log(json)
         this.setState({
           data: json.items,
           usServers :json.realms.en_US,
@@ -578,14 +578,16 @@ class App extends Component {
       { 'region' :  event.target.value,
         'server' :  this.state.serverSlug,
         'itemLists'  : this.state.tabsJson,
-        'lang' : this.state.current_lang,
+        // 'lang' : this.state.current_lang,
       }
-
+      // console.log(multiData);
     let identicalRealm = false;
+    let language;
     // console.log(this.state.server, this.state.region);
     if(this.state.region === 'en_US'){
       this.state.euServers.map(item =>{
           if(item.name === this.state.server){
+            language = item.locale;
             identicalRealm = true;
           }
           return false;
@@ -595,6 +597,7 @@ class App extends Component {
     if(this.state.region === 'en_GB'){
       this.state.usServers.map(item =>{
           if(item.name === this.state.server){
+            language = item.locale;
             identicalRealm = true;
           }
           return false;
@@ -607,6 +610,8 @@ class App extends Component {
         region: event.target.value,
         list : [],
         updateUser: true,
+        current_lang: language,
+        locale_language: language,
       }, ()=>{
         this.updateMultiList(multiData);
         // setTimeout(this.longPolling, 5000);
@@ -626,6 +631,8 @@ class App extends Component {
         region: event.target.value,
         server: 'sargeras',
         serverSlug: 'sargeras',
+        current_lang: "en_US",
+        locale_language: 'en_US',
         list : [],
         updateUser: true,
       },()=> {
