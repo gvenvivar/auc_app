@@ -227,7 +227,7 @@ class App extends Component {
       })
       .then(response => {
         // let activeTabName = Object.keys(response.itemLists)[response.active_list];
-        // console.log(response);
+        console.log(response);
         // console.log(response.active_list);
         let activeTabOrder = response.active_list;
         //check if active tab more than count tabs;
@@ -237,16 +237,10 @@ class App extends Component {
         let activeTabName = Object.keys(response.itemLists)[activeTabOrder];
         let arrIdList = response.itemLists[activeTabName];
 
-        // console.log(typeof arrIdList[0]);
-        // let resultList = [];
-        //
-        // this.state.data.map(item => {
-        //   let ids = item.id;
-        //   if(arrIdList.includes(ids)){
-        //     resultList.push({'name': item.name, 'id': item.id})
-        //   }
-        // })
-        // console.log(resultList);
+        // language options
+        // let serverLocaleLanguage = this.serverLocalLang(response.region[0], response.region[1]);
+        // console.log(serverLocaleLanguage);
+
 
 
         this.setState({
@@ -258,6 +252,8 @@ class App extends Component {
           login: storedName,
           psw: storedPw,
           activeTab: activeTabOrder,
+          // locale_language: serverLocaleLanguage,
+          // current_lang: serverLocaleLanguage,
         })
         //console.log('list : ', this.state.itemList.length);
         // console.log(activeTabName);
@@ -539,15 +535,18 @@ class App extends Component {
           'itemLists'  : this.state.tabsJson,
           'lang' : this.state.current_lang,
         }
-        this.updateMultiList(multiData);
+      let itemsInList = this.isAnyItemsinList(this.state.tabsJson);
+      console.log(itemsInList);
 
-        // Set long poll after 30s if user don't change server
-        if(this.state.timeout !== null){
-          clearInterval(this.state.timeout);
-          console.log('clear timeout')
-        }
-        this.setState({timeout : setTimeout(this.longPolling, 30000)});
-        console.log('set timeout')
+      this.updateMultiList(multiData);
+
+      // Set long poll after 30s if user don't change server
+      if(this.state.timeout !== null && itemsInList){
+        clearInterval(this.state.timeout);
+        console.log('clear timeout')
+      }
+      this.setState({timeout : setTimeout(this.longPolling, 30000)});
+      console.log('set timeout')
     })
 
 
@@ -583,11 +582,14 @@ class App extends Component {
       // console.log(multiData);
     let identicalRealm = false;
     let language;
+    let itemsInList = this.isAnyItemsinList(this.state.tabsJson);
+    console.log(itemsInList);
     // console.log(this.state.server, this.state.region);
     if(this.state.region === 'en_US'){
       this.state.euServers.map(item =>{
           if(item.name === this.state.server){
             language = item.locale;
+            console.log(language);
             identicalRealm = true;
           }
           return false;
@@ -598,6 +600,7 @@ class App extends Component {
       this.state.usServers.map(item =>{
           if(item.name === this.state.server){
             language = item.locale;
+            console.log(language);
             identicalRealm = true;
           }
           return false;
@@ -617,7 +620,7 @@ class App extends Component {
         // setTimeout(this.longPolling, 5000);
 
         // Set long poll after 30s if user don't change region
-        if(this.state.timeout !== null){
+        if(this.state.timeout !== null && itemsInList){
           clearInterval(this.state.timeout);
           console.log('clear timeout')
         }
@@ -640,7 +643,7 @@ class App extends Component {
         this.updateMultiList(multiData);
         // setTimeout(this.longPolling, 5000);
         // Set long poll after 30s if user don't change region
-        if(this.state.timeout !== null){
+        if(this.state.timeout !== null && itemsInList){
           clearInterval(this.state.timeout);
           console.log('clear timeout')
         }
@@ -1296,7 +1299,7 @@ class App extends Component {
 
 
     //del from object
-    let {tabsJson, activeTab} = this.state;
+    let {tabsJson, activeTab, login} = this.state;
     let activeTabName = Object.keys(tabsJson)[activeTab];
     // console.log(activeTabName);
     let updatetabsJson = tabsJson;
@@ -1313,8 +1316,10 @@ class App extends Component {
       //console.log(newArray.length)
       document.querySelector('.no-items-wrap').style.display ='block';
     }
+    if(login){
+      this.updateUser();
+    }
 
-    this.updateUser();
 
   }
 
@@ -1535,7 +1540,7 @@ class App extends Component {
   }
 
   updateMultiList(data, tooltipfix){
-    // console.log(tooltipfix);
+    // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
@@ -1749,6 +1754,30 @@ class App extends Component {
   //     setTimeout(this.shortPolling, 60000)
   //   }
   // }
+  isAnyItemsinList(data){
+    let itemsInList = false;
+    for (let key of Object.keys(data)) {
+      console.log(data[key].length)
+        if(data[key].length){
+          itemsInList = true;
+        }
+    }
+    return itemsInList;
+  }
+
+  serverLocalLang(region, server){
+    let currentServerData;
+    let serverLocale;
+    if(region === "en_GB"){
+      currentServerData = this.state.euServers.filter(item => item.name === server);
+    }
+    if(region === "en_US"){
+      currentServerData = this.state.usServers.filter(item => item.name === server);
+    }
+    console.log(currentServerData);
+    serverLocale = currentServerData[0].locale;
+    return serverLocale;
+  }
 
   longPolling(){
     let {region, serverSlug, tabsJson, updatedTime, forceUpdate, uniqid, current_lang} = this.state;
@@ -1760,7 +1789,7 @@ class App extends Component {
         'uniqid': uniqid,
       };
     console.log('start long-polling');
-    console.log(data);
+    // console.log(data);
     let init = {
       method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},

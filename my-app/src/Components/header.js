@@ -146,27 +146,27 @@ class header extends Component {
        language_name_props = 'name';
      }
      if(current_lang === "ru_RU"){
-       language_name_props = 'ruRU';
+       language_name_props = 'ru_RU';
        placeholderText = 'Имя предмета';
      }
      if(current_lang === "de_DE"){
-       language_name_props = 'deDE';
+       language_name_props = 'de_DE';
        placeholderText = 'Artikelname';
      }
      if(current_lang === "it_IT"){
-       language_name_props = 'itIT';
+       language_name_props = 'it_IT';
        placeholderText = 'Nome dell\'elemento';
      }
      if(current_lang === "fr_FR"){
-       language_name_props = 'frFR';
+       language_name_props = 'fr_FR';
        placeholderText = 'Nom de l\'article';
      }
      if(current_lang === "pt_BR"){
-       language_name_props = 'ptBR';
+       language_name_props = 'pt_BR';
        placeholderText = 'Nome do item';
      }
      if(current_lang === "es_ES" || current_lang === "es_MX"){
-       language_name_props = 'esES';
+       language_name_props = 'es_ES';
        placeholderText = 'Nombre del árticulo';
      }
 
