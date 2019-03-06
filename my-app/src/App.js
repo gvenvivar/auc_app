@@ -217,7 +217,7 @@ class App extends Component {
 
       //axios Post request
       // axios.post('https://ahtool.com/grape/get-user-cookie-new/', logIn)
-      fetch('https://ahtool.com/grape/get-user-cookie-new/', {
+      fetch('https://ahtool.com/grape/get-user-cookie/', {
       	method: 'post',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
       	body: JSON.stringify(logIn)
@@ -252,8 +252,8 @@ class App extends Component {
           login: storedName,
           psw: storedPw,
           activeTab: activeTabOrder,
-          // locale_language: serverLocaleLanguage,
-          // current_lang: serverLocaleLanguage,
+          locale_language: response.locale_lang,
+          current_lang: response.lang,
         })
         //console.log('list : ', this.state.itemList.length);
         // console.log(activeTabName);
@@ -277,7 +277,7 @@ class App extends Component {
           'lang' : this.state.current_lang,
         }
          // console.log(multiData);
-        return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
+        return fetch('https://ahtool.com/grape/multi-list/', { //multi-list-test
         	method: 'post',
           headers: {'Content-Type':'application/x-www-form-urlencoded'},
           //"Accept":"appliactions/json"
@@ -313,7 +313,7 @@ class App extends Component {
         this.updateEmptySearch();
       })
       .catch(() => {
-        console.log('cant load https://ahtool.com/grape/get-user-cookie-new/');
+        console.log('cant load https://ahtool.com/grape/get-user-cookie/');
         document.querySelector('.API_error').classList.add('API_error_open');
         loading.style.display = 'none';
         //load last list from db
@@ -471,7 +471,8 @@ class App extends Component {
     const {autoupdate} = this.state;
     if(autoupdate===true && prevState.autoupdate===false){
       console.log('componentDidUpdate');
-      this.longPolling();
+      // this.longPolling();
+      setTimeout(this.longPolling, 60000);
       //autoupdate time every min
       setInterval(this.updateTimeEveryMinute, 60000);
     }
@@ -541,12 +542,15 @@ class App extends Component {
       this.updateMultiList(multiData);
 
       // Set long poll after 30s if user don't change server
-      if(this.state.timeout !== null && itemsInList){
+      if(this.state.timeout !== null){
         clearInterval(this.state.timeout);
         console.log('clear timeout')
       }
-      this.setState({timeout : setTimeout(this.longPolling, 30000)});
-      console.log('set timeout')
+      if(itemsInList){
+        console.log('long poll')
+        this.setState({timeout : setTimeout(this.longPolling, 60000)});
+        console.log('set timeout')
+      }
     })
 
 
@@ -577,7 +581,7 @@ class App extends Component {
       { 'region' :  event.target.value,
         'server' :  this.state.serverSlug,
         'itemLists'  : this.state.tabsJson,
-        // 'lang' : this.state.current_lang,
+        'lang' : '',
       }
       // console.log(multiData);
     let identicalRealm = false;
@@ -609,6 +613,7 @@ class App extends Component {
     }
 
     if(identicalRealm){
+      console.log(language);
       this.setState({
         region: event.target.value,
         list : [],
@@ -616,6 +621,7 @@ class App extends Component {
         current_lang: language,
         locale_language: language,
       }, ()=>{
+        multiData.lang = this.state.current_lang;
         this.updateMultiList(multiData);
         // setTimeout(this.longPolling, 5000);
 
@@ -624,12 +630,17 @@ class App extends Component {
           clearInterval(this.state.timeout);
           console.log('clear timeout')
         }
-        this.setState({timeout : setTimeout(this.longPolling, 30000)});
-        console.log('set timeout')
+        if(itemsInList){
+          console.log('longpoll')
+          this.setState({timeout : setTimeout(this.longPolling, 60000)});
+          console.log('set timeout')
+        }
+
       })
       // console.log(multiData);
     }
     else{
+      console.log(language);
       this.setState({
         region: event.target.value,
         server: 'sargeras',
@@ -640,15 +651,19 @@ class App extends Component {
         updateUser: true,
       },()=> {
         multiData.server = 'sargeras';
+        multiData.lang = this.state.current_lang;
         this.updateMultiList(multiData);
         // setTimeout(this.longPolling, 5000);
         // Set long poll after 30s if user don't change region
-        if(this.state.timeout !== null && itemsInList){
+        if(this.state.timeout !== null){
           clearInterval(this.state.timeout);
           console.log('clear timeout')
         }
-        this.setState({timeout : setTimeout(this.longPolling, 30000)});
-        console.log('set timeout')
+        if(itemsInList){
+          console.log('longpoll')
+          this.setState({timeout : setTimeout(this.longPolling, 60000)});
+          console.log('set timeout')
+        }
       })
     }
 
@@ -759,6 +774,7 @@ class App extends Component {
     { 'region' :  strRegion,
       'server' :  this.state.serverSlug,
       'itemLists'  : this.state.tabsJson,
+      'lang' : this.state.current_lang,
     }
     // lists.map(i=>{
     //   // objdataf.itemLists = new Object();
@@ -767,7 +783,7 @@ class App extends Component {
 
      // console.log(Object.keys(objdataf.itemLists));
 
-    fetch('https://ahtool.com/grape/multi-list-test/', {
+    fetch('https://ahtool.com/grape/multi-list/', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
       //"Accept":"appliactions/json"
@@ -1044,7 +1060,7 @@ class App extends Component {
     //axios post request
     //axios.post('https://ahtool.com/grape/get-user-new/', logIn)
 
-    fetch('https://ahtool.com/grape/get-user-new/', {
+    fetch('https://ahtool.com/grape/get-user/', {
       method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
       body: JSON.stringify(logIn)
@@ -1104,6 +1120,8 @@ class App extends Component {
         serverSlug:  response.region[2],
         login: login,
         psw: token,
+        current_lang: response.lang,
+        locale_language: response.locale_lang,
       })
       //console.log(this.state.itemList);
 
@@ -1140,7 +1158,7 @@ class App extends Component {
       }
       // console.log(multiData);
 
-      return fetch('https://ahtool.com/grape/multi-list-test/', { //multi-list-test
+      return fetch('https://ahtool.com/grape/multi-list/', { //multi-list-test
         method: 'post',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         //"Accept":"appliactions/json"
@@ -1190,7 +1208,7 @@ class App extends Component {
     let login = document.getElementById('email').value;
     let pass  = document.getElementById('psw').value;
     let passR = document.getElementById('pswR').value;
-    let {region, server, serverSlug, tabsJson, activeTab} = this.state;
+    let {region, server, serverSlug, tabsJson, activeTab, current_lang, locale_language} = this.state;
     let msg = document.querySelector('.error');
     let loadingIcon = e.currentTarget.children[0];
 
@@ -1203,7 +1221,18 @@ class App extends Component {
 
     // let data = '&userdata[]=' + login +'&userdata[]=' +pass + '&userdata[]='
     // + region + '&userdata[]=' + realm + '&userdata[]=' + realmSlug;
-    let data = {'active_list': activeTab, 'login':login, 'pwhash':pass, 'region': region, 'server': server, 'slug':serverSlug, 'itemLists': tabsJson}
+    let data = {
+      'active_list': activeTab,
+      'login':login,
+      'pwhash':pass,
+      'region': region,
+      'server': server,
+      'slug':serverSlug,
+      'itemLists': tabsJson,
+      'lang': current_lang,
+      'locale_lang': locale_language,
+
+    }
     //console.log(data);
 
     //create item list ID
@@ -1218,7 +1247,7 @@ class App extends Component {
     if(pass === passR && login !=='' && pass !== ''){
       // axios logic
       // axios.post('https://ahtool.com/grape/add-user-new/', data)
-      fetch('https://ahtool.com/grape/add-user-new/', {
+      fetch('https://ahtool.com/grape/add-user/', {
       	method: 'post',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
       	body: JSON.stringify(data)
@@ -1240,7 +1269,6 @@ class App extends Component {
           msg.innerHTML = data;
         }
         loadingIcon.style.display = 'none';
-
       })
       .catch(function (error) {
         console.log(error);
@@ -1253,15 +1281,26 @@ class App extends Component {
   }
 
   updateUser(tabs){
-    let {login, psw, region, server, serverSlug, activeTab, tabsJson, current_lang} = this.state;
-    let data = {'active_list': activeTab, 'login':login, 'pwhash':psw, 'region': region, 'server': server, 'slug': serverSlug, 'itemLists': tabsJson, 'lang': current_lang};
+    let {login, psw, region, server, serverSlug, activeTab, tabsJson, current_lang, locale_language} = this.state;
+    let data = {
+      'active_list': activeTab,
+      'login':login,
+      'pwhash':psw,
+      'region': region,
+      'server': server,
+      'slug': serverSlug,
+      'itemLists': tabsJson,
+      'lang': current_lang,
+      'locale_lang': locale_language,
+    };
+    console.log(data);
 
 
     if(tabs){
       data.itemLists = tabs;
     }
 
-    fetch('https://ahtool.com/grape/update-user-new/', {
+    fetch('https://ahtool.com/grape/update-user/', {
       method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
       body: JSON.stringify(data)
@@ -1432,7 +1471,7 @@ class App extends Component {
 
   changeActiveTab(value){
 
-    let {serverSlug, region, tabsJson} = this.state;
+    let {serverSlug, region, tabsJson, current_lang} = this.state;
     let curNameTab = Object.keys(tabsJson)[value];
     let curTabData = tabsJson[curNameTab];
 
@@ -1451,6 +1490,7 @@ class App extends Component {
         { 'region' :  region,
           'server' :  serverSlug,
           'itemLists'  : tabsJson,
+          'lang': current_lang,
         }
         this.setState({updateUser: true})
         // loading.style.display = 'block';
@@ -1540,12 +1580,12 @@ class App extends Component {
   }
 
   updateMultiList(data, tooltipfix){
-    // console.log(data);
+    console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
 
-    fetch('https://ahtool.com/grape/multi-list-test/', {
+    fetch('https://ahtool.com/grape/multi-list/', {
     	method: 'post',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
     	body: JSON.stringify(data)
@@ -1825,23 +1865,23 @@ class App extends Component {
             return data;
           })
           .then((data)=>{
-            if(data[3].msg!='obsolete request terminated'){
+            if(data[3].msg!='update avaliable'){
               this.setState({forceUpdate : false});
               // this.longPolling();
-              setTimeout(this.longPolling, 1000)
+              setTimeout(this.longPolling, 60000)
             }
           })
         }
         else{
           console.log(response.status);
           console.log('else');
-          setTimeout(this.longPolling, 15000);
+          setTimeout(this.longPolling, 60000);
         }
       })
       .catch(e => {
         this.setState({forceUpdate : true});
         console.log(`catch ${e}`);
-        setTimeout(this.longPolling, 15000);
+        setTimeout(this.longPolling, 60000);
       })
   }
 
