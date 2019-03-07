@@ -472,7 +472,7 @@ class App extends Component {
     if(autoupdate===true && prevState.autoupdate===false){
       console.log('componentDidUpdate');
       // this.longPolling();
-      setTimeout(this.longPolling, 60000);
+      setTimeout(this.longPolling, 5000);
       //autoupdate time every min
       setInterval(this.updateTimeEveryMinute, 60000);
     }
@@ -547,8 +547,7 @@ class App extends Component {
         console.log('clear timeout')
       }
       if(itemsInList){
-        console.log('long poll')
-        this.setState({timeout : setTimeout(this.longPolling, 60000)});
+        this.setState({timeout : setTimeout(this.longPolling, 30000)});
         console.log('set timeout')
       }
     })
@@ -626,15 +625,15 @@ class App extends Component {
         // setTimeout(this.longPolling, 5000);
 
         // Set long poll after 30s if user don't change region
-        if(this.state.timeout !== null && itemsInList){
+        if(this.state.timeout !== null){
           clearInterval(this.state.timeout);
           console.log('clear timeout')
         }
         if(itemsInList){
-          console.log('longpoll')
-          this.setState({timeout : setTimeout(this.longPolling, 60000)});
+          this.setState({timeout : setTimeout(this.longPolling, 30000)});
           console.log('set timeout')
         }
+
 
       })
       // console.log(multiData);
@@ -660,8 +659,7 @@ class App extends Component {
           console.log('clear timeout')
         }
         if(itemsInList){
-          console.log('longpoll')
-          this.setState({timeout : setTimeout(this.longPolling, 60000)});
+          this.setState({timeout : setTimeout(this.longPolling, 30000)});
           console.log('set timeout')
         }
       })
@@ -1848,7 +1846,7 @@ class App extends Component {
             //   updatedTime: data[0].time,
             // })
 
-            if(region === data[2].region && serverSlug === data[1].server && data[3].msg!='obsolete request terminated'){
+            if(region === data[2].region && serverSlug === data[1].server && data[3].msg==='update avaliable'){
               let multiData =
                 { 'region' :  region,
                   'server' :  serverSlug,
@@ -1865,23 +1863,22 @@ class App extends Component {
             return data;
           })
           .then((data)=>{
-            if(data[3].msg!='update avaliable'){
-              this.setState({forceUpdate : false});
-              // this.longPolling();
-              setTimeout(this.longPolling, 60000)
+            if(data[3].msg==='update avaliable'){ //obsolete request terminated
+              this.setState({forceUpdate : false});;
+              setTimeout(this.longPolling, 15000)
             }
           })
         }
         else{
           console.log(response.status);
           console.log('else');
-          setTimeout(this.longPolling, 60000);
+          setTimeout(this.longPolling, 30000);
         }
       })
       .catch(e => {
         this.setState({forceUpdate : true});
         console.log(`catch ${e}`);
-        setTimeout(this.longPolling, 60000);
+        setTimeout(this.longPolling, 30000);
       })
   }
 

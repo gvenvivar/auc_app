@@ -37,7 +37,6 @@ class header extends Component {
     }
   }
 
-
 	handleAuto(e) {
 		e.preventDefault();
     console.log(this.state.autoComplite);
@@ -161,7 +160,7 @@ class header extends Component {
        language_name_props = 'fr_FR';
        placeholderText = 'Nom de l\'article';
      }
-     if(current_lang === "pt_BR"){
+     if(current_lang === "pt_BR" || current_lang === "pt_PT"){
        language_name_props = 'pt_BR';
        placeholderText = 'Nome do item';
      }
