@@ -86,18 +86,37 @@ class header extends Component {
   }
 
   changeLang() {
-    console.log('change flag');
-    if(this.refs.lang_checkbox.checked){
+    // AWFUL LOGIC PLS REWRITE
+    // console.log('change flag');
+
+    let curLang = this.props.current_lang;
+    console.log(curLang)
+    if(curLang==='de_DE' || curLang==='es_ES' || curLang==='es_MX' || curLang==='fr_FR' || curLang==='it_IT' || curLang==='pt_BR' || curLang==='pt_PT' || curLang==='ru_RU'){
+      console.log('eng')
       if(this.props.region === 'en_GB'){
-        this.props.changeLanguage('en_GB');
-      }
-      else{
-        this.props.changeLanguage('en_US');
+          this.props.changeLanguage('en_GB');
+        }
+      if(this.props.region === 'en_US'){
+            this.props.changeLanguage('en_US');
       }
     }
-    else{
+    if(this.props.current_lang ==='en_GB' || this.props.current_lang ==='en_US'){
+      console.log('non-eng')
       this.props.changeLanguage(this.props.locale_language);
     }
+
+    // let isCheked = this.refs.lang_checkbox.checked;
+    // if(isCheked){
+    //   if(this.props.region === 'en_GB'){
+    //     this.props.changeLanguage('en_GB');
+    //   }
+    //   else{
+    //     this.props.changeLanguage('en_US');
+    //   }
+    // }
+    // else{
+    //   this.props.changeLanguage(this.props.locale_language);
+    // }
   }
 
   renderFlag(){
@@ -215,7 +234,7 @@ class header extends Component {
 
 					<div className='search'>
 					<form onSubmit={this.handleAuto.bind(this)}>
-          <input type='checkbox' ref='lang_checkbox' name='lang' id="lang" onChange={this.changeLang.bind(this)}/><label htmlFor="lang">{this.renderFlag()}</label>
+          <input type='checkbox' ref='lang_checkbox' name='lang' id="lang" defaultChecked={this.state.chkbox} onChange={this.changeLang.bind(this)}/><label htmlFor="lang">{this.renderFlag()}</label>
 					<Autocomplete
 						value={this.state.autoComplite}
 						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder: placeholderText, spellCheck:"false"}}

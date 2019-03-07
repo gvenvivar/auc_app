@@ -564,6 +564,13 @@ class App extends Component {
   changeLanguage(lang){
     console.log('changeLanguage');
     this.setState({current_lang: lang})
+    let multiData =
+      { 'region' :  this.state.region,
+        'server' :  this.state.serverSlug,
+        'itemLists'  : this.state.tabsJson,
+        'lang' : lang,
+      }
+      this.updateMultiList(multiData);
   }
 
 
@@ -642,14 +649,14 @@ class App extends Component {
       console.log(language);
       this.setState({
         region: event.target.value,
-        server: 'sargeras',
-        serverSlug: 'sargeras',
+        server: 'aggramar',
+        serverSlug: 'aggramar',
         current_lang: "en_US",
         locale_language: 'en_US',
         list : [],
         updateUser: true,
       },()=> {
-        multiData.server = 'sargeras';
+        multiData.server = 'aggramar';
         multiData.lang = this.state.current_lang;
         this.updateMultiList(multiData);
         // setTimeout(this.longPolling, 5000);
