@@ -39,7 +39,7 @@ class header extends Component {
 
 	handleAuto(e) {
 		e.preventDefault();
-    console.log(this.state.autoComplite);
+    // console.log(this.state.autoComplite);
     this.props.addToAuto(this.state.autoComplite);
     this.setState({autoComplite: '' });
 	}
@@ -90,9 +90,9 @@ class header extends Component {
     // console.log('change flag');
 
     let curLang = this.props.current_lang;
-    console.log(curLang)
+    // console.log(curLang)
     if(curLang==='de_DE' || curLang==='es_ES' || curLang==='es_MX' || curLang==='fr_FR' || curLang==='it_IT' || curLang==='pt_BR' || curLang==='pt_PT' || curLang==='ru_RU'){
-      console.log('eng')
+      // console.log('eng')
       if(this.props.region === 'en_GB'){
           this.props.changeLanguage('en_GB');
         }
@@ -101,7 +101,7 @@ class header extends Component {
       }
     }
     if(this.props.current_lang ==='en_GB' || this.props.current_lang ==='en_US'){
-      console.log('non-eng')
+      // console.log('non-eng')
       this.props.changeLanguage(this.props.locale_language);
     }
 

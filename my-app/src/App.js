@@ -188,7 +188,7 @@ class App extends Component {
     }
 
     if(storedName === null){
-      console.log('no login');
+      // console.log('no login');
       // this.shortPolling();
     }
 
@@ -227,7 +227,7 @@ class App extends Component {
       })
       .then(response => {
         // let activeTabName = Object.keys(response.itemLists)[response.active_list];
-        console.log(response);
+        // console.log(response);
         // console.log(response.active_list);
         let activeTabOrder = response.active_list;
         //check if active tab more than count tabs;
@@ -470,7 +470,7 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState){
     const {autoupdate} = this.state;
     if(autoupdate===true && prevState.autoupdate===false){
-      console.log('componentDidUpdate');
+      // console.log('componentDidUpdate');
       // this.longPolling();
       setTimeout(this.longPolling, 5000);
       //autoupdate time every min
@@ -509,7 +509,7 @@ class App extends Component {
         'lang' : current_lang,
       }
       this.updateEmptySearch();
-      console.log(sendData)
+      // console.log(sendData)
       this.updateMultiList(sendData, true);
     }
     // console.log(tabsJson, activeTabName)
@@ -537,7 +537,7 @@ class App extends Component {
           'lang' : this.state.current_lang,
         }
       let itemsInList = this.isAnyItemsinList(this.state.tabsJson);
-      console.log(itemsInList);
+      // console.log(itemsInList);
 
       this.updateMultiList(multiData);
 
@@ -593,13 +593,13 @@ class App extends Component {
     let identicalRealm = false;
     let language;
     let itemsInList = this.isAnyItemsinList(this.state.tabsJson);
-    console.log(itemsInList);
+    // console.log(itemsInList);
     // console.log(this.state.server, this.state.region);
     if(this.state.region === 'en_US'){
       this.state.euServers.map(item =>{
           if(item.name === this.state.server){
             language = item.locale;
-            console.log(language);
+            // console.log(language);
             identicalRealm = true;
           }
           return false;
@@ -634,11 +634,11 @@ class App extends Component {
         // Set long poll after 30s if user don't change region
         if(this.state.timeout !== null){
           clearInterval(this.state.timeout);
-          console.log('clear timeout')
+          // console.log('clear timeout')
         }
         if(itemsInList){
           this.setState({timeout : setTimeout(this.longPolling, 30000)});
-          console.log('set timeout')
+          // console.log('set timeout')
         }
 
 
@@ -663,11 +663,11 @@ class App extends Component {
         // Set long poll after 30s if user don't change region
         if(this.state.timeout !== null){
           clearInterval(this.state.timeout);
-          console.log('clear timeout')
+          // console.log('clear timeout')
         }
         if(itemsInList){
           this.setState({timeout : setTimeout(this.longPolling, 30000)});
-          console.log('set timeout')
+          // console.log('set timeout')
         }
       })
     }
@@ -1298,7 +1298,7 @@ class App extends Component {
       'lang': current_lang,
       'locale_lang': locale_language,
     };
-    console.log(data);
+    // console.log(data);
 
 
     if(tabs){
@@ -1569,7 +1569,7 @@ class App extends Component {
     const {updatedTime} = this.state;
     // let time1 = (Date.now() - lastResposeTime)/1000;
     let time2 = (Date.now()/1000 - updatedTime)/60;
-    console.log(time2);
+    // console.log(time2);
     if(time2>60||this.state.itemList.length===0){
       return true;
     }
@@ -1585,7 +1585,7 @@ class App extends Component {
   }
 
   updateMultiList(data, tooltipfix){
-    console.log(data);
+    // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
     loading.style.display = 'block';
@@ -1802,7 +1802,7 @@ class App extends Component {
   isAnyItemsinList(data){
     let itemsInList = false;
     for (let key of Object.keys(data)) {
-      console.log(data[key].length)
+      // console.log(data[key].length)
         if(data[key].length){
           itemsInList = true;
         }
@@ -1819,7 +1819,7 @@ class App extends Component {
     if(region === "en_US"){
       currentServerData = this.state.usServers.filter(item => item.name === server);
     }
-    console.log(currentServerData);
+    // console.log(currentServerData);
     serverLocale = currentServerData[0].locale;
     return serverLocale;
   }
@@ -1833,7 +1833,7 @@ class App extends Component {
         'forceUpdate' : forceUpdate,
         'uniqid': uniqid,
       };
-    console.log('start long-polling');
+    // console.log('start long-polling');
     // console.log(data);
     let init = {
       method: 'post',
@@ -1848,7 +1848,7 @@ class App extends Component {
           response.json()
           .then(data => {
             const {region, serverSlug} = this.state;
-            console.log(data);
+            // console.log(data);
             // this.setState({
             //   updatedTime: data[0].time,
             // })
@@ -1860,7 +1860,7 @@ class App extends Component {
                   'itemLists'  : tabsJson,
                   'lang' : current_lang,
                 }
-              console.log(multiData);
+              // console.log(multiData);
               this.setState({updateUser: false})
               this.updateMultiList(multiData);
             }
@@ -1890,7 +1890,7 @@ class App extends Component {
   }
 
   updateTimeEveryMinute(){
-    console.log('updateTimeEveryMinute');
+    // console.log('updateTimeEveryMinute');
     let {updatedTime} = this.state;
     this.setState({updatedTime});
   }
