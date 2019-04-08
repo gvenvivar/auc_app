@@ -1647,7 +1647,7 @@ class App extends Component {
       if(tooltipfix){
         let tooltip = document.querySelector('.wowhead-tooltip');
         let tooltipIcon = document.querySelector('.wowhead-tooltip p');
-        if(tooltip.style.visibility==='visible'){
+        if(tooltip && tooltip.style.visibility==='visible'){
           // console.log("NEED HIDE");
           // tooltip.dataset.visible = no;
           tooltip.style.visibility = 'hidden';
