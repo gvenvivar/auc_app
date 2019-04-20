@@ -2020,6 +2020,23 @@ class App extends Component {
           </div>
         </div>
       </div>
+      <div className='faq'>
+        <h4>FAQ</h4>
+        <div className='faq-item-wrap'>
+          <div className='faq-item'>
+            <h5>What is your site doing?</h5>
+            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+          </div>
+          <div className='faq-item'>
+            <h5>What is your site doing?</h5>
+            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+          </div>
+          <div className='faq-item'>
+            <h5>What is your site doing?</h5>
+            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+          </div>
+        </div>
+      </div>
       <footer>
         <p>Art by <a rel="noopener noreferrer" href='http://chillalord.deviantart.com/art/Frostmourne-336402574' target="_blank">Chillalord</a></p>
         <p>A web app for easy World of Warcraft auction house monitoring, with custom shopping lists</p>
