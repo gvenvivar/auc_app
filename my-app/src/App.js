@@ -2024,21 +2024,48 @@ class App extends Component {
         <h4>FAQ</h4>
         <div className='faq-item-wrap'>
           <div className='faq-item'>
-            <h5>What is your site doing?</h5>
-            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+            <h5>What is this I don’t even</h5>
+            <p>AHtool is a way to check World of Warcraft auction house prices online using a web browser.
+            We designed it to serve as a QoL and usability improvement on the essential Undermine Journal, by adding
+            custom item lists and explodable recipes for most popular tradeskill items.</p>
           </div>
           <div className='faq-item'>
-            <h5>What is your site doing?</h5>
-            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+            <h5>How accurate is this data?</h5>
+            <p>We’re using Blizzard API directly together auction house listing realm-by-realm,
+            so at any point the data we present is 0 to 60+ minutes long. Due to differences in time it
+            takes to process different realms and intermittent API outages on Blizzard’s end,
+            on some rare occasions web auction house data may be more than 2 hours out of date compared to live game.
+            If you leave ahtool.com open in a browser tab, as soon as a fresh version of your server’s data becomes
+            available, it will be served to you automatically.</p>
           </div>
           <div className='faq-item'>
-            <h5>What is your site doing?</h5>
-            <p>Quick and easy to use WoW auction house tool. In short, AHtool was designed as a much, much simplified version of the basic functionality of the Undermine Journal to allow for easy bulk auction house price checks for a given realm.</p>
+            <h5>What are these plus-looking things next to some items?</h5>
+            <p>For some of the more popular and/or current expansion recipes, you can click this “+” button to expand
+            their components, allowing you to easily make judgements on whether it’s more sensible to purchase
+            or craft items in question.</p>
+          </div>
+          <div className='faq-item'>
+            <h5>Can I revert to English item names?</h5>
+            <p>Yes, if you have selected one of the localised WoW servers, you can click on the flag icon next
+            to the search bar to switch between EN and other locale languages (FR/PT/ES/DE/IT/RU).</p>
+          </div>
+          <div className='faq-item'>
+            <h5>What’s the point in signing up/logging in?</h5>
+            <p>We use user accounts to store your server and region preferences, as well as all of your item
+            lists to make sure nothing is lost between sessions and, indeed, devices. Any changes to your lists,
+            such as adding/deleting/rearranging items or renaming the list itself are also saved and preserved
+            via logging in.</p>
+          </div>
+          <div className='faq-item'>
+            <h5>Will you support WoW Classic when it finally arrives?</h5>
+            <p>It is yet unclear how exactly classic realms will be integrated in modern WoW infrastructure,
+            so until open beta is available, we can’t be completely certain of our ability to support those servers.
+            We do, however, fully intend to make every effort to do so.</p>
           </div>
         </div>
       </div>
       <footer>
-        <p>Art by <a rel="noopener noreferrer" href='http://chillalord.deviantart.com/art/Frostmourne-336402574' target="_blank">Chillalord</a></p>
+        <p>Art by Chillalord @ DeviantArt</p>
         <p>A web app for easy World of Warcraft auction house monitoring, with custom shopping lists</p>
         <a className='feedback_wrap' href='mailto:your.emperor@gmail.com'><img className="feedback" src={envelope} alt='contact us' /></a>
       </footer>

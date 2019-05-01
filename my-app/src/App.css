@@ -738,7 +738,7 @@ th:last-child {
 }
 .faq-item p{
   font-size: 0.9em;
-  padding-left: 30px;
+  line-height: 1.3em;
 }
 
 footer {
