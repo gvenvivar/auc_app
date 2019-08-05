@@ -10,16 +10,26 @@ class Modal extends Component {
     this.state = {
       passwordIsMatch : '',
     }
+    this.modalContent = React.createRef();
     this.signUpPassMatch = this.signUpPassMatch.bind(this);
+    this.handleEsc = this.handleEsc.bind(this);
+    this.handleClickOutsideModal = this.handleClickOutsideModal.bind(this);
+  }
+
+  componentDidMount(){
+    document.addEventListener('mousedown', this.handleClickOutsideModal)
+    document.addEventListener('keydown', this.handleEsc, false)
+  }
+
+  componentWillUnmount(){
+    document.addEventListener('mousedown', this.handleClickOutsideModal)
+    document.addEventListener('keydown', this.handleEsc, false)
   }
 
   closeModal(){
-    let modal = document.querySelector('.modal-content');
-    document.querySelector('.modal').style.visibility = 'hidden';
+    this.props.closeModal();
     document.getElementById('email').value = '';
     document.getElementById('psw').value = '';
-    document.querySelector('.error').innerHTML = '';
-    modal.classList.remove("open-modal");
     this.setState({passwordIsMatch : ''})
   }
 
@@ -32,39 +42,60 @@ class Modal extends Component {
     ok ? this.setState({passwordIsMatch: 'Password Match'}) : this.setState({passwordIsMatch: 'Password not match'})
   }
 
+  handleEsc(event){
+    if(event.keyCode === 27){
+      this.props.closeModal();
+      document.getElementById('email').value = '';
+      document.getElementById('psw').value = '';
+      document.querySelector('.error').innerHTML = '';
+      this.setState({passwordIsMatch : ''})
+    }
+  }
+
+  handleClickOutsideModal(event){
+    if(this.props.isOpenModal && this.modalContent.current && !this.modalContent.current.contains(event.target)){
+      this.props.closeModal();
+      document.getElementById('email').value = '';
+      document.getElementById('psw').value = '';
+      document.querySelector('.error').innerHTML = '';
+      this.setState({passwordIsMatch : ''})
+    }
+  }
+
+
 
 
 	 render() {
      // When the user clicks anywhere outside of the modal, close it
-     window.onclick = function(event) {
-       let modal = document.querySelector('.modal');
-       let modalContent = document.querySelector('.modal-content');
-       if (event.target === modal) {
-           modal.style.visibility = 'hidden';
-           modalContent.classList.remove("open-modal");
-           document.getElementById('email').value = '';
-           document.getElementById('psw').value = '';
-           document.querySelector('.error').innerHTML = '';
-         }
-     }
+     // window.onclick = function(event) {
+     //   let modal = document.querySelector('.modal');
+     //   let modalContent = document.querySelector('.modal-content');
+     //   if (event.target === modal) {
+     //       modal.style.visibility = 'hidden';
+     //       modalContent.classList.remove("open-modal");
+     //       document.getElementById('email').value = '';
+     //       document.getElementById('psw').value = '';
+     //       document.querySelector('.error').innerHTML = '';
+     //     }
+     // }
 
-     document.onkeyup = function(event) {
-       let modal = document.querySelector('.modal');
-       let modalContent = document.querySelector('.modal-content');
-       if (event.keyCode === 27) {
-         modal.style.visibility = 'hidden';
-         modalContent.classList.remove("open-modal");
-         document.getElementById('email').value = '';
-         document.getElementById('psw').value = '';
-         document.querySelector('.error').innerHTML = '';
-         }
-     }
+     // document.onkeyup = function(event) {
+     //   let modal = document.querySelector('.modal');
+     //   let modalContent = document.querySelector('.modal-content');
+     //   if (event.keyCode === 27) {
+     //     modal.style.visibility = 'hidden';
+     //     modalContent.classList.remove("open-modal");
+     //     document.getElementById('email').value = '';
+     //     document.getElementById('psw').value = '';
+     //     document.querySelector('.error').innerHTML = '';
+     //     }
+     // }
 
 
      if(this.props.switchModal){
        return (
-         <div className='modal'>
-           <div className='modal-content'>
+         <div className={this.props.isOpenModal ? 'modal open-modal' : 'modal'}>
+           <div className='modal-content' ref={this.modalContent}>
              <div className="closePop " onClick={this.closeModal.bind(this)}><img src={close} alt='close icon' /></div>
              <div className='switchers'>
                <a href='#login' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
@@ -78,8 +109,8 @@ class Modal extends Component {
      }
 
     return (
-      <div className='modal'>
-        <div className='modal-content'>
+      <div className={this.props.isOpenModal ? 'modal open-modal' : 'modal'}>
+        <div className='modal-content' ref={this.modalContent}>
           <div className="closePop " onClick={this.closeModal.bind(this)}><img src={close} alt='close icon' /></div>
           <div className='switchers'>
           <a href='#login' className='active' onClick={this.props.updateSwitchModal}>Log in</a>

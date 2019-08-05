@@ -34,7 +34,9 @@ class header extends Component {
     super(props);
     this.state = {
       autoComplite: "",
+      isOpenModal: false,
     }
+    this.closeModal = this.closeModal.bind(this);
   }
 
 	handleAuto(e) {
@@ -55,13 +57,18 @@ class header extends Component {
   }
 
   openModal(){
-    document.querySelector('.modal').style.visibility = 'visible';
-    let modal = document.querySelector('.modal-content');
-    modal.className += ' open-modal';
+    this.setState({isOpenModal: true})
+    // document.querySelector('.modal').style.visibility = 'visible';
+    // let modal = document.querySelector('.modal-content');
+    // modal.className += ' open-modal';
     if(localStorage.getItem('log')){
       document.querySelector('.logout').style.display = 'block';
     }
   }
+  closeModal(){
+    this.setState({isOpenModal: false})
+  }
+
 
   signUp(){
     console.log("signUp");
@@ -306,6 +313,8 @@ class header extends Component {
         signUp={this.props.signUp}
         updateSwitchModal={this.props.updateSwitchModal}
         switchModal={this.props.switchModal}
+        isOpenModal={this.state.isOpenModal}
+        closeModal={this.closeModal}
         />
 
 	    </div>

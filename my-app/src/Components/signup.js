@@ -42,7 +42,7 @@ class SignUp extends Component {
       <form className='signup'>
         <label>
           <span>Login or email</span>
-          <input type='text' name='email' placeholder='Login' id='email' spellcheck="false" required />
+          <input type='text' name='email' placeholder='Login' id='email' spellCheck="false" required />
         </label>
         <label>
           <span>Password</span>

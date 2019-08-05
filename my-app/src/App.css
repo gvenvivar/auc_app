@@ -255,6 +255,7 @@ select option {
 .tips_overlay{
   visibility: hidden;
   position: fixed;
+  opacity: 0;
   z-index: 100;
   left: 0;
   top: 0;
@@ -263,6 +264,12 @@ select option {
   overflow: auto;
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.75);
+  transition: ease-in-out 0.3s;
+}
+.open-modal {
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+    visibility: visible;
 }
 .modal .closePop img{
   width: 100%;
@@ -292,16 +299,13 @@ select option {
     max-height: 430px;
     left: 50%;
     top: 30%;
-    opacity: 0;
     margin-top: -190px;
     margin-left: -191px;
     padding: 25px 35px 0;
     transition: ease-in-out 0.3s;
 }
-.open-modal {
-    opacity: 1;
-    top: 50%;
-    transition: all 0.3s ease-in-out;
+.open-modal .modal-content{
+  top: 50%;
 }
 .modal-content h4 {
   font-size: 30px;
