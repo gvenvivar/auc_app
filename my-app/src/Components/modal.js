@@ -5,7 +5,13 @@ import SignUp from './signup';
 
 class Modal extends Component {
 
-
+  constructor(props){
+    super(props);
+    this.state = {
+      passwordIsMatch : '',
+    }
+    this.signUpPassMatch = this.signUpPassMatch.bind(this);
+  }
 
   closeModal(){
     let modal = document.querySelector('.modal-content');
@@ -14,11 +20,16 @@ class Modal extends Component {
     document.getElementById('psw').value = '';
     document.querySelector('.error').innerHTML = '';
     modal.classList.remove("open-modal");
+    this.setState({passwordIsMatch : ''})
   }
 
   logOut(){
     localStorage.clear();
     window.location.reload();
+  }
+
+  signUpPassMatch(ok){
+    ok ? this.setState({passwordIsMatch: 'Password Match'}) : this.setState({passwordIsMatch: 'Password not match'})
   }
 
 
@@ -75,7 +86,7 @@ class Modal extends Component {
           <a href='#signUp' onClick={this.props.updateSwitchModal}>Sign up</a>
           </div>
           <div className='logout' onClick={this.logOut.bind(this)}>Log out</div>
-          <SignUp signUp={this.props.signUp} />
+          <SignUp signUpPassMatch={this.signUpPassMatch} passwordIsMatch={this.state.passwordIsMatch} signUp={this.props.signUp} />
         </div>
       </div>
 
