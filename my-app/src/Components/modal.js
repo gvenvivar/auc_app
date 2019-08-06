@@ -27,10 +27,14 @@ class Modal extends Component {
   }
 
   closeModal(){
+    const passR = document.getElementById('pswR');
     this.props.closeModal();
     document.getElementById('email').value = '';
     document.getElementById('psw').value = '';
     this.setState({passwordIsMatch : ''})
+    if(passR&&passR.value !== ''){
+      passR.value = '';
+    }
   }
 
   logOut(){
@@ -44,21 +48,29 @@ class Modal extends Component {
 
   handleEsc(event){
     if(event.keyCode === 27){
+      const passR = document.getElementById('pswR');
       this.props.closeModal();
       document.getElementById('email').value = '';
       document.getElementById('psw').value = '';
       document.querySelector('.error').innerHTML = '';
       this.setState({passwordIsMatch : ''})
+      if(passR&&passR.value !== ''){
+        passR.value = '';
+      }
     }
   }
 
   handleClickOutsideModal(event){
+    const passR = document.getElementById('pswR');
     if(this.props.isOpenModal && this.modalContent.current && !this.modalContent.current.contains(event.target)){
       this.props.closeModal();
       document.getElementById('email').value = '';
       document.getElementById('psw').value = '';
       document.querySelector('.error').innerHTML = '';
       this.setState({passwordIsMatch : ''})
+      if(passR&&passR.value !== ''){
+        passR.value = '';
+      }
     }
   }
 

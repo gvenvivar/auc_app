@@ -1049,7 +1049,7 @@ class App extends Component {
 
   logIn(e){
     e.preventDefault();
-    let modal = document.querySelector('.modal-content');
+    let modal = document.querySelector('.modal');
     let login = document.getElementById('email').value;
     let pass  = document.getElementById('psw').value;
     let msg   = document.querySelector('.error');
@@ -1141,7 +1141,6 @@ class App extends Component {
       //console.log(response);
       if(response.data !== 'Error - email or password'){
         this.udpateEmptyList(this.state.itemList);
-        document.querySelector('.modal').style.visibility = 'hidden';
         modal.classList.remove("open-modal");
         document.getElementById('email').value = '';
         document.getElementById('psw').value = '';

@@ -56,7 +56,8 @@ class header extends Component {
     document.getElementById('server').blur();
   }
 
-  openModal(){
+  openModal(e){
+    e.preventDefault();
     this.setState({isOpenModal: true})
     // document.querySelector('.modal').style.visibility = 'visible';
     // let modal = document.querySelector('.modal-content');
@@ -90,7 +91,7 @@ class header extends Component {
           this.props.changeLanguage('en_GB');
         }
       if(this.props.region === 'en_US'){
-            this.props.changeLanguage('en_US');
+          this.props.changeLanguage('en_US');
       }
     }
     if(this.props.current_lang ==='en_GB' || this.props.current_lang ==='en_US'){
