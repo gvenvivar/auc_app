@@ -110,10 +110,10 @@ class Modal extends Component {
            <div className='modal-content' ref={this.modalContent}>
              <div className="closePop " onClick={this.closeModal.bind(this)}><img src={close} alt='close icon' /></div>
              <div className='switchers'>
-               <a href='#login' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
+               <a href='#log_in' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
                <a href='#signUp' onClick={this.props.updateSwitchModal}>Sign up</a>
              </div>
-             <div className='logout' onClick={this.logOut.bind(this)}>Log out</div>
+             {this.props.showLogOut&&<div className='logout' onClick={this.logOut.bind(this)}>Log out</div>}
              <LogIn logIn={this.props.logIn} />
            </div>
          </div>
@@ -125,10 +125,10 @@ class Modal extends Component {
         <div className='modal-content' ref={this.modalContent}>
           <div className="closePop " onClick={this.closeModal.bind(this)}><img src={close} alt='close icon' /></div>
           <div className='switchers'>
-          <a href='#login' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
+          <a href='#log_in' className='active' onClick={this.props.updateSwitchModal}>Log in</a>
           <a href='#signUp' onClick={this.props.updateSwitchModal}>Sign up</a>
           </div>
-          <div className='logout' onClick={this.logOut.bind(this)}>Log out</div>
+          {this.props.showLogOut&&<div className='logout' onClick={this.logOut.bind(this)}>Log out</div>}
           <SignUp signUpPassMatch={this.signUpPassMatch} passwordIsMatch={this.state.passwordIsMatch} signUp={this.props.signUp} />
         </div>
       </div>

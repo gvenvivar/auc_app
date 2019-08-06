@@ -35,9 +35,22 @@ class header extends Component {
     this.state = {
       autoComplite: "",
       isOpenModal: false,
+      showLogOut: false,
+      lastUpdate: '',
     }
     this.closeModal = this.closeModal.bind(this);
   }
+
+  // componentDidMount(){
+  //   setTimeout(()=> console.log(this.props.transformTime(this.props.updatedTime)), 2000)
+  //   this.intervalID = setInterval(
+  //    () => this.tick(),
+  //    60000
+  //  );
+  // }
+  // componentWillUnmount() {
+  //   clearInterval(this.intervalID);
+  // }
 
 	handleAuto(e) {
 		e.preventDefault();
@@ -58,20 +71,12 @@ class header extends Component {
     // let modal = document.querySelector('.modal-content');
     // modal.className += ' open-modal';
     if(localStorage.getItem('log')){
-      document.querySelector('.logout').style.display = 'block';
+      // document.querySelector('.logout').style.display = 'block';
+      this.setState({showLogOut: true})
     }
   }
   closeModal(){
     this.setState({isOpenModal: false})
-  }
-
-  signUp(){
-    console.log("signUp");
-    let login = document.querySelector('.login');
-    let signup = document.querySelector('.repeatPass');
-
-    login.style.display = 'none';
-    signup.style.display = 'block';
   }
 
   changeLang() {
@@ -118,6 +123,12 @@ class header extends Component {
     return flag_img_render;
   }
 
+  // tick(){
+  //   let time = this.props.transformTime(this.props.updatedTime);
+  //   console.log(time);
+  //   this.setState({lastUpdate: time})
+  // }
+
 
 
 
@@ -125,7 +136,6 @@ class header extends Component {
      //generate server time
      //let addTimeBlock;
      let time = this.props.transformTime(this.props.updatedTime);
-     //console.log(time)
 
      if(this.props.updatedTime){
         document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
@@ -273,6 +283,7 @@ class header extends Component {
         switchModal={this.props.switchModal}
         isOpenModal={this.state.isOpenModal}
         closeModal={this.closeModal}
+        showLogOut={this.state.showLogOut}
         />
 
 	    </div>
