@@ -51,11 +51,6 @@ class header extends Component {
     this.setState({autoComplite: ''})
   }
 
-  submitServer(e){
-    e.preventDefault();
-    document.getElementById('server').blur();
-  }
-
   openModal(e){
     e.preventDefault();
     this.setState({isOpenModal: true})
@@ -188,7 +183,7 @@ class header extends Component {
       <div className="header">
 	      <div className="header-left">
           <div className="servers">
-          	<form onSubmit={this.submitServer.bind(this)}>
+          	<form>
 	            <select id='realm' value={this.props.region} onChange={this.props.updateRegion}>
 								<option value="en_US">US</option>
 								<option value="en_GB">EU</option>
