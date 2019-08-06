@@ -69,7 +69,6 @@ class header extends Component {
     this.setState({isOpenModal: false})
   }
 
-
   signUp(){
     console.log("signUp");
     let login = document.querySelector('.login');
@@ -77,19 +76,6 @@ class header extends Component {
 
     login.style.display = 'none';
     signup.style.display = 'block';
-  }
-  openTips(){
-    document.querySelector('.tips_overlay').style.visibility = 'visible';
-    document.body.className +=' body_noScroll';
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    //remove popup error
-    let error_msg = document.querySelector('.API_error');
-    error_msg.classList.remove("API_error_open");
-  }
-  closeTips(){
-    document.querySelector('.tips_overlay').style.visibility = 'hidden';
-    document.body.classList.remove("body_noScroll");
   }
 
   changeLang() {
@@ -213,30 +199,6 @@ class header extends Component {
               />
               </div>
 	          </form>
-          </div>
-
-
-          <div className='tips'>
-            <div className='tips_overlay' onClick={this.closeTips.bind(this)}>
-              <img className='closeTips' src={close_tips} alt='close tips'/>
-              <div className='tips_container'>
-                <div className='tips_realm'><img src={tips_arrow} alt='arrow'/>Select your region and realm</div>
-                <div className='tips_item_name'><img src={tips_arrow} alt='arrow'/><div className='tips_item_name_text'>Search for and add items<br/> to populate your shopping lists</div></div>
-                <div className='tips_login'><img src={tips_line} alt='visual line'/><br/>Log in to customize<br/> and save shopping lists</div>
-                <div className='tips_watch_list'>
-                  <div className='tips_watch_list_text'>
-                    <h3>Additional features:</h3>
-                    <ul>
-                      <li>Drag items by their icons to order them around</li>
-                      <li>Clicking on an item name opens its wowhead page</li>
-                      <li>Logging in preserves your lists between sessions and devices</li>
-                    </ul>
-                  </div>
-                </div>
-                <img className='refresh_arrow' src={tips_arrow_up} alt='arrow'/>
-                <div className='tips_hard_refresh'>Force a deliberate<br/> manual update</div>
-              </div>
-            </div>
           </div>
 
 					<div className='search'>
