@@ -36,21 +36,28 @@ class header extends Component {
       autoComplite: "",
       isOpenModal: false,
       showLogOut: false,
-      lastUpdate: '',
+      lastUpdate: null,
     }
     this.closeModal = this.closeModal.bind(this);
   }
 
-  // componentDidMount(){
-  //   setTimeout(()=> console.log(this.props.transformTime(this.props.updatedTime)), 2000)
-  //   this.intervalID = setInterval(
-  //    () => this.tick(),
-  //    60000
-  //  );
-  // }
-  // componentWillUnmount() {
-  //   clearInterval(this.intervalID);
-  // }
+  componentDidMount(){
+    this.intervalID = setInterval(
+     () => this.tick(),
+     60000
+   );
+  }
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    const {updatedTime} = this.props;
+    if(updatedTime !== prevProps.updatedTime){
+      const time = this.props.transformTime(this.props.updatedTime);
+      this.setState({lastUpdate: time})
+    }
+  }
 
 	handleAuto(e) {
 		e.preventDefault();
@@ -123,11 +130,11 @@ class header extends Component {
     return flag_img_render;
   }
 
-  // tick(){
-  //   let time = this.props.transformTime(this.props.updatedTime);
-  //   console.log(time);
-  //   this.setState({lastUpdate: time})
-  // }
+  tick(){
+    let time = this.props.transformTime(this.props.updatedTime);
+    console.log(time);
+    this.setState({lastUpdate: time})
+  }
 
 
 
@@ -135,17 +142,17 @@ class header extends Component {
 	 render() {
      //generate server time
      //let addTimeBlock;
-     let time = this.props.transformTime(this.props.updatedTime);
-
-     if(this.props.updatedTime){
-        document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
-     }
-     if(this.props.updatedTime && time===1){
-        document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
-     }
-     if(this.props.updatedTime && time > 121){
-        document.querySelector('.time').innerHTML = `Last update 120+ minutes ago`
-     }
+     // let time = this.props.transformTime(this.props.updatedTime);
+     //
+     // if(this.props.updatedTime){
+     //    document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
+     // }
+     // if(this.props.updatedTime && time===1){
+     //    document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
+     // }
+     // if(this.props.updatedTime && time > 121){
+     //    document.querySelector('.time').innerHTML = `Last update 120+ minutes ago`
+     // }
 
      // Choose serverList (US/EU)
      let realmsList;
@@ -275,7 +282,14 @@ class header extends Component {
 	      <div className="header-right">
           <span onClick={this.props.joyrideRunHandler}><img className='help_icon' src={help} alt='open help'/></span>
 	        <a href="#login" id='login' onClick={this.openModal.bind(this)}>Log in</a>
-          <div className='time'></div>
+          {this.state.lastUpdate&&
+            <div className='time'>{
+              this.state.lastUpdate>120
+                ? `Last update 120+ minutes ago`
+              : this.state.lastUpdate===1
+                ? `Last update ${this.state.lastUpdate} minute ago`
+                : `Last update ${this.state.lastUpdate} minutes ago`}
+            </div>}
 	      </div>
         <Modal logIn={this.props.logIn}
         signUp={this.props.signUp}
