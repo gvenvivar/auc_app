@@ -19,7 +19,7 @@ class Tabs extends Component {
     };
 
     this.refocusForEdit = this.refocusForEdit.bind(this);
-    this.pressEnterInput = this.pressEnterInput.bind(this);
+    // this.pressEnterInput = this.pressEnterInput.bind(this);
     this.editTab = this.editTab.bind(this);
     this.makeActive = this.makeActive.bind(this);
     this.blurTabs = this.blurTabs.bind(this);
@@ -49,12 +49,13 @@ class Tabs extends Component {
 
 
 
-  refocusForEdit(){
+  refocusForEdit(activeRef){
     let {login, changeTabErrorMsg} = this.props;
     if(login){
       console.log('refocus')
-      let activeTabText = document.querySelector('.tab.active .tabs_name');
+      let activeTabText = activeRef;
       activeTabText.readOnly = false;
+      console.log(activeTabText.value.length)
       SetCaretAtEnd(activeTabText);
     }
     else{
@@ -67,15 +68,9 @@ class Tabs extends Component {
     }
   }
 
-  pressEnterInput(event){
-    let activeTabText = document.querySelector('.tab.active .tabs_name');
-    if (event.key === 'Enter' && !activeTabText.readOnly) {
-      activeTabText.blur();
-      activeTabText.readOnly = true;
-    }
-  }
-  blurTabs(){
-    let activeTabText = document.querySelector('.tab.active .tabs_name');
+
+  blurTabs(activeRef){
+    let activeTabText = activeRef;
     let {dataJson, active, changetabsJsonsState, changeActiveTabName, updateUser} = this.props;
     let {activeTabName} = this.props;
     let sameName = `${activeTabName}_new`;
@@ -270,16 +265,34 @@ class Tabs extends Component {
 
 export default Tabs;
 
-const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs, pressEnterInput, deleteTab, makeActive}) => {
+const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs, deleteTab, makeActive}) => {
+  let tabsActiveTextareaRef = React.createRef();
   let tabList = [];
+
+  function refocus(){
+    refocusForEdit(tabsActiveTextareaRef.current);
+  }
+
+  function blur(){
+    blurTabs(tabsActiveTextareaRef.current);
+  }
+
+  function pressEnterInput(event){
+    let activeTabText = tabsActiveTextareaRef.current;
+    if (event.key === 'Enter' && !activeTabText.readOnly) {
+      activeTabText.blur();
+      activeTabText.readOnly = true;
+    }
+  }
+
   Object.keys(tabs).map((tab, key) => {
     if(key===active){
       tabList.push(
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
-            <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
+            <img className='rename' src={pencil} onClick={refocus} alt='edit_tab'/>
             <img className='load' src={loading} alt='loading data'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
+            <textarea className='tabs_name' ref={tabsActiveTextareaRef} rows='1' maxLength="19" onChange={editTab} onBlur={blur} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
             <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
         </div>

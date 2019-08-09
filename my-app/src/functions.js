@@ -43,6 +43,7 @@ export function cutAvg(num){
 
 export function SetCaretAtEnd(elem) {
     let elemLen = elem.value.length;
+    console.log(elemLen);
     // For IE Only
     if (document.selection) {
         // Set focus
@@ -60,7 +61,7 @@ export function SetCaretAtEnd(elem) {
         elem.selectionStart = elemLen;
         elem.selectionEnd = elemLen;
         elem.focus();
-    } // if
+    }
 } // SetCaretAtEnd()
 
 export function reverseObject(object) {
