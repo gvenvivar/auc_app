@@ -18,7 +18,6 @@ class Tabs extends Component {
       // activeTabName: '',
     };
 
-
     this.refocusForEdit = this.refocusForEdit.bind(this);
     this.pressEnterInput = this.pressEnterInput.bind(this);
     this.editTab = this.editTab.bind(this);
@@ -27,7 +26,6 @@ class Tabs extends Component {
     this.deleteTab = this.deleteTab.bind(this);
     this.addTab = this.addTab.bind(this);
     this.renameObjKey = this.renameObjKey.bind(this);
-    this.closeTabError =this.closeTabError.bind(this);
   }
 
   componentDidMount(){
@@ -39,20 +37,17 @@ class Tabs extends Component {
     // this.setState({tabs: tabListArr})
     console.log('tabs mount');
     // this.setState({activeTabName: Object.keys(this.props.dataJson)[this.props.active]});
-    let {changeActiveTabName} = this.props;
+    let {changeActiveTabName, closeTabError} = this.props;
     changeActiveTabName(Object.keys(this.props.dataJson)[this.props.active])
 
-    document.addEventListener("mousedown", this.closeTabError);
+    document.addEventListener("mousedown", this.props.closeTabError);
+
   }
   componentWillUnmount() {
-    document.removeEventListener("mousedown", this.closeTabError);
+    document.removeEventListener("mousedown", this.props.closeTabError);
   }
 
-  closeTabError(){
-    let addTabError = document.querySelector('.addTabError');
-    addTabError.style.opacity = 0;
-    addTabError.style.visibility = 'hidden';
-  }
+
 
   refocusForEdit(){
     let {login, changeTabErrorMsg} = this.props;
@@ -65,9 +60,10 @@ class Tabs extends Component {
     else{
       console.log('can\'t rename without login');
       changeTabErrorMsg('Log in to add and customize shopping lists');
-      let addTabError = document.querySelector('.addTabError');
-      addTabError.style.opacity = 1;
-      addTabError.style.visibility = 'visible';
+      this.props.openTabError();
+      // let addTabError = document.querySelector('.addTabError');
+      // addTabError.style.opacity = 1;
+      // addTabError.style.visibility = 'visible';
     }
   }
 
@@ -263,7 +259,7 @@ class Tabs extends Component {
           makeActive={this.makeActive}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
-        <div className='addTabError'><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
+        <div className={this.props.IsTabErrorOpen ? 'addTabError open':'addTabError'}><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
       </div>
     </div>
 

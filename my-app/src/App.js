@@ -104,6 +104,7 @@ class App extends Component {
         psw: false,
         error_msg: 'Sorry, no connection. Offline mode',
         error_tabs: 'Log in to add and customize shopping lists',
+        IsTabErrorOpen: false,
         //walkthrow tooltip
         run: false,
         joyrideIndex: 0,
@@ -157,6 +158,8 @@ class App extends Component {
     this.longPolling = this.longPolling.bind(this);
     this.updateTimeEveryMinute = this.updateTimeEveryMinute.bind(this);
     this.changeLanguage = this.changeLanguage.bind(this);
+    this.closeTabError = this.closeTabError.bind(this);
+    this.openTabError = this.openTabError.bind(this);
 
     //Google Analitycs
     // Add your tracking ID created from https://analytics.google.com/analytics/web/#home/
@@ -1508,9 +1511,19 @@ class App extends Component {
         this.updateUser();
       }
     })
+  }
 
-
-
+  closeTabError(){
+    // let addTabError = document.querySelector('.addTabError');
+    // addTabError.style.opacity = 0;
+    // addTabError.style.visibility = 'hidden';
+    let tabError = this.state.IsTabErrorOpen;
+    if(tabError){
+      this.setState({IsTabErrorOpen: false})
+    }
+  }
+  openTabError(){
+    this.setState({IsTabErrorOpen: true})
   }
 
   deleteTab(name){
@@ -1525,9 +1538,10 @@ class App extends Component {
     if(countTabs===1){
       // console.log('cant\'t delete last tab');
       this.changeTabErrorMsg('There must always be a shopping list');
-      let addTabError = document.querySelector('.addTabError');
-      addTabError.style.opacity = 1;
-      addTabError.style.visibility = 'visible';
+      // let addTabError = document.querySelector('.addTabError');
+      // addTabError.style.opacity = 1;
+      // addTabError.style.visibility = 'visible';
+      this.openTabError();
     }
   }
   createTab(name, activeTab){
@@ -1535,9 +1549,10 @@ class App extends Component {
     if(!login){
       // console.log('Can only add tabs when login');
       this.changeTabErrorMsg('Log in to add and customize shopping lists');
-      let addTabError = document.querySelector('.addTabError');
-      addTabError.style.opacity = 1;
-      addTabError.style.visibility = 'visible';
+      // let addTabError = document.querySelector('.addTabError');
+      // addTabError.style.opacity = 1;
+      // addTabError.style.visibility = 'visible';
+      this.openTabError();
     }
     if(login){
       tabsJson[name] = [];
@@ -1994,8 +2009,11 @@ class App extends Component {
               changeActiveTabName = {this.changeActiveTabName}
               updateUser = {this.updateUser}
               login = {this.state.login}
-              errorMsg={this.state.error_tabs}
+              errorMsg = {this.state.error_tabs}
               changeTabErrorMsg = {this.changeTabErrorMsg}
+              IsTabErrorOpen = {this.state.IsTabErrorOpen}
+              closeTabError = {this.closeTabError}
+              openTabError = {this.openTabError}
             />
             <div className="main clearfix">
               <SearchList
