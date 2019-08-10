@@ -10,6 +10,10 @@ class Modal extends Component {
     this.state = {
       passwordIsMatch : '',
     }
+    this.emailRef = React.createRef();
+    this.passwordRef = React.createRef();
+    this.passwordRepeatRef = React.createRef();
+    this.errorRef = React.createRef();
     this.modalContent = React.createRef();
     this.signUpPassMatch = this.signUpPassMatch.bind(this);
     this.handleEsc = this.handleEsc.bind(this);
@@ -26,15 +30,29 @@ class Modal extends Component {
     document.addEventListener('keydown', this.handleEsc, false)
   }
 
-  closeModal(){
+  clearInputValues(){
+    const emailRef = this.emailRef.current;
+    const passwordRef = this.passwordRef.current;
     const passR = document.getElementById('pswR');
-    this.props.closeModal();
-    document.getElementById('email').value = '';
-    document.getElementById('psw').value = '';
-    this.setState({passwordIsMatch : ''})
+
+    emailRef.value = '';
+    passwordRef.value = '';
+    this.setState({passwordIsMatch : ''});
     if(passR&&passR.value !== ''){
       passR.value = '';
     }
+  }
+
+  closeModal(){
+    // const passR = document.getElementById('pswR');
+    this.props.closeModal();
+    this.clearInputValues();
+    // document.getElementById('email').value = '';
+    // document.getElementById('psw').value = '';
+    // this.setState({passwordIsMatch : ''})
+    // if(passR&&passR.value !== ''){
+    //   passR.value = '';
+    // }
   }
 
   logOut(){
@@ -48,29 +66,31 @@ class Modal extends Component {
 
   handleEsc(event){
     if(event.keyCode === 27){
-      const passR = document.getElementById('pswR');
+      // const passR = document.getElementById('pswR');
       this.props.closeModal();
-      document.getElementById('email').value = '';
-      document.getElementById('psw').value = '';
-      document.querySelector('.error').innerHTML = '';
-      this.setState({passwordIsMatch : ''})
-      if(passR&&passR.value !== ''){
-        passR.value = '';
-      }
+      this.clearInputValues();
+      // document.getElementById('email').value = '';
+      // document.getElementById('psw').value = '';
+      // document.querySelector('.error').innerHTML = '';
+      // this.setState({passwordIsMatch : ''})
+      // if(passR&&passR.value !== ''){
+      //   passR.value = '';
+      // }
     }
   }
 
   handleClickOutsideModal(event){
-    const passR = document.getElementById('pswR');
+    // const passR = document.getElementById('pswR');
     if(this.props.isOpenModal && this.modalContent.current && !this.modalContent.current.contains(event.target)){
       this.props.closeModal();
-      document.getElementById('email').value = '';
-      document.getElementById('psw').value = '';
-      document.querySelector('.error').innerHTML = '';
-      this.setState({passwordIsMatch : ''})
-      if(passR&&passR.value !== ''){
-        passR.value = '';
-      }
+      this.clearInputValues();
+      // document.getElementById('email').value = '';
+      // document.getElementById('psw').value = '';
+      // document.querySelector('.error').innerHTML = '';
+      // this.setState({passwordIsMatch : ''})
+      // if(passR&&passR.value !== ''){
+      //   passR.value = '';
+      // }
     }
   }
 
@@ -114,7 +134,7 @@ class Modal extends Component {
                <a href='#signUp' onClick={this.props.updateSwitchModal}>Sign up</a>
              </div>
              {this.props.showLogOut&&<div className='logout' onClick={this.logOut.bind(this)}>Log out</div>}
-             <LogIn logIn={this.props.logIn} />
+             <LogIn ref={{emailRef: this.emailRef, passwordRef: this.passwordRef}} logIn={this.props.logIn} />
            </div>
          </div>
        )
@@ -129,7 +149,17 @@ class Modal extends Component {
           <a href='#signUp' onClick={this.props.updateSwitchModal}>Sign up</a>
           </div>
           {this.props.showLogOut&&<div className='logout' onClick={this.logOut.bind(this)}>Log out</div>}
-          <SignUp signUpPassMatch={this.signUpPassMatch} passwordIsMatch={this.state.passwordIsMatch} signUp={this.props.signUp} />
+          <SignUp
+            signUpPassMatch={this.signUpPassMatch}
+            passwordIsMatch={this.state.passwordIsMatch}
+            signUp={this.props.signUp}
+            ref={
+              {emailRef: this.emailRef,
+               passwordRef: this.passwordRef,
+               passwordRepeatRef: this.passwordRepeatRef,
+               errorRef:this.errorRef}
+             }
+          />
         </div>
       </div>
 
