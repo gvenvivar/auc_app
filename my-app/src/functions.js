@@ -43,7 +43,9 @@ export function cutAvg(num){
 
 export function SetCaretAtEnd(elem) {
     let elemLen = elem.value.length;
+    console.log(elem.value);
     console.log(elemLen);
+    console.log(elem.selectionStart);
     // For IE Only
     if (document.selection) {
         // Set focus
@@ -56,11 +58,14 @@ export function SetCaretAtEnd(elem) {
         oSel.moveEnd('character', 0);
         oSel.select();
     }
-    else if (elem.selectionStart || elem.selectionStart === '0') {
+    else if (elem.selectionStart || elem.selectionStart === 0) {
         // Firefox/Chrome
         elem.selectionStart = elemLen;
         elem.selectionEnd = elemLen;
         elem.focus();
+    }
+    else{
+      elem.focus();
     }
 } // SetCaretAtEnd()
 

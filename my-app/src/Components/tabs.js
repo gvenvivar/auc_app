@@ -302,8 +302,8 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
       tabList.push(
         <div className='tab' id={tab} key={key} order={key}>
           <div className='tabInner' onClick={() => makeActive(key)}>
-            <img className='rename' src={pencil} onClick={refocusForEdit} alt='rename_tab'/>
-            <textarea className='tabs_name' rows='1' maxLength="19" onKeyPress={pressEnterInput} value={tab} readOnly spellCheck="false"></textarea>
+            <img className='rename' src={pencil} alt='rename_tab'/>
+            <textarea className='tabs_name' rows='1' maxLength="19" value={tab} readOnly spellCheck="false"></textarea>
             <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
         </div>
