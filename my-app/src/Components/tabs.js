@@ -17,9 +17,10 @@ class Tabs extends Component {
       // dataJson: dataJson
       // activeTabName: '',
     };
+    this.activeTextareaRef = React.createRef();
 
     this.refocusForEdit = this.refocusForEdit.bind(this);
-    // this.pressEnterInput = this.pressEnterInput.bind(this);
+    this.pressEnterInput = this.pressEnterInput.bind(this);
     this.editTab = this.editTab.bind(this);
     this.makeActive = this.makeActive.bind(this);
     this.blurTabs = this.blurTabs.bind(this);
@@ -47,15 +48,19 @@ class Tabs extends Component {
     document.removeEventListener("mousedown", this.props.closeTabError);
   }
 
+  pressEnterInput(event){
+    let activeTabText = this.activeTextareaRef.current;
+    if (event.key === 'Enter' && !activeTabText.readOnly) {
+      activeTabText.blur();
+      activeTabText.readOnly = true;
+    }
+  }
 
-
-  refocusForEdit(activeRef){
+  refocusForEdit(){
     let {login, changeTabErrorMsg} = this.props;
     if(login){
-      console.log('refocus')
-      let activeTabText = activeRef;
+      let activeTabText = this.activeTextareaRef.current;
       activeTabText.readOnly = false;
-      console.log(activeTabText.value.length)
       SetCaretAtEnd(activeTabText);
     }
     else{
@@ -69,8 +74,8 @@ class Tabs extends Component {
   }
 
 
-  blurTabs(activeRef){
-    let activeTabText = activeRef;
+  blurTabs(){
+    let activeTabText = this.activeTextareaRef.current;
     let {dataJson, active, changetabsJsonsState, changeActiveTabName, updateUser} = this.props;
     let {activeTabName} = this.props;
     let sameName = `${activeTabName}_new`;
@@ -252,6 +257,8 @@ class Tabs extends Component {
           pressEnterInput={this.pressEnterInput}
           deleteTab={this.deleteTab}
           makeActive={this.makeActive}
+          pressEnterInput={this.pressEnterInput}
+          ref={this.activeTextareaRef}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
         <div className={this.props.IsTabErrorOpen ? 'addTabError open':'addTabError'}><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
@@ -265,34 +272,19 @@ class Tabs extends Component {
 
 export default Tabs;
 
-const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs, deleteTab, makeActive}) => {
-  let tabsActiveTextareaRef = React.createRef();
+const TabList = React.forwardRef(({tabs, active, activeTabName, refocusForEdit, pressEnterInput, editTab, blurTabs, deleteTab, makeActive}, ref) => {
+
   let tabList = [];
 
-  function refocus(){
-    refocusForEdit(tabsActiveTextareaRef.current);
-  }
-
-  function blur(){
-    blurTabs(tabsActiveTextareaRef.current);
-  }
-
-  function pressEnterInput(event){
-    let activeTabText = tabsActiveTextareaRef.current;
-    if (event.key === 'Enter' && !activeTabText.readOnly) {
-      activeTabText.blur();
-      activeTabText.readOnly = true;
-    }
-  }
 
   Object.keys(tabs).map((tab, key) => {
     if(key===active){
       tabList.push(
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
-            <img className='rename' src={pencil} onClick={refocus} alt='edit_tab'/>
+            <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
             <img className='load' src={loading} alt='loading data'/>
-            <textarea className='tabs_name' ref={tabsActiveTextareaRef} rows='1' maxLength="19" onChange={editTab} onBlur={blur} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
+            <textarea className='tabs_name' ref={ref} rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
             <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
         </div>
@@ -312,4 +304,4 @@ const TabList = ({tabs, active, activeTabName, refocusForEdit, editTab, blurTabs
     return false;
   })
   return tabList;
-}
+});

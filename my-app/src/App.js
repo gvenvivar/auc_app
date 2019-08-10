@@ -1552,7 +1552,6 @@ class App extends Component {
       // let addTabError = document.querySelector('.addTabError');
       // addTabError.style.opacity = 1;
       // addTabError.style.visibility = 'visible';
-      this.openTabError();
     }
     if(login){
       tabsJson[name] = [];
