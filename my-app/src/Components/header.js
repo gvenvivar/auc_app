@@ -37,6 +37,8 @@ class header extends Component {
       isOpenModal: false,
       showLogOut: false,
       lastUpdate: null,
+      placeholderText: 'Item name',
+      language_name_props: '',
     }
     this.closeModal = this.closeModal.bind(this);
   }
@@ -46,16 +48,21 @@ class header extends Component {
      () => this.tick(),
      60000
    );
+   this.handleLanguageProps();
   }
   componentWillUnmount() {
     clearInterval(this.intervalID);
+    this.handleLanguageProps();
   }
 
   componentDidUpdate(prevProps, prevState){
-    const {updatedTime} = this.props;
+    const {updatedTime, current_lang} = this.props;
     if(updatedTime !== prevProps.updatedTime){
       const time = this.props.transformTime(this.props.updatedTime);
       this.setState({lastUpdate: time})
+    }
+    if(current_lang !== prevProps.current_lang){
+      this.handleLanguageProps();
     }
   }
 
@@ -132,7 +139,6 @@ class header extends Component {
 
   tick(){
     let time = this.props.transformTime(this.props.updatedTime);
-    console.log(time);
     this.setState({lastUpdate: time})
   }
 
@@ -140,12 +146,56 @@ class header extends Component {
     let realmsList;
     if(this.props.region === 'en_US'){
       realmsList = this.props.usServers;
-      console.log('en_US')
     } else {
       realmsList = this.props.euServers;
-      console.log('en_EU')
     }
     return realmsList;
+  }
+
+  handleLanguageProps(){
+    let {current_lang} = this.props;
+    if(current_lang === "en_GB" || current_lang === "en_US"){
+      this.setState({
+        placeholderText : 'Item name',
+        language_name_props: 'name',
+      })
+    }
+    if(current_lang === "ru_RU"){
+      this.setState({
+        placeholderText : 'Имя предмета',
+        language_name_props: 'ru_RU',
+      })
+    }
+    if(current_lang === "de_DE"){
+      this.setState({
+        placeholderText : 'Artikelname',
+        language_name_props: 'de_DE',
+      })
+    }
+    if(current_lang === "it_IT"){
+      this.setState({
+        placeholderText : 'Nome dell\'elemento',
+        language_name_props: 'it_IT',
+      })
+    }
+    if(current_lang === "fr_FR"){
+      this.setState({
+        placeholderText : 'Nom de l\'article',
+        language_name_props: 'fr_FR',
+      })
+    }
+    if(current_lang === "pt_BR" || current_lang === "pt_PT"){
+      this.setState({
+        placeholderText : 'Nome do item',
+        language_name_props: 'pt_BR',
+      })
+    }
+    if(current_lang === "es_ES" || current_lang === "es_MX"){
+      this.setState({
+        placeholderText : 'Nombre del árticulo',
+        language_name_props: 'es_ES',
+      })
+    }
   }
 
 
@@ -153,61 +203,7 @@ class header extends Component {
 
 
 	 render() {
-     //generate server time
-     //let addTimeBlock;
-     // let time = this.props.transformTime(this.props.updatedTime);
-     //
-     // if(this.props.updatedTime){
-     //    document.querySelector('.time').innerHTML = `Last update ${time} minutes ago`
-     // }
-     // if(this.props.updatedTime && time===1){
-     //    document.querySelector('.time').innerHTML = `Last update ${time} minute ago`
-     // }
-     // if(this.props.updatedTime && time > 121){
-     //    document.querySelector('.time').innerHTML = `Last update 120+ minutes ago`
-     // }
-
-     // Choose serverList (US/EU)
-     // let realmsList;
-     // if(this.props.region === 'en_US'){
-     //   realmsList = this.props.usServers;
-     // } else {
-     //   realmsList = this.props.euServers;
-     // }
-
-     //Change language preferances
-     let language_name_props = '';
-     let placeholderText = 'Item name';
-     let {current_lang, locale_language} = this.props;
-     if(current_lang === "en_GB" || current_lang === "en_US"){
-       language_name_props = 'name';
-     }
-     if(current_lang === "ru_RU"){
-       language_name_props = 'ru_RU';
-       placeholderText = 'Имя предмета';
-     }
-     if(current_lang === "de_DE"){
-       language_name_props = 'de_DE';
-       placeholderText = 'Artikelname';
-     }
-     if(current_lang === "it_IT"){
-       language_name_props = 'it_IT';
-       placeholderText = 'Nome dell\'elemento';
-     }
-     if(current_lang === "fr_FR"){
-       language_name_props = 'fr_FR';
-       placeholderText = 'Nom de l\'article';
-     }
-     if(current_lang === "pt_BR" || current_lang === "pt_PT"){
-       language_name_props = 'pt_BR';
-       placeholderText = 'Nome do item';
-     }
-     if(current_lang === "es_ES" || current_lang === "es_MX"){
-       language_name_props = 'es_ES';
-       placeholderText = 'Nombre del árticulo';
-     }
-
-
+    const {language_name_props} = this.state;
 
     return (
       <div className="header">
@@ -232,7 +228,7 @@ class header extends Component {
           <input type='checkbox' ref='lang_checkbox' name='lang' id="lang" defaultChecked={this.state.chkbox} onChange={this.changeLang.bind(this)}/><label htmlFor="lang">{this.renderFlag()}</label>
 					<Autocomplete
 						value={this.state.autoComplite}
-						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder: placeholderText, spellCheck:"false"}}
+						inputProps={{name: "search", id:'search', ref:"autocomplite", placeholder: this.state.placeholderText, spellCheck:"false"}}
 						items={this.props.data}
 						getItemValue={(item) => item[language_name_props]}
 						sortItems={function sort (a, b, value) {
