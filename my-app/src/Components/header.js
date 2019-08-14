@@ -136,6 +136,19 @@ class header extends Component {
     this.setState({lastUpdate: time})
   }
 
+  handleRealmList(){
+    let realmsList;
+    if(this.props.region === 'en_US'){
+      realmsList = this.props.usServers;
+      console.log('en_US')
+    } else {
+      realmsList = this.props.euServers;
+      console.log('en_EU')
+    }
+    return realmsList;
+  }
+
+
 
 
 
@@ -155,12 +168,12 @@ class header extends Component {
      // }
 
      // Choose serverList (US/EU)
-     let realmsList;
-     if(this.props.region === 'en_US'){
-       realmsList = this.props.usServers;
-     } else {
-       realmsList = this.props.euServers;
-     }
+     // let realmsList;
+     // if(this.props.region === 'en_US'){
+     //   realmsList = this.props.usServers;
+     // } else {
+     //   realmsList = this.props.euServers;
+     // }
 
      //Change language preferances
      let language_name_props = '';
@@ -206,7 +219,7 @@ class header extends Component {
 								<option value="en_GB">EU</option>
 							</select>
               <div className="server">
-              <Serverselect realmsList={realmsList}
+              <Serverselect realmsList={this.handleRealmList()}
                 addSlug={this.props.addSlug}
                 server={this.props.server}
               />
