@@ -104,6 +104,7 @@ class App extends Component {
         login: false,
         psw: false,
         error_msg: 'Sorry, no connection. Offline mode',
+        isErrorOpen: false,
         error_tabs: 'Log in to add and customize shopping lists',
         IsTabErrorOpen: false,
         //walkthrow tooltip
@@ -317,7 +318,7 @@ class App extends Component {
       })
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie/');
-        document.querySelector('.API_error').classList.add('API_error_open');
+        this.openError();
         this.hideLoadinginTabs();
         //load last list from db
         db.lastSearch.get(1)
@@ -380,7 +381,7 @@ class App extends Component {
         this.setState({
           error_msg: "Sorry, no connection. Offline mode"
         })
-        document.querySelector('.API_error').classList.add('API_error_open');
+        this.openError();
         // dbPromise.then(db => {
         //   return db.transaction('items')
         //     .objectStore('items').getAll();
@@ -723,10 +724,7 @@ class App extends Component {
   }
 
   close_error(){
-    let error_msg = document.querySelector('.API_error');
-    error_msg.classList.remove("API_error_open");
-    // console.log('remove error msg');
-    //Adding marker to sessionStorage
+    this.closeError();
     sessionStorage.setItem('error', 'close');
   }
 
@@ -735,7 +733,6 @@ class App extends Component {
     // console.log(this.state.list);
     // console.log(this.state.servers);
     //hide no-items
-    //document.querySelector('.API_error').classList.add('API_error_open');
 
     this.updateEmptySearch();
 
@@ -835,11 +832,11 @@ class App extends Component {
       // console.log(this.state.list)
       // console.log(this.state.error_msg.length);
       if(this.state.error_msg.length === 0){
-        document.querySelector('.API_error').classList.remove('API_error_open');
+        this.closeError();
       }
       if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
         // console.log(json[2].error_msg);
-        document.querySelector('.API_error').classList.add('API_error_open');
+        this.openError();
       }
       if(loadingIcon){
         loadingIcon.style.display = 'none';
@@ -893,7 +890,7 @@ class App extends Component {
     .catch((e) => {
       console.log(e);
       //Show offline mode msg
-      document.querySelector('.API_error').classList.add('API_error_open');
+      this.openError();
       if(loadingIcon){
         loadingIcon.style.display = 'none';
       }
@@ -1315,13 +1312,13 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       // console.log('user data updated');
-      document.querySelector('.API_error').classList.remove('API_error_open');
+      this.closeError();
     })
     .catch((error) =>{
       console.log(error);
       //show offline mode
       this.setState({error_msg:'Sorry, no connection. Offline mode'})
-      document.querySelector('.API_error').classList.add('API_error_open');
+      this.openError();
     });
 
 
@@ -1524,6 +1521,16 @@ class App extends Component {
     this.setState({IsTabErrorOpen: true})
   }
 
+  closeError(){
+    let error = this.state.isErrorOpen;
+    if(error){
+      this.setState({isErrorOpen: false})
+    }
+  }
+  openError(){
+    this.setState({isErrorOpen: true})
+  }
+
   deleteTab(name){
     // console.log('delete tab');
     let{tabsJson} = this.state;
@@ -1642,11 +1649,11 @@ class App extends Component {
       // console.log(this.state.error_msg.length);
       this.updateEmptySearch();
       if(this.state.error_msg.length === 0){
-        document.querySelector('.API_error').classList.remove('API_error_open');
+        this.closeError();
       }
       if(this.state.error_msg.length > 0 && !sessionStorage.getItem('error')){
         // console.log(json[2].error_msg);
-        document.querySelector('.API_error').classList.add('API_error_open');
+        this.openError();
       }
       //Set lastUpdate time
       // let lastResposeTime = Date.now();
@@ -1689,7 +1696,7 @@ class App extends Component {
     .catch((e) => {
       console.log(e);
       //Show offline mode msg
-      document.querySelector('.API_error').classList.add('API_error_open');
+      this.openError();
       this.hideLoadinginTabs();
 
       // let arr = [];
@@ -1971,7 +1978,7 @@ hideLoadinginTabs(){
         />
       <div className='wrapper'>
       <div className="App flex">
-        <div className='API_error' onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
+        <div className={this.state.isErrorOpen?'API_error API_error_open':'API_error'} onClick={this.close_error.bind(this)}>{this.state.error_msg}</div>
         <div className="App-wrap">
           <img className="logo" src={sword} alt='logo' />
           <div className="cont">
