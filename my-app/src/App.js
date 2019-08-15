@@ -1042,9 +1042,6 @@ class App extends Component {
       // })
 
     })
-
-
-
   }
 
   logIn(e){
@@ -1320,16 +1317,6 @@ class App extends Component {
       this.setState({error_msg:'Sorry, no connection. Offline mode'})
       this.openError();
     });
-
-
-  }
-
-  resetRealmOnClick(){
-    let input = document.getElementById('server');
-    //console.log('reset');
-    input.onclick = ()=> this.setState({
-      server: ''
-    })
   }
 
   deleteItem(itemToDel){
@@ -1605,7 +1592,6 @@ class App extends Component {
   updateMultiList(data, tooltipfix){
     // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
-    const loading = document.querySelector('.load');
     this.showLoadinginTabs();
 
     fetch('https://ahtool.com/grape/multi-list/', {
