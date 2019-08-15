@@ -18,6 +18,7 @@ import no_img from './img/no_img.jpg';
 import Tabs from './Components/tabs';
 import ReactJoyride, { STATUS, ACTIONS, EVENTS } from 'react-joyride';
 import nanoid from 'nanoid';
+import loading from './img/loading.gif';
 
 
 //indexedDB
@@ -142,6 +143,7 @@ class App extends Component {
         ]
     };
 
+    this.loadTabsRef = React.createRef();
 
     this.changetabsJsonsState = this.changetabsJsonsState.bind(this);
     this.changeActiveTab = this.changeActiveTab.bind(this);
@@ -180,11 +182,9 @@ class App extends Component {
     let time = localStorage.getItem('time');
     let nowTime = new Date().getTime();
     let {tabsJson, activeTab} = this.state;
-    const loading = document.querySelector('.load');
-
     this.setState({uniqid: nanoid()});
 
-    loading.style.display = 'block';
+    this.showLoadinginTabs();
 
     if((nowTime - time) > 1000 * 60 * 60 * 24 * 14){
       localStorage.clear();
@@ -310,7 +310,7 @@ class App extends Component {
           // this.shortPolling();
           // this.longPolling();
         })
-        loading.style.display = 'none';
+        this.hideLoadinginTabs();
         // console.log('finished fetch multi-list');
         // console.log(this.state.tabsJson);
         this.updateEmptySearch();
@@ -318,7 +318,7 @@ class App extends Component {
       .catch(() => {
         console.log('cant load https://ahtool.com/grape/get-user-cookie/');
         document.querySelector('.API_error').classList.add('API_error_open');
-        loading.style.display = 'none';
+        this.hideLoadinginTabs();
         //load last list from db
         db.lastSearch.get(1)
         .then(item=>{
@@ -348,7 +348,7 @@ class App extends Component {
 
     }
     else{
-      loading.style.display = 'none';
+      this.hideLoadinginTabs();
     }
 
     //fetch database json
@@ -1500,8 +1500,6 @@ class App extends Component {
           'lang': current_lang,
         }
         this.setState({updateUser: true})
-        // loading.style.display = 'block';
-        // console.log('display block')
         this.updateMultiList(sendData);
         // console.log('display none')
       }
@@ -1601,7 +1599,7 @@ class App extends Component {
     // console.log(data);
     // let {list, server, serverSlug, region, tabsJson, activeTabName} = this.state;
     const loading = document.querySelector('.load');
-    loading.style.display = 'block';
+    this.showLoadinginTabs();
 
     fetch('https://ahtool.com/grape/multi-list/', {
     	method: 'post',
@@ -1653,7 +1651,7 @@ class App extends Component {
       //Set lastUpdate time
       // let lastResposeTime = Date.now();
       // this.setState({lastResposeTime});
-      loading.style.display = 'none';
+      this.hideLoadinginTabs();
       // console.log('lastResposeTime: ' + lastResposeTime);
 
       //check if tooltip bug
@@ -1692,7 +1690,7 @@ class App extends Component {
       console.log(e);
       //Show offline mode msg
       document.querySelector('.API_error').classList.add('API_error_open');
-      loading.style.display = 'none';
+      this.hideLoadinginTabs();
 
       // let arr = [];
       // let server = `${this.state.region}_${this.state.server}`;
@@ -1935,7 +1933,15 @@ class App extends Component {
    console.groupEnd();
  };
 
+showLoadinginTabs(){
+  const loadRef = this.loadTabsRef.current
+  loadRef.style.display = 'block';
+}
 
+hideLoadinginTabs(){
+  const loadRef = this.loadTabsRef.current
+  loadRef.style.display = 'none';
+}
 
 
 
@@ -2013,7 +2019,9 @@ class App extends Component {
               IsTabErrorOpen = {this.state.IsTabErrorOpen}
               closeTabError = {this.closeTabError}
               openTabError = {this.openTabError}
-            />
+            >
+              <img className='load' ref={this.loadTabsRef} src={loading} alt='loading data'/>
+            </Tabs>
             <div className="main clearfix">
               <SearchList
                 items={this.state.data}

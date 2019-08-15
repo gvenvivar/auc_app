@@ -87,18 +87,18 @@ class resultList extends Component {
 
 	 render() {
 
-		let list = [];
- 		let items = this.props.items;
-		let count = 0;
-		//console.log(items);
-		if(items){
-			items.map((item, index) => {
-	 			list.push(<ResultListRow item={item}  key={item.id} delButton={this.props.delButton} tooltipCreator={this.props.tooltipCreator}/>);
-				count++;
-				item.order=count;
-				return false;
-	 		})
-		}
+		// let list = [];
+ 		// let items = this.props.items;
+		// let count = 0;
+		// //console.log(items);
+		// if(items){
+		// 	items.map((item, index) => {
+	 	// 		list.push(<ResultListRow item={item}  key={item.id} delButton={this.props.delButton} tooltipCreator={this.props.tooltipCreator}/>);
+		// 		count++;
+		// 		item.order=count;
+		// 		return false;
+	 	// 	})
+		// }
 
 		//console.log(list.map((item)=>item.props.item.name));
 

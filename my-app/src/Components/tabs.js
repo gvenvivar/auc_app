@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import pencil from '../img/pencil.png';
 import cerrar from '../img/close_tab.png';
-import loading from '../img/loading.gif';
 import addTabError from '../img/error.png'
 import '../tabs.css';
 import {SetCaretAtEnd} from '../functions';
@@ -259,6 +258,7 @@ class Tabs extends Component {
           makeActive={this.makeActive}
           pressEnterInput={this.pressEnterInput}
           ref={this.activeTextareaRef}
+          children={this.props.children}
         />
         <div className='addTab'><img className='add_tab' src={cerrar} onClick={this.addTab} alt='add_tab'/></div>
         <div className={this.props.IsTabErrorOpen ? 'addTabError open':'addTabError'}><img src={addTabError} alt='addTabError'/> <span>{this.props.errorMsg}</span></div>
@@ -272,7 +272,7 @@ class Tabs extends Component {
 
 export default Tabs;
 
-const TabList = React.forwardRef(({tabs, active, activeTabName, refocusForEdit, pressEnterInput, editTab, blurTabs, deleteTab, makeActive}, ref) => {
+const TabList = React.forwardRef(({children, tabs, active, activeTabName, refocusForEdit, pressEnterInput, editTab, blurTabs, deleteTab, makeActive}, ref) => {
 
   let tabList = [];
 
@@ -283,7 +283,7 @@ const TabList = React.forwardRef(({tabs, active, activeTabName, refocusForEdit, 
         <div className='tab active' id={tab} order={key} key={key}>
           <div className='tabInner'>
             <img className='rename' src={pencil} onClick={refocusForEdit} alt='edit_tab'/>
-            <img className='load' src={loading} alt='loading data'/>
+            {children}
             <textarea className='tabs_name' ref={ref} rows='1' maxLength="19" onChange={editTab} onBlur={blurTabs} onKeyPress={pressEnterInput} value={activeTabName} readOnly spellCheck="false"></textarea>
             <img className='close_tab' src={cerrar} onClick={() => deleteTab(key)} alt='delete_tab'/>
           </div>
